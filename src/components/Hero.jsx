@@ -51,12 +51,6 @@ const Hero = () => {
         { value: '95%', label: 'Retention' },
     ];
 
-    const trustBadges = [
-        { name: 'Google Partner', icon: '🏆' },
-        { name: 'Meta Certified', icon: '✓' },
-        { name: '5-Star Rated', icon: '⭐' },
-    ];
-
     const handleIconClick = (link) => {
         if (link.startsWith('#')) {
             const element = document.querySelector(link);
@@ -69,9 +63,9 @@ const Hero = () => {
     };
 
     return (
-        <section id="home" className="relative min-h-screen flex items-center pt-20 overflow-hidden">
-            <div className="max-w-[1280px] mx-auto px-6 w-full">
-                <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+        <section id="home" className="relative h-screen flex items-center pt-16 overflow-hidden">
+            <div className="max-w-[1280px] mx-auto px-6 w-full h-full flex items-center">
+                <div className="grid lg:grid-cols-2 gap-8 lg:gap-6 items-center w-full">
                     {/* Left Content */}
                     <motion.div
                         className="order-2 lg:order-1"
@@ -80,7 +74,7 @@ const Hero = () => {
                         transition={{ duration: 0.8, ease: 'easeOut' }}
                     >
                         <motion.span
-                            className="inline-block px-4 py-2 bg-primary-light text-primary-teal font-heading font-semibold text-sm rounded-full mb-6"
+                            className="inline-block px-3 py-1.5 bg-primary-light text-primary-teal font-heading font-semibold text-sm rounded-full mb-4"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
@@ -89,7 +83,7 @@ const Hero = () => {
                         </motion.span>
 
                         <motion.h1
-                            className="mb-6"
+                            className="mb-4 text-3xl md:text-4xl lg:text-5xl"
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3, duration: 0.6 }}
@@ -99,7 +93,7 @@ const Hero = () => {
                         </motion.h1>
 
                         <motion.p
-                            className="text-lg text-text-body mb-8 max-w-xl"
+                            className="text-base text-text-body mb-6 max-w-xl"
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.4, duration: 0.6 }}
@@ -109,7 +103,7 @@ const Hero = () => {
                         </motion.p>
 
                         <motion.div
-                            className="flex flex-wrap gap-4 mb-10"
+                            className="flex flex-wrap gap-3 mb-6"
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.5, duration: 0.6 }}
@@ -141,21 +135,41 @@ const Hero = () => {
                             </motion.a>
                         </motion.div>
 
-                        {/* Trust Badges */}
+                        {/* Stats Section - Fresh UI */}
                         <motion.div
-                            className="flex flex-wrap gap-4"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
+                            className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.7, duration: 0.6 }}
                         >
-                            {trustBadges.map((badge, index) => (
-                                <div
-                                    key={index}
-                                    className="flex items-center gap-2 px-4 py-2 bg-white/60 backdrop-blur-sm rounded-lg border border-border-light"
+                            {stats.map((stat, index) => (
+                                <motion.div
+                                    key={stat.label}
+                                    className="relative group"
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ delay: 0.8 + index * 0.1, duration: 0.4 }}
+                                    whileHover={{ scale: 1.05, y: -2 }}
                                 >
-                                    <span className="text-lg">{badge.icon}</span>
-                                    <span className="text-sm font-medium text-text-heading">{badge.name}</span>
-                                </div>
+                                    <div className="relative bg-gradient-to-br from-white/80 to-white/40 backdrop-blur-md rounded-xl p-3 border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300">
+                                        {/* Gradient accent line */}
+                                        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-teal via-teal-400 to-primary-teal rounded-t-xl opacity-80 group-hover:opacity-100 transition-opacity" />
+
+                                        <div className="text-center">
+                                            <motion.span
+                                                className="block text-2xl font-heading font-bold bg-gradient-to-r from-primary-teal to-teal-600 bg-clip-text text-transparent"
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 1 }}
+                                                transition={{ delay: 1 + index * 0.1 }}
+                                            >
+                                                {stat.value}
+                                            </motion.span>
+                                            <span className="block text-xs text-text-body mt-1 font-medium">
+                                                {stat.label}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </motion.div>
                             ))}
                         </motion.div>
                     </motion.div>
@@ -170,28 +184,16 @@ const Hero = () => {
                         <div className="relative">
                             {/* Main Illustration - Splash.png as sticky background */}
                             <div
-                                className="relative w-full max-w-xl mx-auto"
+                                className="relative w-full max-w-md mx-auto"
                             >
-                                {/* Splash.png - Sticky Background (static, no mouse movement) */}
+                                {/* Splash.png - Sticky Background (completely static, no motion) */}
                                 <motion.img
                                     src="/Splash.png"
                                     alt="Splash Background"
                                     className="w-full h-auto relative z-10"
                                     initial={{ scale: 0.9, opacity: 0 }}
-                                    animate={{
-                                        scale: 1,
-                                        opacity: 1,
-                                        scale: [1, 1.02, 1],
-                                    }}
-                                    transition={{
-                                        delay: 0.4,
-                                        duration: 0.6,
-                                        scale: {
-                                            duration: 4,
-                                            repeat: Infinity,
-                                            ease: 'easeInOut',
-                                        },
-                                    }}
+                                    animate={{ scale: 1, opacity: 1 }}
+                                    transition={{ delay: 0.4, duration: 0.6 }}
                                 />
                                 {/* Gibli.png - Overlay on top of Splash (moves with cursor) */}
                                 <motion.img
@@ -239,14 +241,28 @@ const Hero = () => {
                                         animate={{
                                             opacity: 1,
                                             scale: 1,
-                                            y: [0, -10, 0],
+                                            x: [0, 8, -5, 6, 0],
+                                            y: [0, -12, -5, -15, 0],
+                                            rotate: [0, 5, -3, 4, 0],
                                         }}
                                         transition={{
                                             opacity: { delay: 0.6 + item.delay, duration: 0.4 },
                                             scale: { delay: 0.6 + item.delay, duration: 0.4 },
+                                            x: {
+                                                delay: 0.6 + item.delay,
+                                                duration: 6 + index * 0.5,
+                                                repeat: Infinity,
+                                                ease: 'easeInOut',
+                                            },
                                             y: {
                                                 delay: 0.6 + item.delay,
-                                                duration: 3,
+                                                duration: 5 + index * 0.3,
+                                                repeat: Infinity,
+                                                ease: 'easeInOut',
+                                            },
+                                            rotate: {
+                                                delay: 0.6 + item.delay,
+                                                duration: 7 + index * 0.4,
                                                 repeat: Infinity,
                                                 ease: 'easeInOut',
                                             },
@@ -269,31 +285,6 @@ const Hero = () => {
                                     </motion.div>
                                 );
                             })}
-
-                            {/* Vertical Stats Cards */}
-                            <motion.div
-                                className="absolute -right-4 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-3 z-30"
-                                initial={{ opacity: 0, x: 30 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 1, duration: 0.6 }}
-                            >
-                                {stats.map((stat, index) => (
-                                    <motion.div
-                                        key={stat.label}
-                                        className="glass-card px-4 py-3 text-center min-w-[80px]"
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 1.1 + index * 0.1 }}
-                                        whileHover={{
-                                            scale: 1.05,
-                                            boxShadow: 'var(--shadow-glow)',
-                                        }}
-                                    >
-                                        <span className="block text-xl font-heading font-bold text-primary-teal">{stat.value}</span>
-                                        <span className="block text-xs text-text-body">{stat.label}</span>
-                                    </motion.div>
-                                ))}
-                            </motion.div>
                         </div>
                     </motion.div>
                 </div>
