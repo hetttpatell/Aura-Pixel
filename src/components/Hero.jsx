@@ -88,8 +88,8 @@ const Hero = () => {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3, duration: 0.6 }}
                         >
-                            Elevate Your Brand With{' '}
-                            <span className="text-gradient">Intelligent Digital Growth</span>
+                            Ignite Your Brand's Aura{' '}
+                            <span className="text-gradient">Pixel-Perfect Growth</span>
                         </motion.h1>
 
                         <motion.p
@@ -135,9 +135,9 @@ const Hero = () => {
                             </motion.a>
                         </motion.div>
 
-                        {/* Stats Section - Fresh UI */}
+                        {/* Stats Section - Grid Layout */}
                         <motion.div
-                            className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6"
+                            className="grid grid-cols-2 gap-4 mt-6 max-w-sm"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.7, duration: 0.6 }}
@@ -301,3 +301,4 @@ const Hero = () => {
 };
 
 export default Hero;
+
