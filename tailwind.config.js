@@ -6,6 +6,13 @@ export default {
     ],
     theme: {
         extend: {
+            backgroundImage: {
+                'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                'gradient-text': 'linear-gradient(135deg, #008080 0%, #0ea5e9 50%, #008080 100%)',
+            },
+            backgroundClip: {
+                'text': 'text',
+            },
             colors: {
                 'primary-teal': '#008080',
                 'primary-light': '#e6f2f2',
