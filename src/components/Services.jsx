@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
 import {
     HiOutlineSearch,
     HiOutlineChartBar,
@@ -10,12 +9,6 @@ import {
 } from 'react-icons/hi';
 
 const Services = () => {
-    const [ref, inView] = useInView({
-        triggerOnce: true,
-        threshold: 0.1,
-        rootMargin: '0px',
-    });
-
     const services = [
         {
             icon: HiOutlineSearch,
@@ -61,34 +54,74 @@ const Services = () => {
         },
     ];
 
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.1,
-                delayChildren: 0.1,
-            },
-        },
-    };
-
-    const itemVariants = {
+    // Card animation variants
+    const cardVariants = {
         hidden: {
             opacity: 0,
-            y: 40,
-            scale: 0.95,
+            y: 50
         },
         visible: {
             opacity: 1,
             y: 0,
-            scale: 1,
             transition: {
                 duration: 0.5,
-                ease: [0.25, 0.46, 0.45, 0.94],
-            },
-        },
+                ease: [0.25, 0.46, 0.45, 0.94]
+            }
+        }
     };
 
+    // Loading line variants
+    const lineVariants = {
+        hidden: {
+            scaleX: 0,
+            originX: 0
+        },
+        visible: {
+            scaleX: 1,
+            originX: 0,
+            transition: {
+                delay: 0.2,
+                duration: 0.6,
+                ease: "easeInOut"
+            }
+        }
+    };
+
+    // Icon animation variants
+    const iconVariants = {
+        hidden: {
+            opacity: 0,
+            scale: 0,
+            rotate: -180
+        },
+        visible: {
+            opacity: 1,
+            scale: 1,
+            rotate: 0,
+            transition: {
+                delay: 0.15,
+                duration: 0.5,
+                type: "spring",
+                stiffness: 200,
+                damping: 15
+            }
+        }
+    };
+
+    // Content fade in variants
+    const contentVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                delay: 0.3,
+                duration: 0.4
+            }
+        }
+    };
+
+    // Header variants
     const headerVariants = {
         hidden: { opacity: 0, y: 30 },
         visible: {
@@ -101,63 +134,16 @@ const Services = () => {
         },
     };
 
-    // Individual card element variants
-    const iconVariants = {
-        hidden: { opacity: 0, scale: 0.5, rotate: -20 },
-        visible: {
-            opacity: 1,
-            scale: 1,
-            rotate: 0,
-            transition: { duration: 0.4, delay: 0.1 }
-        }
-    };
-
-    const titleVariants = {
-        hidden: { opacity: 0, x: -20 },
-        visible: {
-            opacity: 1,
-            x: 0,
-            transition: { duration: 0.4, delay: 0.2 }
-        }
-    };
-
-    const descVariants = {
-        hidden: { opacity: 0, y: 10 },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: { duration: 0.4, delay: 0.3 }
-        }
-    };
-
-    const linkVariants = {
-        hidden: { opacity: 0, x: -20 },
-        visible: {
-            opacity: 1,
-            x: 0,
-            transition: { duration: 0.4, delay: 0.4 }
-        }
-    };
-
     const accentVariants = {
         hidden: { scaleX: 0 },
         visible: {
             scaleX: 1,
-            transition: { duration: 0.5, delay: 0.15 }
-        }
-    };
-
-    const badgeVariants = {
-        hidden: { scale: 0, rotate: -180 },
-        visible: {
-            scale: 1,
-            rotate: 0,
-            transition: { duration: 0.4, delay: 0.25, type: "spring", stiffness: 400 }
+            transition: { duration: 0.6, delay: 0.3, ease: "easeInOut" }
         }
     };
 
     return (
-        <section id="services" ref={ref} className="relative py-[120px] bg-gradient-to-br from-bg-soft via-white to-bg-soft overflow-hidden">
+        <section id="services" className="relative py-[120px] bg-gradient-to-br from-bg-soft via-white to-bg-soft overflow-hidden">
             {/* Enhanced Background Elements */}
             <div className="absolute inset-0 pointer-events-none">
                 {/* Animated Pixel Grid */}
@@ -183,9 +169,10 @@ const Services = () => {
                 {/* Enhanced Section Header */}
                 <motion.div
                     className="text-center mb-20"
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-                    transition={{ duration: 0.6 }}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.3 }}
+                    variants={headerVariants}
                 >
                     <motion.span
                         className="inline-block px-6 py-3 bg-gradient-to-r from-primary-light to-blue-50 text-primary-teal font-heading font-semibold text-sm rounded-full mb-6 border border-primary-teal/20 shadow-sm"
@@ -197,26 +184,21 @@ const Services = () => {
 
                     <motion.h2
                         className="mb-6"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={inView ? { opacity: 1, y: 0 } : {}}
-                        transition={{ duration: 0.5, delay: 0.1 }}
                     >
                         Comprehensive Digital <span className="text-gradient relative">
                             Solutions
                             <motion.div
                                 className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-primary-teal to-blue-500 rounded-full"
-                                initial={{ scaleX: 0 }}
-                                animate={inView ? { scaleX: 1 } : {}}
-                                transition={{ duration: 0.6, delay: 0.4 }}
+                                variants={accentVariants}
+                                initial="hidden"
+                                whileInView="visible"
+                                viewport={{ once: true }}
                             />
                         </span>
                     </motion.h2>
 
                     <motion.p
                         className="max-w-2xl mx-auto text-text-body text-lg leading-relaxed"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={inView ? { opacity: 1, y: 0 } : {}}
-                        transition={{ duration: 0.6, delay: 0.2 }}
                     >
                         From strategy to execution, we provide end-to-end digital marketing services
                         that drive real business results and accelerate your growth.
@@ -224,21 +206,15 @@ const Services = () => {
                 </motion.div>
 
                 {/* Enhanced Services Grid */}
-                <motion.div
-                    className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-                    initial={{ opacity: 0 }}
-                    animate={inView ? { opacity: 1 } : { opacity: 0 }}
-                    transition={{ duration: 0.5, delay: 0.3 }}
-                >
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {services.map((service, index) => (
                         <motion.div
                             key={service.title}
                             className="group relative"
-                            variants={itemVariants}
-                            whileHover={{
-                                y: -8,
-                                transition: { duration: 0.3, ease: "easeOut" }
-                            }}
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true, amount: 0.1 }}
+                            variants={cardVariants}
                         >
                             {/* Main Card */}
                             <div className="relative bg-white/90 backdrop-blur-xl rounded-2xl p-8 border border-white/40 shadow-lg group-hover:shadow-2xl overflow-hidden transition-shadow duration-500">
@@ -264,15 +240,13 @@ const Services = () => {
 
                                 {/* Content */}
                                 <div className="relative z-10">
-                                    {/* Enhanced Icon */}
+                                    {/* Enhanced Icon with Loading Animation */}
                                     <motion.div
                                         className="relative w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
                                         style={{
                                             backgroundColor: `${service.color}08`,
                                         }}
-                                        initial={{ opacity: 0, scale: 0.5, rotate: -20 }}
-                                        animate={inView ? { opacity: 1, scale: 1, rotate: 0 } : {}}
-                                        transition={{ duration: 0.4, delay: 0.1 + index * 0.1 }}
+                                        variants={iconVariants}
                                         whileHover={{
                                             scale: 1.1,
                                             rotate: 3,
@@ -307,9 +281,7 @@ const Services = () => {
                                     {/* Enhanced Title */}
                                     <motion.h3
                                         className="text-xl font-heading font-bold text-text-heading mb-4"
-                                        initial={{ opacity: 0, x: -20 }}
-                                        animate={inView ? { opacity: 1, x: 0 } : {}}
-                                        transition={{ duration: 0.4, delay: 0.2 + index * 0.1 }}
+                                        variants={contentVariants}
                                     >
                                         {service.title}
                                     </motion.h3>
@@ -317,9 +289,7 @@ const Services = () => {
                                     {/* Enhanced Description */}
                                     <motion.p
                                         className="text-text-body leading-relaxed mb-6"
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={inView ? { opacity: 1, y: 0 } : {}}
-                                        transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}
+                                        variants={contentVariants}
                                     >
                                         {service.description}
                                     </motion.p>
@@ -328,9 +298,7 @@ const Services = () => {
                                     <motion.div
                                         className="flex items-center text-sm font-semibold cursor-pointer"
                                         style={{ color: service.color }}
-                                        initial={{ opacity: 0, x: -20 }}
-                                        animate={inView ? { opacity: 1, x: 0 } : {}}
-                                        transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
+                                        variants={contentVariants}
                                     >
                                         <span className="mr-2 group-hover:mr-3 transition-all duration-300">Learn More</span>
                                         <motion.svg
@@ -349,13 +317,12 @@ const Services = () => {
                                     </motion.div>
                                 </div>
 
-                                {/* Enhanced Top Accent */}
+                                {/* Loading Line Animation at Top */}
                                 <motion.div
                                     className="absolute top-0 left-0 right-0 h-1 rounded-t-2xl"
                                     style={{ backgroundColor: service.color }}
-                                    initial={{ scaleX: 0 }}
-                                    animate={inView ? { scaleX: 1 } : {}}
-                                    transition={{ duration: 0.5, delay: 0.15 + index * 0.1 }}
+                                    custom={index}
+                                    variants={lineVariants}
                                 />
 
                                 {/* Shimmer Effect */}
@@ -370,22 +337,36 @@ const Services = () => {
                             {/* Floating Number Badge */}
                             <motion.div
                                 className="absolute -top-3 -right-3 w-8 h-8 bg-gradient-to-r from-primary-teal to-blue-500 text-white text-sm font-bold rounded-full flex items-center justify-center shadow-lg"
-                                initial={{ scale: 0, rotate: -180 }}
-                                animate={inView ? { scale: 1, rotate: 0 } : {}}
-                                transition={{ duration: 0.4, delay: 0.25 + index * 0.1, type: 'spring', stiffness: 400 }}
+                                initial="hidden"
+                                whileInView="visible"
+                                viewport={{ once: true }}
+                                variants={{
+                                    hidden: { scale: 0, opacity: 0 },
+                                    visible: {
+                                        scale: 1,
+                                        opacity: 1,
+                                        transition: {
+                                            delay: 0.4,
+                                            type: "spring",
+                                            stiffness: 400,
+                                            damping: 15
+                                        }
+                                    }
+                                }}
                             >
                                 {String(index + 1).padStart(2, '0')}
                             </motion.div>
                         </motion.div>
                     ))}
-                </motion.div>
+                </div>
 
                 {/* Call to Action */}
                 <motion.div
                     className="text-center mt-16"
                     initial={{ opacity: 0, y: 20 }}
-                    animate={inView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.5, delay: 0.8 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
                 >
                     <motion.button
                         className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-primary-teal to-blue-600 text-white font-heading font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group"

@@ -1,11 +1,7 @@
-import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { motion } from 'framer-motion';
 import { HiOutlineCalendar, HiOutlineArrowRight } from 'react-icons/hi';
 
 const Blog = () => {
-    const ref = useRef(null);
-    const inView = useInView(ref, { triggerOnce: true, threshold: 0.1 });
-
     const blogPosts = [
         {
             id: 1,
@@ -52,12 +48,13 @@ const Blog = () => {
                 />
             </div>
 
-            <div className="max-w-[1280px] mx-auto px-6 relative z-10" ref={ref}>
+            <div className="max-w-[1280px] mx-auto px-6 relative z-10">
                 {/* Section Header */}
                 <motion.div
                     className="text-center mb-16"
                     initial={{ opacity: 0, y: 30 }}
-                    animate={inView ? { opacity: 1, y: 0 } : {}}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
                     transition={{ duration: 0.6 }}
                 >
                     <span className="inline-block px-4 py-2 bg-primary-light text-primary-teal font-heading font-semibold text-sm rounded-full mb-4">
@@ -79,7 +76,8 @@ const Blog = () => {
                             key={post.id}
                             className="group bg-white rounded-card overflow-hidden shadow-card"
                             initial={{ opacity: 0, y: 30 }}
-                            animate={inView ? { opacity: 1, y: 0 } : {}}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, amount: 0.3 }}
                             transition={{ duration: 0.5, delay: index * 0.1 }}
                         >
                             {/* Image */}
@@ -139,8 +137,9 @@ const Blog = () => {
                 <motion.div
                     className="text-center mt-12"
                     initial={{ opacity: 0 }}
-                    animate={inView ? { opacity: 1 } : {}}
-                    transition={{ duration: 0.5, delay: 0.4 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
                 >
                     <motion.button
                         className="btn btn-secondary"

@@ -1,18 +1,8 @@
-import { useEffect, useState, useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { HiOutlineLightningBolt, HiOutlineUserGroup, HiOutlineBadgeCheck, HiOutlineTrendingUp } from 'react-icons/hi';
 
 const WhyChooseUs = () => {
-    const ref = useRef(null);
-    const inView = useInView(ref, { triggerOnce: true, threshold: 0.2 });
-    const [hasAnimated, setHasAnimated] = useState(false);
-
-    useEffect(() => {
-        if (inView && !hasAnimated) {
-            setHasAnimated(true);
-        }
-    }, [inView, hasAnimated]);
-
     const features = [
         {
             icon: HiOutlineLightningBolt,
@@ -67,11 +57,11 @@ const WhyChooseUs = () => {
         },
     ];
 
-    const Counter = ({ value, suffix, inView }) => {
+    const Counter = ({ value, suffix, shouldAnimate }) => {
         const [count, setCount] = useState(0);
 
         useEffect(() => {
-            if (inView) {
+            if (shouldAnimate) {
                 const duration = 2000;
                 const steps = 60;
                 const stepValue = value / steps;
@@ -89,7 +79,7 @@ const WhyChooseUs = () => {
 
                 return () => clearInterval(timer);
             }
-        }, [inView, value]);
+        }, [shouldAnimate, value]);
 
         return (
             <span>
@@ -105,12 +95,13 @@ const WhyChooseUs = () => {
                 <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary-light/30 to-transparent" />
             </div>
 
-            <div className="max-w-[1280px] mx-auto px-6 relative z-10" ref={ref}>
+            <div className="max-w-[1280px] mx-auto px-6 relative z-10">
                 {/* Section Header */}
                 <motion.div
                     className="text-center mb-16"
                     initial={{ opacity: 0, y: 30 }}
-                    animate={inView ? { opacity: 1, y: 0 } : {}}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
                     transition={{ duration: 0.6 }}
                 >
                     <span className="inline-block px-4 py-2 bg-primary-light text-primary-teal font-heading font-semibold text-sm rounded-full mb-4">
@@ -129,7 +120,8 @@ const WhyChooseUs = () => {
                 <motion.div
                     className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-20"
                     initial={{ opacity: 0, y: 30 }}
-                    animate={inView ? { opacity: 1, y: 0 } : {}}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
                     transition={{ duration: 0.6, delay: 0.2 }}
                 >
                     {features.map((feature, index) => (
@@ -137,7 +129,8 @@ const WhyChooseUs = () => {
                             key={feature.label}
                             className="relative group"
                             initial={{ opacity: 0, y: 30 }}
-                            animate={inView ? { opacity: 1, y: 0 } : {}}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, amount: 0.3 }}
                             transition={{ duration: 0.5, delay: 0.1 * index }}
                         >
                             <div className="glass-card p-6 text-center h-full">
@@ -151,7 +144,14 @@ const WhyChooseUs = () => {
 
                                 {/* Counter */}
                                 <div className="text-4xl font-heading font-bold text-text-heading mb-2">
-                                    <Counter value={feature.value} suffix={feature.suffix} inView={hasAnimated} />
+                                    <motion.span
+                                        initial={{ opacity: 0, scale: 0.5 }}
+                                        whileInView={{ opacity: 1, scale: 1 }}
+                                        viewport={{ once: true }}
+                                        transition={{ duration: 0.5 }}
+                                    >
+                                        <Counter value={feature.value} suffix={feature.suffix} shouldAnimate={true} />
+                                    </motion.span>
                                 </div>
 
                                 {/* Label */}
@@ -179,7 +179,8 @@ const WhyChooseUs = () => {
                             key={reason.title}
                             className="flex gap-4 p-6 rounded-card bg-bg-soft/50 border border-border-light transition-all duration-300 hover:bg-white hover:shadow-md"
                             initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
-                            animate={inView ? { opacity: 1, x: 0 } : {}}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true, amount: 0.3 }}
                             transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
                         >
                             <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary-teal/10 flex items-center justify-center">

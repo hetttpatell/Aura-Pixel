@@ -1,12 +1,9 @@
 import { useState } from 'react';
-import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { motion } from 'framer-motion';
 import { HiOutlineMail, HiOutlinePhone, HiOutlineUser, HiOutlineChat, HiOutlineCurrencyDollar } from 'react-icons/hi';
 import { FiSend } from 'react-icons/fi';
 
 const LeadCapture = () => {
-    const ref = useRef(null);
-    const inView = useInView(ref, { triggerOnce: true, threshold: 0.1 });
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -66,12 +63,13 @@ const LeadCapture = () => {
                 <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary-teal/5 rounded-full blur-3xl" />
             </div>
 
-            <div className="max-w-[1280px] mx-auto px-6 relative z-10" ref={ref}>
+            <div className="max-w-[1280px] mx-auto px-6 relative z-10">
                 <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                     {/* Left Content */}
                     <motion.div
                         initial={{ opacity: 0, x: -30 }}
-                        animate={inView ? { opacity: 1, x: 0 } : {}}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true, amount: 0.3 }}
                         transition={{ duration: 0.6 }}
                     >
                         <span className="inline-block px-4 py-2 bg-primary-light text-primary-teal font-heading font-semibold text-sm rounded-full mb-4">
@@ -97,7 +95,8 @@ const LeadCapture = () => {
                                     key={benefit}
                                     className="flex items-center gap-3"
                                     initial={{ opacity: 0, x: -20 }}
-                                    animate={inView ? { opacity: 1, x: 0 } : {}}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    viewport={{ once: true, amount: 0.3 }}
                                     transition={{ duration: 0.4, delay: 0.2 + index * 0.1 }}
                                 >
                                     <div className="w-6 h-6 rounded-full bg-primary-teal/10 flex items-center justify-center flex-shrink-0">
@@ -126,7 +125,8 @@ const LeadCapture = () => {
                     {/* Right Form */}
                     <motion.div
                         initial={{ opacity: 0, x: 30 }}
-                        animate={inView ? { opacity: 1, x: 0 } : {}}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true, amount: 0.3 }}
                         transition={{ duration: 0.6, delay: 0.2 }}
                     >
                         <div className="glass-card p-8 md:p-10">

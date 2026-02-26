@@ -1,11 +1,8 @@
 import { useState } from 'react';
-import { motion, AnimatePresence, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { HiOutlineExternalLink } from 'react-icons/hi';
 
 const Portfolio = () => {
-    const ref = useRef(null);
-    const inView = useInView(ref, { triggerOnce: true, threshold: 0.1 });
     const [activeFilter, setActiveFilter] = useState('All');
 
     const filters = ['All', 'Branding', 'Web Design', 'Marketing', 'Social Media'];
@@ -67,12 +64,13 @@ const Portfolio = () => {
 
     return (
         <section id="portfolio" className="py-[100px] bg-bg-soft relative overflow-hidden">
-            <div className="max-w-[1280px] mx-auto px-6" ref={ref}>
+            <div className="max-w-[1280px] mx-auto px-6">
                 {/* Section Header */}
                 <motion.div
                     className="text-center mb-12"
                     initial={{ opacity: 0, y: 30 }}
-                    animate={inView ? { opacity: 1, y: 0 } : {}}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
                     transition={{ duration: 0.6 }}
                 >
                     <span className="inline-block px-4 py-2 bg-primary-light text-primary-teal font-heading font-semibold text-sm rounded-full mb-4">
@@ -91,7 +89,8 @@ const Portfolio = () => {
                 <motion.div
                     className="flex flex-wrap justify-center gap-3 mb-12"
                     initial={{ opacity: 0, y: 20 }}
-                    animate={inView ? { opacity: 1, y: 0 } : {}}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
                 >
                     {filters.map((filter) => (
@@ -99,8 +98,8 @@ const Portfolio = () => {
                             key={filter}
                             onClick={() => setActiveFilter(filter)}
                             className={`px-6 py-2.5 rounded-full font-heading font-medium text-sm transition-all duration-300 ${activeFilter === filter
-                                    ? 'bg-primary-teal text-white shadow-md'
-                                    : 'bg-white text-text-heading border border-border-light hover:border-primary-teal hover:text-primary-teal'
+                                ? 'bg-primary-teal text-white shadow-md'
+                                : 'bg-white text-text-heading border border-border-light hover:border-primary-teal hover:text-primary-teal'
                                 }`}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
@@ -180,8 +179,9 @@ const Portfolio = () => {
                 <motion.div
                     className="text-center mt-12"
                     initial={{ opacity: 0 }}
-                    animate={inView ? { opacity: 1 } : {}}
-                    transition={{ duration: 0.5, delay: 0.6 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
                 >
                     <motion.button
                         className="btn btn-secondary"

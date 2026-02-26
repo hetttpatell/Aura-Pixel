@@ -1,12 +1,9 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { HiOutlineStar } from 'react-icons/hi';
 import { HiStar } from 'react-icons/hi';
 
 const Testimonials = () => {
-    const ref = useRef(null);
-    const inView = useInView(ref, { triggerOnce: true, threshold: 0.1 });
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const testimonials = [
@@ -86,12 +83,13 @@ const Testimonials = () => {
                 <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-primary-light/20 to-transparent" />
             </div>
 
-            <div className="max-w-[1280px] mx-auto px-6 relative z-10" ref={ref}>
+            <div className="max-w-[1280px] mx-auto px-6 relative z-10">
                 {/* Section Header */}
                 <motion.div
                     className="text-center mb-16"
                     initial={{ opacity: 0, y: 30 }}
-                    animate={inView ? { opacity: 1, y: 0 } : {}}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
                     transition={{ duration: 0.6 }}
                 >
                     <span className="inline-block px-4 py-2 bg-primary-light text-primary-teal font-heading font-semibold text-sm rounded-full mb-4">
@@ -185,8 +183,8 @@ const Testimonials = () => {
                                 key={index}
                                 onClick={() => setCurrentIndex(index)}
                                 className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentIndex
-                                        ? 'w-8 bg-primary-teal'
-                                        : 'bg-border-light hover:bg-primary-teal/50'
+                                    ? 'w-8 bg-primary-teal'
+                                    : 'bg-border-light hover:bg-primary-teal/50'
                                     }`}
                             />
                         ))}
