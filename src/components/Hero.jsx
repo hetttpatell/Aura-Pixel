@@ -63,7 +63,7 @@ const Hero = () => {
     };
 
     return (
-        <section id="home" className="relative h-screen flex items-center pt-16 overflow-hidden">
+        <section id="home" className="relative h-screen flex items-center pt-26 lg:pt-32 overflow-hidden">
             <div className="max-w-[1280px] mx-auto px-6 w-full h-full flex items-center">
                 <div className="grid lg:grid-cols-2 gap-8 lg:gap-6 items-center w-full">
                     {/* Left Content */}
@@ -301,4 +301,3 @@ const Hero = () => {
 };
 
 export default Hero;
-
