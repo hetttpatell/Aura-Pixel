@@ -4,6 +4,7 @@ import Hero from './components/Hero';
 import Services from './components/Services';
 import WhyChooseUs from './components/WhyChooseUs';
 import Portfolio from './components/Portfolio';
+import ScrollingCompany from './components/ScrollingCompany';
 import Testimonials from './components/Testimonials';
 import Blog from './components/Blog';
 import LeadCapture from './components/LeadCapture';
@@ -72,6 +73,9 @@ function App() {
 
         {/* Portfolio Section */}
         <Portfolio />
+
+        {/* Scrolling Company Logos Section */}
+        <ScrollingCompany />
 
         {/* Testimonials Section */}
         <Testimonials />
