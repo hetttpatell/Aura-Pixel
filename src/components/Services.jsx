@@ -143,7 +143,7 @@ const Services = () => {
     };
 
     return (
-        <section id="services" className="relative py-[120px] bg-gradient-to-br from-bg-soft via-white to-bg-soft overflow-hidden">
+        <section id="services" className="relative py-12 sm:py-16 md:py-[100px] bg-gradient-to-br from-bg-soft via-white to-bg-soft overflow-hidden">
             {/* Enhanced Background Elements */}
             <div className="absolute inset-0 pointer-events-none">
                 {/* Animated Pixel Grid */}
@@ -165,17 +165,17 @@ const Services = () => {
                 <div className="absolute top-1/2 left-1/4 w-24 h-24 bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-full blur-xl animate-float" style={{ animationDelay: '4s' }} />
             </div>
 
-            <div className="max-w-[1280px] mx-auto px-6 relative z-10">
-                {/* Enhanced Section Header */}
+            <div className="max-w-[1280px] mx-auto px-4 sm:px-6 relative z-10">
+                {/* Enhanced Section Header - Mobile Optimized */}
                 <motion.div
-                    className="text-center mb-20"
+                    className="text-center mb-8 sm:mb-10 md:mb-16"
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true, amount: 0.3 }}
                     variants={headerVariants}
                 >
                     <motion.span
-                        className="inline-block px-6 py-3 bg-gradient-to-r from-primary-light to-blue-50 text-primary-teal font-heading font-semibold text-sm rounded-full mb-6 border border-primary-teal/20 shadow-sm"
+                        className="inline-block px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-primary-light to-blue-50 text-primary-teal font-heading font-semibold text-xs sm:text-sm rounded-full mb-4 sm:mb-6 border border-primary-teal/20 shadow-sm"
                         whileHover={{ scale: 1.05 }}
                         transition={{ type: "spring", stiffness: 400, damping: 17 }}
                     >
@@ -183,7 +183,7 @@ const Services = () => {
                     </motion.span>
 
                     <motion.h2
-                        className="mb-6"
+                        className="mb-4 sm:mb-6 text-2xl sm:text-3xl md:text-4xl"
                     >
                         Comprehensive Digital <span className="text-gradient relative">
                             Solutions
@@ -198,15 +198,15 @@ const Services = () => {
                     </motion.h2>
 
                     <motion.p
-                        className="max-w-2xl mx-auto text-text-body text-lg leading-relaxed"
+                        className="max-w-2xl mx-auto text-text-body text-sm sm:text-base md:text-lg leading-relaxed px-2 sm:px-0"
                     >
                         From strategy to execution, we provide end-to-end digital marketing services
                         that drive real business results and accelerate your growth.
                     </motion.p>
                 </motion.div>
 
-                {/* Enhanced Services Grid */}
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {/* Enhanced Services Grid - 2 columns on mobile for better visibility */}
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
                     {services.map((service, index) => (
                         <motion.div
                             key={service.title}
@@ -216,14 +216,14 @@ const Services = () => {
                             viewport={{ once: true, amount: 0.1 }}
                             variants={cardVariants}
                         >
-                            {/* Main Card */}
-                            <div className="relative bg-white/90 backdrop-blur-xl rounded-2xl p-8 border border-white/40 shadow-lg group-hover:shadow-2xl overflow-hidden transition-shadow duration-500">
+                            {/* Mobile Card - Ultra compact for 2-column grid */}
+                            <div className="relative bg-white/95 backdrop-blur-xl rounded-xl p-3 sm:p-4 md:p-6 border border-white/50 shadow-md group-hover:shadow-xl overflow-hidden transition-all duration-300 h-full flex flex-col">
 
                                 {/* Animated Background Gradient */}
                                 <div
-                                    className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-2xl"
+                                    className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500 rounded-2xl"
                                     style={{
-                                        background: `linear-gradient(135deg, ${service.color}20, ${service.color}10)`
+                                        background: `linear-gradient(135deg, ${service.color}30, ${service.color}15)`
                                     }}
                                 />
 
@@ -240,11 +240,11 @@ const Services = () => {
 
                                 {/* Content */}
                                 <div className="relative z-10">
-                                    {/* Enhanced Icon with Loading Animation */}
+                                    {/* Enhanced Icon with Loading Animation - Mobile Optimized */}
                                     <motion.div
-                                        className="relative w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
+                                        className="relative w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-lg sm:rounded-xl flex items-center justify-center mb-3 sm:mb-4"
                                         style={{
-                                            backgroundColor: `${service.color}08`,
+                                            backgroundColor: `${service.color}15`,
                                         }}
                                         variants={iconVariants}
                                         whileHover={{
@@ -254,12 +254,12 @@ const Services = () => {
                                     >
                                         {/* Icon Glow Effect */}
                                         <div
-                                            className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-300"
+                                            className="absolute inset-0 rounded-lg sm:rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300"
                                             style={{ backgroundColor: service.color }}
                                         />
 
                                         <service.icon
-                                            size={32}
+                                            size={22}
                                             style={{ color: service.color }}
                                             className="relative z-10 transition-transform duration-300 group-hover:scale-110"
                                         />
@@ -278,29 +278,29 @@ const Services = () => {
                                         />
                                     </motion.div>
 
-                                    {/* Enhanced Title */}
+                                    {/* Enhanced Title - Mobile Optimized */}
                                     <motion.h3
-                                        className="text-xl font-heading font-bold text-text-heading mb-4"
+                                        className="text-base sm:text-lg md:text-xl font-heading font-bold text-text-heading mb-2 sm:mb-3"
                                         variants={contentVariants}
                                     >
                                         {service.title}
                                     </motion.h3>
 
-                                    {/* Enhanced Description */}
+                                    {/* Enhanced Description - Mobile Compact */}
                                     <motion.p
-                                        className="text-text-body leading-relaxed mb-6"
+                                        className="text-text-body text-xs sm:text-sm md:text-base leading-relaxed mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3 flex-grow"
                                         variants={contentVariants}
                                     >
                                         {service.description}
                                     </motion.p>
 
-                                    {/* Learn More Button */}
+                                    {/* Learn More Button - Mobile Optimized */}
                                     <motion.div
-                                        className="flex items-center text-sm font-semibold cursor-pointer"
+                                        className="flex items-center text-xs sm:text-sm font-semibold cursor-pointer mt-auto pt-1 sm:pt-2"
                                         style={{ color: service.color }}
                                         variants={contentVariants}
                                     >
-                                        <span className="mr-2 group-hover:mr-3 transition-all duration-300">Learn More</span>
+                                        <span className="mr-1 sm:mr-2 group-hover:mr-2 sm:group-hover:mr-3 transition-all duration-300">Learn More</span>
                                         <motion.svg
                                             width="16"
                                             height="16"
@@ -334,9 +334,9 @@ const Services = () => {
                                 </div>
                             </div>
 
-                            {/* Floating Number Badge */}
+                            {/* Floating Number Badge - Smaller on mobile */}
                             <motion.div
-                                className="absolute -top-3 -right-3 w-8 h-8 bg-gradient-to-r from-primary-teal to-blue-500 text-white text-sm font-bold rounded-full flex items-center justify-center shadow-lg"
+                                className="absolute -top-2 -right-2 w-7 h-7 md:w-8 md:h-8 bg-gradient-to-r from-primary-teal to-blue-500 text-white text-xs md:text-sm font-bold rounded-full flex items-center justify-center shadow-md"
                                 initial="hidden"
                                 whileInView="visible"
                                 viewport={{ once: true }}
@@ -360,16 +360,16 @@ const Services = () => {
                     ))}
                 </div>
 
-                {/* Call to Action */}
+                {/* Call to Action - Mobile Optimized */}
                 <motion.div
-                    className="text-center mt-16"
+                    className="text-center mt-10 sm:mt-12 md:mt-16"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, amount: 0.3 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
                 >
                     <motion.button
-                        className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-primary-teal to-blue-600 text-white font-heading font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group"
+                        className="inline-flex items-center gap-2 sm:gap-3 px-6 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-primary-teal to-blue-600 text-white font-heading font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group text-sm sm:text-base"
                         whileHover={{
                             scale: 1.05,
                             boxShadow: "0 20px 40px rgba(0, 128, 128, 0.3)"
@@ -378,8 +378,8 @@ const Services = () => {
                     >
                         <span>Explore All Services</span>
                         <motion.svg
-                            width="20"
-                            height="20"
+                            width="18"
+                            height="18"
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"

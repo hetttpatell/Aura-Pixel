@@ -103,7 +103,7 @@ const Portfolio = () => {
             <div className="absolute top-20 left-0 w-72 h-72 bg-primary-teal/5 rounded-full blur-3xl" />
             <div className="absolute bottom-20 right-0 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl" />
 
-            <div className="max-w-[1280px] mx-auto px-6 relative z-10">
+            <div className="max-w-[1280px] mx-auto px-4 sm:px-6 relative z-10">
                 {/* Section Header */}
                 <motion.div
                     className="text-center mb-16"
@@ -133,7 +133,7 @@ const Portfolio = () => {
 
                 {/* Filter Buttons */}
                 <motion.div
-                    className="flex flex-wrap justify-center gap-3 mb-12"
+                    className="flex flex-wrap justify-center gap-2 md:gap-3 mb-8 md:mb-12"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, amount: 0.3 }}
@@ -147,7 +147,7 @@ const Portfolio = () => {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.3, delay: 0.1 * index }}
-                            className={`relative px-7 py-3 rounded-full font-heading font-semibold text-sm transition-all duration-300 ${activeFilter === filter
+                            className={`relative px-4 sm:px-7 py-2.5 sm:py-3 rounded-full font-heading font-semibold text-xs sm:text-sm transition-all duration-300 ${activeFilter === filter
                                 ? 'text-white'
                                 : 'bg-white text-text-heading border border-border-light hover:border-primary-teal hover:text-primary-teal'
                                 }`}
@@ -168,7 +168,7 @@ const Portfolio = () => {
 
                 {/* Projects Grid */}
                 <motion.div
-                    className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+                    className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-8"
                     variants={containerVariants}
                     initial="hidden"
                     whileInView="visible"

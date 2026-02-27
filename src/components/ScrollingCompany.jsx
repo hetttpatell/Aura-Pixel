@@ -33,7 +33,7 @@ const ScrollingCompany = () => {
     const logoItems = companies.map((company, index) => (
         <div
             key={company.id}
-            className="flex-shrink-0 w-48 h-24 rounded-2xl border bg-white flex items-center justify-center mx-6 px-6 hover:bg-gray-50 hover:scale-105 hover:shadow-xl transition-all duration-500 cursor-pointer"
+            className="flex-shrink-0 w-32 sm:w-40 md:w-48 h-16 sm:h-20 md:h-24 rounded-2xl border bg-white flex items-center justify-center mx-3 sm:mx-5 md:mx-6 px-4 sm:px-5 hover:bg-gray-50 hover:scale-105 hover:shadow-xl transition-all duration-500 cursor-pointer"
             style={{
                 borderColor: '#0f3b44',
                 opacity: isVisible ? 1 : 0,

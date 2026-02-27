@@ -48,7 +48,7 @@ const Blog = () => {
                 />
             </div>
 
-            <div className="max-w-[1280px] mx-auto px-6 relative z-10">
+            <div className="max-w-[1280px] mx-auto px-4 sm:px-6 relative z-10">
                 {/* Section Header */}
                 <motion.div
                     className="text-center mb-16"
@@ -70,7 +70,7 @@ const Blog = () => {
                 </motion.div>
 
                 {/* Blog Grid */}
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-8">
                     {blogPosts.map((post, index) => (
                         <motion.article
                             key={post.id}

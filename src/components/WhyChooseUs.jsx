@@ -172,6 +172,14 @@ const TrustBadge = ({ icon: Icon, label, color, index }) => {
 const WhyChooseUs = () => {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, margin: "-100px" });
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+        checkMobile();
+        window.addEventListener('resize', checkMobile, { passive: true });
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
@@ -181,19 +189,18 @@ const WhyChooseUs = () => {
     const y = useSpring(mouseY, springConfig);
 
     useEffect(() => {
+        if (isMobile) return;
         const handleMouseMove = (e) => {
             if (!ref.current) return;
             const rect = ref.current.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
-
-            mouseX.set((e.clientX - centerX) / 50);
-            mouseY.set((e.clientY - centerY) / 50);
+            mouseX.set((e.clientX - centerX) / 60);
+            mouseY.set((e.clientY - centerY) / 60);
         };
-
-        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('mousemove', handleMouseMove, { passive: true });
         return () => window.removeEventListener('mousemove', handleMouseMove);
-    }, [mouseX, mouseY]);
+    }, [mouseX, mouseY, isMobile]);
 
     const features = [
         {
@@ -266,14 +273,14 @@ const WhyChooseUs = () => {
     ];
 
     return (
-        <section id="about" className="py-24 bg-bg-soft relative overflow-hidden" ref={ref}>
+        <section id="about" className="py-16 md:py-24 bg-bg-soft relative overflow-hidden" ref={ref}>
             {/* Subtle Background */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-20 right-10 w-72 h-72 bg-primary-teal/5 rounded-full blur-3xl" />
                 <div className="absolute bottom-20 left-10 w-96 h-96 bg-primary-teal/5 rounded-full blur-3xl" />
             </div>
 
-            <div className="max-w-7xl mx-auto px-6 relative z-10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
                 {/* Header */}
                 <motion.div
                     className="text-center mb-16"
@@ -318,7 +325,7 @@ const WhyChooseUs = () => {
 
                 {/* Stats Grid */}
                 <motion.div
-                    className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-20"
+                    className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-12 md:mb-20"
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
@@ -372,7 +379,7 @@ const WhyChooseUs = () => {
                     {/* Right Column - Bigger Visual with More Floating Symbols */}
                     <div className="relative">
                         <motion.div
-                            className="relative w-full max-w-md mx-auto"
+                            className="relative w-full max-w-[260px] sm:max-w-xs md:max-w-sm lg:max-w-md mx-auto"
                             initial={{ opacity: 0, x: 50 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
@@ -393,7 +400,7 @@ const WhyChooseUs = () => {
                                 src="/Priyal.png"
                                 alt="Priyal Character"
                                 className="absolute top-0 left-0 w-full h-auto z-20"
-                                style={{ x, y }}
+                                style={isMobile ? {} : { x, y }}
                                 initial={{ opacity: 0, y: 30 }}
                                 whileInView={{
                                     opacity: 1,

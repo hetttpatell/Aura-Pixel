@@ -885,3 +885,66 @@ img {
     font-size: 0.75rem;
   }
 }
+
+/* ========================================
+   MOBILE ANIMATION PERFORMANCE
+   ======================================== */
+
+/* GPU acceleration for animated elements */
+.animate-float,
+.animate-scroll,
+[class*="motion"] {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Slow down & simplify floating animations on mobile for smoothness */
+@media (max-width: 1024px) {
+  .animate-float {
+    animation-duration: 8s !important;
+    will-change: transform;
+  }
+
+  .animate-scroll {
+    will-change: transform;
+  }
+
+  /* Reduce blur computations on mobile */
+  .backdrop-blur-2xl {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .backdrop-blur-xl {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+}
+
+/* Respect user preferences for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-scroll,
+  .animate-spin,
+  .animate-pulse,
+  .animate-bounce {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Prevent horizontal overflow on all sections on mobile */
+@media (max-width: 768px) {
+  section {
+    overflow-x: hidden;
+  }
+
+  /* Ensure no element causes horizontal scroll */
+  .max-w-\[1280px\],
+  .max-w-7xl {
+    width: 100%;
+    overflow-x: hidden;
+  }
+}

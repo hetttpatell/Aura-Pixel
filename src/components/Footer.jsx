@@ -57,7 +57,7 @@ const Footer = () => {
                 <div className="absolute top-1/4 right-0 w-64 h-64 bg-primary-teal/5 rounded-full blur-3xl" />
             </div>
 
-            <div className="max-w-[1280px] mx-auto px-6 relative z-10">
+            <div className="max-w-[1280px] mx-auto px-4 sm:px-6 relative z-10">
                 {/* Main Footer Content */}
                 <div className="py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
                     {/* Company Info */}

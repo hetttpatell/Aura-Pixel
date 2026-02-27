@@ -63,7 +63,7 @@ const LeadCapture = () => {
                 <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary-teal/5 rounded-full blur-3xl" />
             </div>
 
-            <div className="max-w-[1280px] mx-auto px-6 relative z-10">
+            <div className="max-w-[1280px] mx-auto px-4 sm:px-6 relative z-10">
                 <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                     {/* Left Content */}
                     <motion.div
@@ -129,7 +129,7 @@ const LeadCapture = () => {
                         viewport={{ once: true, amount: 0.3 }}
                         transition={{ duration: 0.6, delay: 0.2 }}
                     >
-                        <div className="glass-card p-8 md:p-10">
+                        <div className="glass-card p-5 sm:p-8 md:p-10">
                             {isSubmitted ? (
                                 <motion.div
                                     className="text-center py-8"

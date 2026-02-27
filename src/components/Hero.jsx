@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 import {
     SiGoogleads,
@@ -12,26 +12,34 @@ import {
 import { HiArrowRight, HiOutlineSearch } from 'react-icons/hi';
 
 const Hero = () => {
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+        checkMobile();
+        window.addEventListener('resize', checkMobile, { passive: true });
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
 
-    const springConfig = { damping: 25, stiffness: 150 };
+    const springConfig = { damping: 30, stiffness: 120 };
     const x = useSpring(mouseX, springConfig);
     const y = useSpring(mouseY, springConfig);
 
     useEffect(() => {
+        if (isMobile) return; // No parallax on mobile
         const handleMouseMove = (e) => {
             const { clientX, clientY } = e;
             const centerX = window.innerWidth / 2;
             const centerY = window.innerHeight / 2;
-
-            mouseX.set((clientX - centerX) / 50);
-            mouseY.set((clientY - centerY) / 50);
+            mouseX.set((clientX - centerX) / 60);
+            mouseY.set((clientY - centerY) / 60);
         };
-
-        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('mousemove', handleMouseMove, { passive: true });
         return () => window.removeEventListener('mousemove', handleMouseMove);
-    }, [mouseX, mouseY]);
+    }, [mouseX, mouseY, isMobile]);
 
     const floatingIcons = [
         { icon: SiGoogleads, name: 'Google Ads', color: '#4285F4', link: 'https://ads.google.com', delay: 0 },
@@ -41,7 +49,7 @@ const Hero = () => {
         { icon: SiFacebook, name: 'Facebook', color: '#1877F2', link: 'https://facebook.com', delay: 0.4 },
         { icon: SiLinkedin, name: 'LinkedIn', color: '#0A66C2', link: 'https://linkedin.com', delay: 0.5 },
         { icon: SiGoogleanalytics, name: 'Analytics', color: '#F9AB00', link: 'https://analytics.google.com', delay: 0.6 },
-        { icon: SiMailchimp, name: 'Email Marketing', color: '#FFE01B', link: '#services', delay: 0.7 },
+        { icon: SiMailchimp, name: 'Email', color: '#FFB300', link: '#services', delay: 0.7 },
     ];
 
     const stats = [
@@ -53,28 +61,49 @@ const Hero = () => {
 
     const handleIconClick = (link) => {
         if (link.startsWith('#')) {
-            const element = document.querySelector(link);
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth' });
-            }
+            document.querySelector(link)?.scrollIntoView({ behavior: 'smooth' });
         } else {
             window.open(link, '_blank', 'noopener,noreferrer');
         }
     };
 
+    const desktopPositions = [
+        { top: '5%', left: '10%' },
+        { top: '0%', right: '15%' },
+        { top: '25%', left: '-5%' },
+        { top: '20%', right: '-5%' },
+        { top: '55%', left: '-8%' },
+        { top: '50%', right: '-8%' },
+        { top: '75%', left: '5%' },
+        { top: '80%', right: '10%' },
+    ];
+
+    // Mobile positions for bubble icons around the smaller image - properly spaced to avoid overlap
+    const mobilePositions = [
+        { top: '10%', left: '-3%' },
+        { top: '10%', right: '-3%' },
+        { top: '30%', left: '-6%' },
+        { top: '30%', right: '-6%' },
+        { top: '50%', left: '-3%' },
+        { top: '50%', right: '-3%' },
+        { top: '70%', left: '-6%' },
+        { top: '70%', right: '-6%' },
+    ];
+
     return (
-        <section id="home" className="relative h-screen flex items-center pt-26 lg:pt-32 overflow-hidden">
-            <div className="max-w-[1280px] mx-auto px-6 w-full h-full flex items-center">
-                <div className="grid lg:grid-cols-2 gap-8 lg:gap-6 items-center w-full">
-                    {/* Left Content */}
+        <section id="home" className="relative min-h-screen flex items-center pt-20 sm:pt-24 lg:pt-28 pb-10 overflow-hidden">
+            <div className="max-w-[1280px] mx-auto px-4 sm:px-6 w-full">
+                <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 items-center w-full">
+
+                    {/* Left Content — shown below image on mobile, left on desktop */}
                     <motion.div
                         className="order-2 lg:order-1"
-                        initial={{ opacity: 0, x: -50 }}
+                        initial={{ opacity: 0, x: -40 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.8, ease: 'easeOut' }}
+                        transition={{ duration: 0.7, ease: 'easeOut' }}
                     >
                         <motion.span
-                            className="inline-block px-3 py-1.5 bg-primary-light text-primary-teal font-heading font-semibold text-sm rounded-full mb-4"
+                            className="inline-block px-3 py-1.5 bg-primary-light text-primary-teal font-heading font-semibold text-xs sm:text-sm rounded-full mb-3 sm:mb-4"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
@@ -83,7 +112,7 @@ const Hero = () => {
                         </motion.span>
 
                         <motion.h1
-                            className="mb-4 text-3xl md:text-4xl lg:text-5xl"
+                            className="mb-3 sm:mb-4 text-3xl sm:text-4xl lg:text-5xl"
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3, duration: 0.6 }}
@@ -93,7 +122,7 @@ const Hero = () => {
                         </motion.h1>
 
                         <motion.p
-                            className="text-base text-text-body mb-6 max-w-xl"
+                            className="text-sm sm:text-base text-text-body mb-5 sm:mb-6 max-w-xl leading-relaxed"
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.4, duration: 0.6 }}
@@ -103,44 +132,38 @@ const Hero = () => {
                         </motion.p>
 
                         <motion.div
-                            className="flex flex-wrap gap-3 mb-6"
+                            className="flex flex-wrap gap-3 mb-5 sm:mb-6"
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.5, duration: 0.6 }}
                         >
                             <motion.a
                                 href="#contact"
-                                className="btn btn-primary"
+                                className="btn btn-primary text-sm sm:text-base px-5 sm:px-7 py-3"
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
-                                }}
+                                onClick={(e) => { e.preventDefault(); document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' }); }}
                             >
                                 Get Started
-                                <HiArrowRight className="text-lg" />
+                                <HiArrowRight className="text-base sm:text-lg" />
                             </motion.a>
                             <motion.a
                                 href="#portfolio"
-                                className="btn btn-secondary"
+                                className="btn btn-secondary text-sm sm:text-base px-5 sm:px-7 py-3"
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    document.querySelector('#portfolio')?.scrollIntoView({ behavior: 'smooth' });
-                                }}
+                                onClick={(e) => { e.preventDefault(); document.querySelector('#portfolio')?.scrollIntoView({ behavior: 'smooth' }); }}
                             >
                                 View Portfolio
                             </motion.a>
                         </motion.div>
 
-                        {/* Stats Section - Grid Layout */}
+                        {/* Stats Grid */}
                         <motion.div
-                            className="grid grid-cols-2 gap-4 mt-6 max-w-sm"
+                            className="grid grid-cols-4 gap-2 sm:gap-4 mt-2"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.7, duration: 0.6 }}
+                            transition={{ delay: 0.6, duration: 0.6 }}
                         >
                             {stats.map((stat, index) => (
                                 <motion.div
@@ -148,23 +171,16 @@ const Hero = () => {
                                     className="relative group"
                                     initial={{ opacity: 0, scale: 0.8 }}
                                     animate={{ opacity: 1, scale: 1 }}
-                                    transition={{ delay: 0.8 + index * 0.1, duration: 0.4 }}
+                                    transition={{ delay: 0.7 + index * 0.08, duration: 0.4 }}
                                     whileHover={{ scale: 1.05, y: -2 }}
                                 >
-                                    <div className="relative bg-gradient-to-br from-white/80 to-white/40 backdrop-blur-md rounded-xl p-3 border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300">
-                                        {/* Gradient accent line */}
-                                        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-teal via-teal-400 to-primary-teal rounded-t-xl opacity-80 group-hover:opacity-100 transition-opacity" />
-
+                                    <div className="relative bg-white/90 backdrop-blur-md rounded-xl p-2 sm:p-3 border border-white/50 shadow-md hover:shadow-lg transition-all duration-300">
+                                        <div className="absolute top-0 left-0 right-0 h-0.5 sm:h-1 bg-gradient-to-r from-primary-teal via-teal-400 to-primary-teal rounded-t-xl opacity-80" />
                                         <div className="text-center">
-                                            <motion.span
-                                                className="block text-2xl font-heading font-bold bg-gradient-to-r from-primary-teal to-teal-600 bg-clip-text text-transparent"
-                                                initial={{ opacity: 0 }}
-                                                animate={{ opacity: 1 }}
-                                                transition={{ delay: 1 + index * 0.1 }}
-                                            >
+                                            <span className="block text-lg sm:text-2xl font-heading font-bold bg-gradient-to-r from-primary-teal to-teal-600 bg-clip-text text-transparent">
                                                 {stat.value}
-                                            </motion.span>
-                                            <span className="block text-xs text-text-body mt-1 font-medium">
+                                            </span>
+                                            <span className="block text-[10px] sm:text-xs text-text-body mt-0.5 font-medium leading-tight">
                                                 {stat.label}
                                             </span>
                                         </div>
@@ -174,19 +190,17 @@ const Hero = () => {
                         </motion.div>
                     </motion.div>
 
-                    {/* Right Content - Illustration with Floating Elements */}
+                    {/* Right Content — Image */}
                     <motion.div
                         className="order-1 lg:order-2 relative"
-                        initial={{ opacity: 0, x: 50 }}
+                        initial={{ opacity: 0, x: 40 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.8, ease: 'easeOut', delay: 0.2 }}
+                        transition={{ duration: 0.7, ease: 'easeOut', delay: 0.2 }}
                     >
                         <div className="relative">
-                            {/* Main Illustration - Splash.png as sticky background */}
-                            <div
-                                className="relative w-full max-w-md mx-auto"
-                            >
-                                {/* Splash.png - Sticky Background (completely static, no motion) */}
+                            {/* Image container — smaller on mobile */}
+                            <div className="relative w-full max-w-[280px] sm:max-w-xs md:max-w-sm lg:max-w-md mx-auto mt-4 lg:mt-0 overflow-visible">
+                                {/* Splash background */}
                                 <motion.img
                                     src="/Splash.png"
                                     alt="Splash Background"
@@ -195,43 +209,73 @@ const Hero = () => {
                                     animate={{ scale: 1, opacity: 1 }}
                                     transition={{ delay: 0.4, duration: 0.6 }}
                                 />
-                                {/* Gibli.png - Overlay on top of Splash (moves with cursor) */}
+
+                                {/* Gibli character — floating, mobile friendly */}
                                 <motion.img
                                     src="/Gibli.png"
                                     alt="Gibli Character"
                                     className="absolute top-0 left-0 w-full h-auto z-20"
-                                    style={{ x, y }}
+                                    style={isMobile ? {} : { x, y }}
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{
                                         opacity: 1,
-                                        y: [0, -15, 0],
+                                        y: [0, isMobile ? -8 : -15, 0],
                                     }}
                                     transition={{
                                         opacity: { delay: 0.6, duration: 0.6 },
                                         y: {
                                             delay: 0.6,
-                                            duration: 3,
+                                            duration: isMobile ? 4 : 3,
                                             repeat: Infinity,
                                             ease: 'easeInOut',
                                         },
                                     }}
                                 />
+
+                                {/* Mobile floating icons around Gibli - bubble style */}
+                                {floatingIcons.map((item, index) => {
+                                    const pos = mobilePositions[index];
+                                    return (
+                                        <motion.div
+                                            key={`mobile-${item.name}`}
+                                            className="absolute lg:hidden flex flex-col items-center cursor-pointer z-40"
+                                            style={pos}
+                                            initial={{ opacity: 0, scale: 0 }}
+                                            animate={{
+                                                opacity: 1,
+                                                scale: 1,
+                                                x: [0, 2, -2, 2, 0],
+                                                y: [0, -4, -2, -5, 0],
+                                                rotate: [0, 2, -1, 2, 0],
+                                            }}
+                                            transition={{
+                                                opacity: { delay: 0.7 + item.delay, duration: 0.4 },
+                                                scale: { delay: 0.7 + item.delay, duration: 0.4 },
+                                                x: { delay: 0.7 + item.delay, duration: 5 + index * 0.3, repeat: Infinity, ease: 'easeInOut' },
+                                                y: { delay: 0.7 + item.delay, duration: 4 + index * 0.2, repeat: Infinity, ease: 'easeInOut' },
+                                                rotate: { delay: 0.7 + item.delay, duration: 6 + index * 0.3, repeat: Infinity, ease: 'easeInOut' },
+                                            }}
+                                            whileHover={{ scale: 1.1 }}
+                                            whileTap={{ scale: 0.95 }}
+                                            onClick={() => handleIconClick(item.link)}
+                                        >
+                                            <div
+                                                className="w-8 h-8 rounded-full bg-white/80 backdrop-blur-xl border-2 flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow duration-300"
+                                                style={{ borderColor: `${item.color}40` }}
+                                            >
+                                                <item.icon size={14} style={{ color: item.color }} />
+                                            </div>
+                                            <span className="mt-0.5 text-[8px] font-medium text-text-heading bg-white/80 backdrop-blur-sm px-1 py-0.5 rounded-md whitespace-nowrap">
+                                                {item.name}
+                                            </span>
+                                        </motion.div>
+                                    );
+                                })}
                             </div>
 
-                            {/* Floating Icon Cards */}
+                            {/* Desktop floating icons around image */}
                             {floatingIcons.map((item, index) => {
-                                const positions = [
-                                    { top: '5%', left: '10%' },
-                                    { top: '0%', right: '15%' },
-                                    { top: '25%', left: '-5%' },
-                                    { top: '20%', right: '-5%' },
-                                    { top: '55%', left: '-8%' },
-                                    { top: '50%', right: '-8%' },
-                                    { top: '75%', left: '5%' },
-                                    { top: '80%', right: '10%' },
-                                ];
-                                const pos = positions[index];
-
+                                const pos = desktopPositions[index];
                                 return (
                                     <motion.div
                                         key={item.name}
@@ -241,45 +285,28 @@ const Hero = () => {
                                         animate={{
                                             opacity: 1,
                                             scale: 1,
-                                            x: [0, 8, -5, 6, 0],
-                                            y: [0, -12, -5, -15, 0],
-                                            rotate: [0, 5, -3, 4, 0],
+                                            x: [0, 6, -4, 5, 0],
+                                            y: [0, -10, -4, -12, 0],
+                                            rotate: [0, 4, -2, 3, 0],
                                         }}
                                         transition={{
                                             opacity: { delay: 0.6 + item.delay, duration: 0.4 },
                                             scale: { delay: 0.6 + item.delay, duration: 0.4 },
-                                            x: {
-                                                delay: 0.6 + item.delay,
-                                                duration: 6 + index * 0.5,
-                                                repeat: Infinity,
-                                                ease: 'easeInOut',
-                                            },
-                                            y: {
-                                                delay: 0.6 + item.delay,
-                                                duration: 5 + index * 0.3,
-                                                repeat: Infinity,
-                                                ease: 'easeInOut',
-                                            },
-                                            rotate: {
-                                                delay: 0.6 + item.delay,
-                                                duration: 7 + index * 0.4,
-                                                repeat: Infinity,
-                                                ease: 'easeInOut',
-                                            },
+                                            x: { delay: 0.6 + item.delay, duration: 7 + index * 0.5, repeat: Infinity, ease: 'easeInOut' },
+                                            y: { delay: 0.6 + item.delay, duration: 6 + index * 0.3, repeat: Infinity, ease: 'easeInOut' },
+                                            rotate: { delay: 0.6 + item.delay, duration: 8 + index * 0.4, repeat: Infinity, ease: 'easeInOut' },
                                         }}
-                                        whileHover={{
-                                            scale: 1.15,
-                                        }}
+                                        whileHover={{ scale: 1.12 }}
                                         whileTap={{ scale: 0.95 }}
                                         onClick={() => handleIconClick(item.link)}
                                     >
                                         <div
-                                            className="w-14 h-14 rounded-full bg-white/80 backdrop-blur-xl border-2 flex items-center justify-center shadow-lg transition-shadow duration-300 hover:shadow-xl"
+                                            className="w-12 h-12 rounded-full bg-white/80 backdrop-blur-xl border-2 flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow duration-300"
                                             style={{ borderColor: `${item.color}40` }}
                                         >
-                                            <item.icon size={24} style={{ color: item.color }} />
+                                            <item.icon size={22} style={{ color: item.color }} />
                                         </div>
-                                        <span className="mt-2 text-xs font-medium text-text-heading bg-white/80 backdrop-blur-sm px-2 py-1 rounded-md whitespace-nowrap">
+                                        <span className="mt-1.5 text-[10px] font-medium text-text-heading bg-white/80 backdrop-blur-sm px-2 py-0.5 rounded-md whitespace-nowrap">
                                             {item.name}
                                         </span>
                                     </motion.div>
@@ -292,9 +319,9 @@ const Hero = () => {
 
             {/* Background Elements */}
             <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
-                <div className="absolute top-20 left-10 w-72 h-72 bg-primary-teal/5 rounded-full blur-3xl" />
-                <div className="absolute bottom-20 right-10 w-96 h-96 bg-primary-teal/5 rounded-full blur-3xl" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-light/30 rounded-full blur-3xl" />
+                <div className="absolute top-20 left-4 sm:left-10 w-48 sm:w-72 h-48 sm:h-72 bg-primary-teal/5 rounded-full blur-3xl" />
+                <div className="absolute bottom-20 right-4 sm:right-10 w-64 sm:w-96 h-64 sm:h-96 bg-primary-teal/5 rounded-full blur-3xl" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[500px] lg:w-[600px] h-[300px] sm:h-[500px] lg:h-[600px] bg-primary-light/30 rounded-full blur-3xl" />
             </div>
         </section>
     );

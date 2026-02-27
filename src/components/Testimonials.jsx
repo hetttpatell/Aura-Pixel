@@ -138,7 +138,7 @@ const Testimonials = () => {
                 />
             </div>
 
-            <div className="max-w-[1280px] mx-auto px-6 relative z-10">
+            <div className="max-w-[1280px] mx-auto px-4 sm:px-6 relative z-10">
                 {/* Section Header */}
                 <motion.div
                     className="text-center mb-12"
@@ -183,7 +183,7 @@ const Testimonials = () => {
                             initial="initial"
                             animate="animate"
                             exit="exit"
-                            className="relative rounded-[24px] p-8 md:p-10 overflow-hidden"
+                            className="relative rounded-[24px] p-5 sm:p-8 md:p-10 overflow-hidden"
                         >
                             {/* Gradient Background */}
                             <div className="absolute inset-0 bg-gradient-to-br from-[#0a1628] via-[#0f2744] to-[#0d4d4d] rounded-[24px]" />
