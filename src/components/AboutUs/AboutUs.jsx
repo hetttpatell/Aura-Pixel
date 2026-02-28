@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { BsArrowRight, BsChevronDown, BsChevronUp } from 'react-icons/bs';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, useInView } from 'framer-motion';
+import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
+import useReducedMotion from '../../hooks/useReducedMotion';
 
 const stats = [
-    { value: '3.4k+', label: 'Active Clients' },
-    { value: '85k', label: 'Projects Done' },
-    { value: '180K', label: 'Work Joined' },
-    { value: '8.5k', label: 'Successful Campaigns' },
+    { value: '3.4k+', label: 'Active Clients', suffix: '+', prefix: '', endValue: 3400 },
+    { value: '85k', label: 'Projects Done', suffix: '', prefix: '', endValue: 85 },
+    { value: '180K', label: 'Work Joined', suffix: 'K', prefix: '', endValue: 180 },
+    { value: '8.5k', label: 'Successful Campaigns', suffix: 'k', prefix: '', endValue: 8500 },
 ];
 
 const team = [
-    { name: 'Kathan', role: 'Founder & CEO', image: '/kathaan-about.png', isMale: true },
-    { name: 'Priyal', role: 'Creative Director', image: '/priyal-About.png', isMale: false },
-    { name: 'Alex', role: 'Marketing Head', image: '/kathaan-about.png', isMale: true },
+    { name: 'Kathan', role: 'Founder & CEO', image: '/kathaan-about.png', splash: '/p-SPLASH.png' },
+    { name: 'Priyal', role: 'Creative Director', image: '/priyal-About.png', splash: '/Splash.png' },
 ];
 
 const faqs = [
@@ -63,16 +63,78 @@ const FadeIn = ({ children, delay = 0, direction = 'up', className = '' }) => {
     );
 };
 
+const Counter = ({ value, suffix, prefix, inView }) => {
+    const [count, setCount] = useState('0');
+    const shouldReduceMotion = useReducedMotion();
+
+    useEffect(() => {
+        if (!inView) return;
+        if (shouldReduceMotion) {
+            setCount(value);
+            return;
+        }
+
+        let start = 0;
+        const end = parseFloat(value.replace(/[kK+]/g, '')) * (value.includes('k') || value.includes('K') ? 1000 : 1);
+        const duration = 2000;
+        const incrementTime = duration / 60;
+
+        const timer = setInterval(() => {
+            start += 1;
+            const progress = start / 60;
+            const current = Math.round(progress * end);
+
+            if (current >= end) {
+                setCount(value);
+                clearInterval(timer);
+            } else {
+                const displayValue = current >= 1000 ? (current / 1000).toFixed(1) + 'k' : current;
+                setCount(displayValue);
+            }
+        }, incrementTime);
+
+        return () => clearInterval(timer);
+    }, [inView, value, shouldReduceMotion]);
+
+    return <span>{prefix}{count}{suffix}</span>;
+};
+
+const StatCard = ({ stat, index, inView }) => {
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
+            className="text-center"
+        >
+            <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-text-heading tracking-tight font-heading">
+                <Counter value={stat.value} suffix={stat.suffix} prefix={stat.prefix} inView={inView} />
+            </span>
+            <span className="block text-[10px] sm:text-xs md:text-sm text-text-body font-medium uppercase tracking-wider mt-1 sm:mt-2">
+                {stat.label}
+            </span>
+        </motion.div>
+    );
+};
+
 const AboutUs = () => {
     const [openFaqIndex, setOpenFaqIndex] = useState(0);
+    const statsRef = useRef(null);
+    const isStatsInView = useInView(statsRef, { once: true, amount: 0.3 });
 
     return (
-        <div className="bg-bg-main min-h-screen font-body overflow-hidden py-12 text-text-body">
-            {/* 1. Page Header */}
-            <section className="pt-32 pb-16 text-center px-4">
+        <div className="bg-bg-main font-body overflow-x-hidden text-text-body">
+            {/* Page Header */}
+            <section className="pt-20 sm:pt-24 md:pt-28 pb-10 sm:pb-12 text-center px-4">
                 <FadeIn>
-                    <h1 className="text-4xl md:text-5xl font-extrabold text-text-heading mb-4 font-heading">About Us</h1>
-                    <div className="flex items-center justify-center gap-2 text-sm font-medium text-text-body/80">
+                    <span className="inline-block px-3 py-1.5 sm:px-4 sm:py-2 bg-primary-light text-primary-teal font-heading font-semibold text-xs sm:text-sm rounded-full mb-3 sm:mb-4">
+                        About Us
+                    </span>
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-text-heading mb-3 sm:mb-4 font-heading">
+                        About <span className="text-gradient">Aura Pixel</span>
+                    </h1>
+                    <div className="flex items-center justify-center gap-2 text-xs sm:text-sm font-medium text-text-body/80">
                         <Link to="/" className="hover:text-primary-teal transition-colors">Home</Link>
                         <span>/</span>
                         <span className="text-primary-teal">About Us</span>
@@ -80,223 +142,209 @@ const AboutUs = () => {
                 </FadeIn>
             </section>
 
-            {/* 2. Dark Stats Section */}
-            <section className="bg-text-heading text-white py-24 px-4 sm:px-8 relative overflow-hidden">
-                {/* Subtle decorative elements */}
-                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary-teal/5 rounded-full blur-[120px] pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-primary-teal/5 rounded-full blur-[100px] pointer-events-none" />
-
-                <div className="max-w-[1280px] mx-auto relative z-10">
-                    <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 mb-20 items-center">
-                        {/* Left Image/Video block */}
+            {/* Dedicated to Your Success */}
+            <section className="py-10 sm:py-14 md:py-20 px-4 sm:px-6 bg-gradient-to-br from-bg-soft via-white to-bg-soft">
+                <div className="max-w-[1280px] mx-auto">
+                    <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+                        {/* Left - Image */}
                         <FadeIn direction="right">
-                            <div className="relative rounded-[2rem] overflow-hidden group">
-                                {/* Embedded placeholder for the video/image in the design */}
-                                <div className="aspect-[4/3] bg-gradient-to-tr from-gray-800 to-gray-900 overflow-hidden relative">
-                                    <img
-                                        src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80"
-                                        alt="Team working"
-                                        className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700"
-                                    />
-                                    <div className="absolute inset-0 bg-text-heading/40 group-hover:bg-transparent transition-colors duration-500" />
-                                </div>
-                                <div className="mt-8">
-                                    <p className="text-text-body/80 text-sm leading-relaxed border-l-2 border-primary-teal pl-4">
-                                        <strong className="text-white">We provide high-quality digital marketing agency Since 1999</strong>, we transform concepts into amazing digital experiences. We help you reach your goals by combining innovative design techniques with advanced tools to generate maximum ROI.
-                                    </p>
-                                </div>
+                            <div className="relative rounded-xl sm:rounded-2xl overflow-hidden aspect-[4/3] md:aspect-[16/10] shadow-lg">
+                                <img
+                                    src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80"
+                                    alt="Team working"
+                                    className="w-full h-full object-cover"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 via-transparent to-transparent" />
                             </div>
                         </FadeIn>
 
-                        {/* Right Text Block */}
-                        <FadeIn direction="left">
-                            <h2 className="text-4xl md:text-5xl lg:text-[54px] font-bold leading-[1.1] mb-8 font-heading">
-                                Dedicated to Your <br className="hidden lg:block" />
-                                Success with <span className="text-primary-teal inline-block relative">
-                                    Innovative
-                                    {/* Small decorative sparkle */}
-                                    <motion.div
-                                        animate={{ rotate: 360 }}
-                                        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                                        className="absolute -right-12 -top-8 text-primary-teal/40 hidden md:block"
-                                    >
-                                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-                                            <path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07L19.07 4.93" />
-                                        </svg>
-                                    </motion.div>
-                                </span> <br className="hidden lg:block" />
-                                Digital Marketing Solutions
-                            </h2>
-                            <p className="text-text-body/80 text-lg md:text-xl leading-relaxed max-w-xl">
-                                When you choose our full-service digital marketing agency, you get a custom strategy that fits your unique goals. We combine data-driven insights with creative excellence to accelerate your path to market leadership.
-                            </p>
+                        {/* Right - Text */}
+                        <FadeIn direction="left" delay={0.2}>
+                            <div className="space-y-4 sm:space-y-6">
+                                <h2 className="text-2xl sm:text-3xl md:text-[42px] font-bold leading-tight font-heading text-text-heading">
+                                    Dedicated to Your <br />
+                                    <span className="text-primary-teal">Success</span> with <br />
+                                    <span className="text-cyan-500">Innovative</span> Digital <br />
+                                    Marketing Solutions
+                                </h2>
+                                <p className="text-sm sm:text-base text-text-body leading-relaxed max-xl">
+                                    When you choose our full-service digital marketing agency, you get a custom strategy that fits your unique goals.
+                                </p>
+                            </div>
                         </FadeIn>
                     </div>
 
-                    {/* Stats Grid */}
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 border-t border-white/10 pt-16">
+                    {/* Stats */}
+                    <div ref={statsRef} className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 md:gap-8 border-t border-border-light pt-8 sm:pt-10 md:pt-12 mt-8 sm:mt-10 md:mt-12">
                         {stats.map((stat, idx) => (
-                            <FadeIn key={idx} delay={idx * 0.1}>
-                                <div className="flex flex-col gap-2">
-                                    <span className="text-4xl md:text-5xl font-extrabold text-white tracking-tight font-heading">{stat.value}</span>
-                                    <span className="text-sm md:text-base text-text-body/80 font-medium uppercase tracking-wider">{stat.label}</span>
-                                </div>
-                            </FadeIn>
+                            <StatCard key={idx} stat={stat} index={idx} inView={isStatsInView} />
                         ))}
                     </div>
                 </div>
             </section>
 
-            {/* 3. Vision & Mission (Large Feature) Section */}
-            <section className="py-24 px-4 sm:px-8 relative">
-                {/* Subtle grid pattern background */}
-                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0wIDBoNDB2NDBIMHoiIGZpbGw9Im5vbmUiLz4KPHBhdGggZD0iTTAgNDBoNDBWMHoiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLW9wYWNpdHk9IjAuMDUiIHN0cm9rZS13aWR0aD0iMSIvPgo8L3N2Zz4=')] opacity-50 pointer-events-none" />
-
-                <div className="max-w-[1280px] mx-auto text-center relative z-10">
+            {/* Vision & Mission */}
+            <section className="py-10 sm:py-14 md:py-20 px-4 sm:px-6 bg-white">
+                <div className="max-w-[1280px] mx-auto text-center">
                     <FadeIn>
-                        <div className="inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-primary-light text-primary-dark text-xs font-bold tracking-widest uppercase mb-6 border border-primary-teal/20">
+                        <div className="inline-flex items-center justify-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-gradient-to-r from-primary-light to-cyan-50 text-primary-teal font-heading font-semibold text-xs sm:text-sm rounded-full mb-4 sm:mb-6 border border-primary-teal/20">
+                            <span className="w-2 h-2 bg-primary-teal rounded-full animate-pulse" />
                             Our Vision & Mission
                         </div>
-                        <h2 className="text-4xl md:text-5xl lg:text-5xl font-bold text-text-heading mb-12 max-w-3xl mx-auto leading-tight font-heading">
-                            Empowering Brands <br className="hidden sm:block" />
-                            to Thrive in the Digital World
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-text-heading mb-6 sm:mb-8 max-w-3xl mx-auto leading-tight font-heading">
+                            Empowering Brands to Thrive in the <span className="text-gradient">Digital World</span>
                         </h2>
                     </FadeIn>
 
-                    <FadeIn delay={0.2}>
-                        <div className="relative rounded-[2rem] overflow-hidden aspect-[21/9] w-full max-w-[1200px] mx-auto shadow-2xl bg-bg-soft">
-                            <img
-                                src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80"
-                                alt="Team collaboration"
-                                className="w-full h-full object-cover"
-                            />
-                        </div>
-                    </FadeIn>
+                    {/* Mission & Vision Cards */}
+                    <div className="grid md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 mt-8 sm:mt-10 md:mt-12">
+                        <FadeIn direction="right" delay={0.2}>
+                            <motion.div
+                                className="bg-bg-soft p-6 sm:p-8 md:p-10 rounded-xl sm:rounded-2xl shadow-card border border-border-light text-left"
+                                whileHover={{ y: -5, boxShadow: '0 20px 40px rgba(0,128,128,0.1)' }}
+                            >
+                                <div className="inline-flex items-center justify-center px-3 py-1 rounded-full bg-primary-light text-primary-dark text-[10px] sm:text-xs font-bold tracking-widest uppercase mb-4 sm:mb-6">
+                                    Our Mission
+                                </div>
+                                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-text-heading mb-3 sm:mb-4 font-heading">
+                                    Empowering brands through innovation
+                                </h3>
+                                <p className="text-sm sm:text-base text-text-body leading-relaxed">
+                                    We empower brands to thrive digitally through cutting-edge strategies that consistently engage, inspire, and foster sustainable growth.
+                                </p>
+                            </motion.div>
+                        </FadeIn>
+
+                        <FadeIn direction="left" delay={0.4}>
+                            <motion.div
+                                className="bg-gradient-to-br from-primary-teal to-primary-dark p-6 sm:p-8 md:p-10 rounded-xl sm:rounded-2xl shadow-card text-white relative overflow-hidden"
+                                whileHover={{ y: -5, boxShadow: '0 20px 40px rgba(0,128,128,0.3)' }}
+                            >
+                                <div className="absolute right-0 top-0 w-20 sm:w-32 h-20 sm:h-32 bg-white/10 rounded-full blur-2xl sm:blur-3xl" />
+                                <div className="relative z-10">
+                                    <div className="inline-flex items-center justify-center px-3 py-1 rounded-full bg-white/20 text-white text-[10px] sm:text-xs font-bold tracking-widest uppercase mb-4 sm:mb-6 backdrop-blur-sm">
+                                        Our Vision
+                                    </div>
+                                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-3 sm:mb-4 font-heading">
+                                        Leading digital transformation
+                                    </h3>
+                                    <p className="text-sm sm:text-base text-white/80 leading-relaxed">
+                                        To be the primary catalyst for digital transformation, setting new standards of creative excellence worldwide.
+                                    </p>
+                                </div>
+                            </motion.div>
+                        </FadeIn>
+                    </div>
                 </div>
             </section>
 
-            {/* 4. Team Section */}
-            <section className="py-24 px-4 sm:px-8 bg-bg-soft/50">
+            {/* Team Section */}
+            <section className="py-10 sm:py-14 md:py-20 px-4 sm:px-6 bg-bg-soft">
                 <div className="max-w-[1280px] mx-auto">
                     <FadeIn>
-                        <div className="inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-primary-light text-primary-dark text-xs font-bold tracking-widest uppercase mb-6 border border-primary-teal/20">
-                            Our Team
+                        <div className="text-center mb-8 sm:mb-10 md:mb-12">
+                            <div className="inline-flex items-center justify-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-gradient-to-r from-primary-light to-cyan-50 text-primary-teal font-heading font-semibold text-xs sm:text-sm rounded-full mb-4 sm:mb-6 border border-primary-teal/20">
+                                <span className="w-2 h-2 bg-primary-teal rounded-full animate-pulse" />
+                                Our Team
+                            </div>
+                            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-text-heading font-heading">
+                                Meet Our <span className="text-gradient">Leadership</span>
+                            </h2>
+                            <p className="max-w-xl mx-auto text-sm sm:text-base text-text-body mt-3 sm:mt-4">
+                                The visionary minds behind Aura Pixel's success
+                            </p>
                         </div>
-                        <h2 className="text-4xl md:text-5xl lg:text-5xl font-bold text-text-heading mb-16 max-w-xl leading-tight font-heading">
-                            Introducing Our <br />
-                            Expert Marketing Team
-                        </h2>
                     </FadeIn>
 
-                    <div className="grid md:grid-cols-3 gap-8 mb-24">
+                    {/* Team Cards */}
+                    <div className="grid sm:grid-cols-2 gap-6 sm:gap-8 md:gap-10 max-w-3xl mx-auto">
                         {team.map((member, idx) => (
                             <FadeIn key={idx} delay={idx * 0.15}>
-                                <div className="group relative bg-bg-main rounded-[2rem] overflow-hidden shadow-card hover:shadow-lg transition-all duration-300 border border-border-light">
-                                    <div className="aspect-[4/5] bg-bg-soft relative overflow-hidden flex items-end justify-center pt-8 px-8">
-                                        {/* Character background element */}
-                                        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/5" />
+                                <motion.div
+                                    className="group relative bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-card border border-border-light hover:shadow-xl"
+                                    whileHover={{ y: -8 }}
+                                >
+                                    {/* Image Container */}
+                                    <div className="relative aspect-[3/4] sm:aspect-[4/5] bg-gradient-to-br from-bg-soft to-white">
                                         <img
-                                            src={member.image}
-                                            alt={member.name}
-                                            className="w-full h-auto object-contain relative z-10 drop-shadow-2xl group-hover:scale-105 transition-transform duration-500 ease-out"
+                                            src={member.splash}
+                                            alt="Splash"
+                                            className="absolute inset-0 w-full h-full object-contain opacity-15"
                                         />
+                                        <div className="absolute inset-0 flex items-end justify-center pb-2 sm:pb-4">
+                                            <img
+                                                src={member.image}
+                                                alt={member.name}
+                                                className="w-full h-full object-contain object-bottom max-h-[85%] sm:max-h-[90%]"
+                                            />
+                                        </div>
+                                        <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
                                     </div>
-                                    <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-bg-main/90 via-bg-main/80 to-transparent backdrop-blur-sm z-20 translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                                        <h3 className="text-xl font-bold text-text-heading font-heading">{member.name}</h3>
-                                        <p className="text-primary-teal font-medium text-sm">{member.role}</p>
+
+                                    {/* Team Info */}
+                                    <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 bg-gradient-to-t from-white via-white/95 to-transparent">
+                                        <h3 className="text-xl sm:text-2xl font-bold text-text-heading font-heading">{member.name}</h3>
+                                        <p className="text-sm sm:text-base text-primary-teal font-semibold">{member.role}</p>
                                     </div>
-                                </div>
+                                </motion.div>
                             </FadeIn>
                         ))}
                     </div>
-
-                    {/* 5. Mission/Vision Split Cards */}
-                    <div className="grid lg:grid-cols-2 gap-8">
-                        <FadeIn delay={0.2} direction="right">
-                            <div className="bg-bg-main p-12 md:p-16 rounded-[2rem] shadow-card border border-border-light h-full flex flex-col justify-center">
-                                <div className="inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-primary-light text-primary-dark text-[10px] font-bold tracking-widest uppercase mb-8 w-fit">
-                                    Our Mission
-                                </div>
-                                <h3 className="text-3xl md:text-4xl font-bold text-text-heading mb-6 leading-tight font-heading">
-                                    Our mission is to empower brands through innovation.
-                                </h3>
-                                <p className="text-text-body text-lg leading-relaxed">
-                                    Empowering brands to thrive digitally through cutting-edge strategies that consistently engage, inspire, and foster sustainable growth using scalable tools.
-                                </p>
-                            </div>
-                        </FadeIn>
-
-                        <FadeIn delay={0.4} direction="left">
-                            <div className="bg-primary-teal p-12 md:p-16 rounded-[2rem] shadow-card h-full flex flex-col justify-center relative overflow-hidden text-white">
-                                {/* Visual decoration inside teal card */}
-                                <div className="absolute right-0 top-0 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
-
-                                <div className="inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-white/20 text-white text-[10px] font-bold tracking-widest uppercase mb-8 w-fit relative z-10 backdrop-blur-sm">
-                                    Our Vision
-                                </div>
-                                <h3 className="text-3xl md:text-4xl font-bold mb-6 leading-tight relative z-10 font-heading">
-                                    Empowering brands to thrive digitally.
-                                </h3>
-                                <p className="text-white/80 text-lg leading-relaxed relative z-10">
-                                    To be the primary catalyst for digital transformation, setting new standards of creative excellence and driving measurable impact for brands worldwide.
-                                </p>
-                            </div>
-                        </FadeIn>
-                    </div>
                 </div>
             </section>
 
-            {/* 6. FAQ Section */}
-            <section className="py-24 px-4 sm:px-8">
+            {/* FAQ Section */}
+            <section className="py-10 sm:py-14 md:py-20 px-4 sm:px-6 bg-white">
                 <div className="max-w-[1280px] mx-auto">
-                    <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+                    <div className="grid md:grid-cols-2 gap-8 sm:gap-10 md:gap-12 items-start">
                         <FadeIn>
-                            <div className="inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-primary-light text-primary-dark text-xs font-bold tracking-widest uppercase mb-6 border border-primary-teal/20">
-                                FAQ
+                            <div>
+                                <div className="inline-flex items-center justify-center px-3 py-1.5 sm:px-4 sm:py-2 bg-primary-light text-primary-teal font-heading font-semibold text-xs sm:text-sm rounded-full mb-4 sm:mb-6 border border-primary-teal/20">
+                                    FAQ
+                                </div>
+                                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-text-heading mb-4 sm:mb-6 font-heading">
+                                    Answers to Your <br />
+                                    Most Common <span className="text-gradient">Questions</span>
+                                </h2>
+                                <p className="text-sm sm:text-base text-text-body max-w-md">
+                                    Find quick answers to common questions about our digital marketing services.
+                                </p>
                             </div>
-                            <h2 className="text-4xl md:text-5xl lg:text-5xl font-bold text-text-heading mb-8 leading-tight font-heading">
-                                Answers to Your <br />
-                                Most Common <br />
-                                Questions
-                            </h2>
-                            <p className="text-text-body text-lg mb-8 max-w-md">
-                                Find quick answers to common questions about our digital marketing services, workflows, and what it's like to partner with us.
-                            </p>
                         </FadeIn>
 
-                        <div className="flex flex-col gap-4">
+                        <div className="flex flex-col gap-3 sm:gap-4">
                             {faqs.map((faq, idx) => {
                                 const isOpen = openFaqIndex === idx;
                                 return (
                                     <FadeIn key={idx} delay={idx * 0.1} direction="left">
-                                        <div
+                                        <motion.div
                                             onClick={() => setOpenFaqIndex(isOpen ? -1 : idx)}
-                                            className={`cursor-pointer border rounded-2xl p-6 transition-all duration-300 ${isOpen ? 'border-primary-teal bg-primary-teal/5 shadow-sm' : 'border-border-light bg-bg-main hover:border-gray-300'}`}
+                                            className={`cursor-pointer border rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 transition-all duration-300 ${isOpen ? 'border-primary-teal bg-primary-teal/5 shadow-sm' : 'border-border-light bg-white hover:border-gray-300'}`}
                                         >
-                                            <div className="flex justify-between items-center gap-4">
-                                                <h4 className={`text-lg font-bold transition-colors font-heading ${isOpen ? 'text-primary-teal' : 'text-text-heading'}`}>
+                                            <div className="flex justify-between items-center gap-3 sm:gap-4">
+                                                <h4 className={`text-sm sm:text-base md:text-lg font-bold transition-colors font-heading ${isOpen ? 'text-primary-teal' : 'text-text-heading'}`}>
                                                     {faq.question}
                                                 </h4>
-                                                <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isOpen ? 'bg-primary-teal text-white' : 'bg-bg-soft text-text-body'}`}>
-                                                    {isOpen ? <BsChevronUp size={18} /> : <BsChevronDown size={18} />}
+                                                <div className={`flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-colors ${isOpen ? 'bg-primary-teal text-white' : 'bg-bg-soft text-text-body'}`}>
+                                                    {isOpen ? <BsChevronUp size={14} sm:size={16} /> : <BsChevronDown size={14} sm:size={16} />}
                                                 </div>
                                             </div>
                                             <AnimatePresence>
                                                 {isOpen && (
                                                     <motion.div
                                                         initial={{ height: 0, opacity: 0, marginTop: 0 }}
-                                                        animate={{ height: 'auto', opacity: 1, marginTop: 16 }}
+                                                        animate={{ height: 'auto', opacity: 1, marginTop: 12 }}
                                                         exit={{ height: 0, opacity: 0, marginTop: 0 }}
                                                         transition={{ duration: 0.3 }}
                                                         className="overflow-hidden"
                                                     >
-                                                        <p className="text-text-body leading-relaxed border-t border-border-light/50 pt-4">
+                                                        <p className="text-xs sm:text-sm text-text-body leading-relaxed border-t border-border-light/50 pt-3 sm:pt-4">
                                                             {faq.answer}
                                                         </p>
                                                     </motion.div>
                                                 )}
                                             </AnimatePresence>
-                                        </div>
+                                        </motion.div>
                                     </FadeIn>
                                 );
                             })}
