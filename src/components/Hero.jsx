@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 import {
     SiGoogleads,
@@ -54,6 +55,7 @@ const mobilePositions = [
 
 const Hero = () => {
     const [isMobile, setIsMobile] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const checkMobile = () => setIsMobile(window.innerWidth < 1024);
@@ -83,8 +85,8 @@ const Hero = () => {
     }, [mouseX, mouseY, isMobile]);
 
     const handleIconClick = (link) => {
-        if (link.startsWith('#')) {
-            document.querySelector(link)?.scrollIntoView({ behavior: 'smooth' });
+        if (link.startsWith('/#') || link.startsWith('#')) {
+            navigate(link.startsWith('#') ? `/${link}` : link);
         } else {
             window.open(link, '_blank', 'noopener,noreferrer');
         }
@@ -138,21 +140,21 @@ const Hero = () => {
                             transition={{ delay: 0.5, duration: 0.6 }}
                         >
                             <motion.a
-                                href="#contact"
+                                href="/#contact"
                                 className="btn btn-primary text-sm sm:text-base px-5 sm:px-7 py-3"
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                onClick={(e) => { e.preventDefault(); document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' }); }}
+                                onClick={(e) => { e.preventDefault(); navigate('/#contact'); }}
                             >
                                 Get Started
                                 <HiArrowRight className="text-base sm:text-lg" />
                             </motion.a>
                             <motion.a
-                                href="#portfolio"
+                                href="/#portfolio"
                                 className="btn btn-secondary text-sm sm:text-base px-5 sm:px-7 py-3"
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                onClick={(e) => { e.preventDefault(); document.querySelector('#portfolio')?.scrollIntoView({ behavior: 'smooth' }); }}
+                                onClick={(e) => { e.preventDefault(); navigate('/#portfolio'); }}
                             >
                                 View Portfolio
                             </motion.a>

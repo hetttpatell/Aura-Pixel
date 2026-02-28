@@ -1,8 +1,10 @@
 import { useEffect, lazy, Suspense } from 'react';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Services from './components/Services';
 import WhyChooseUs from './components/WhyChooseUs';
+import AboutUs from './components/AboutUs/AboutUs';
 
 // Lazy load below-the-fold components
 const Portfolio = lazy(() => import('./components/Portfolio'));
@@ -22,10 +24,43 @@ const SectionLoader = () => (
   </div>
 );
 
+const ScrollToHash = () => {
+  const { pathname, hash } = useLocation();
+
+  useEffect(() => {
+    if (hash) {
+      setTimeout(() => {
+        const element = document.querySelector(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [pathname, hash]);
+
+  return null;
+};
+
+const Home = () => (
+  <main>
+    <Hero />
+    <Services />
+    <WhyChooseUs />
+    <Suspense fallback={<SectionLoader />}>
+      <Portfolio />
+      <ScrollingCompany />
+      <Testimonials />
+      <Blog />
+      <LeadCapture />
+    </Suspense>
+  </main>
+);
+
 function App() {
   useEffect(() => {
     // Meta Pixel Initialization
-    // Replace 'YOUR_PIXEL_ID' with actual Meta Pixel ID
     const initMetaPixel = () => {
       if (typeof window !== 'undefined') {
         // eslint-disable-next-line no-undef
@@ -36,7 +71,6 @@ function App() {
     };
 
     // Google Ads Initialization
-    // Replace 'AW-XXXXX' with actual Google Ads ID
     const initGoogleAds = () => {
       if (typeof window !== 'undefined') {
         // eslint-disable-next-line no-undef
@@ -44,82 +78,25 @@ function App() {
       }
     };
 
-    // Initialize tracking (uncomment and add actual IDs in production)
-    // initMetaPixel();
-    // initGoogleAds();
-
-    // Smooth scroll for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }
-      });
-    });
-
-    return () => {
-      // Cleanup event listeners if needed
-    };
+    // Init tracking here if needed
   }, []);
 
   return (
-    <div className="min-h-screen bg-bg-main font-body text-text-body antialiased">
-      {/* Navigation */}
-      <Navbar />
+    <BrowserRouter>
+      <ScrollToHash />
+      <div className="min-h-screen bg-bg-main font-body text-text-body antialiased">
+        <Navbar />
 
-      {/* Main Content */}
-      <main>
-        {/* Hero Section */}
-        <Hero />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<AboutUs />} />
+        </Routes>
 
-        {/* Services Section */}
-        <Services />
-
-        {/* Why Choose Us Section */}
-        <WhyChooseUs />
-
-        <Suspense fallback={<SectionLoader />}>
-          {/* Portfolio Section */}
-          <Portfolio />
-
-          {/* Scrolling Company Logos Section */}
-          <ScrollingCompany />
-
-          {/* Testimonials Section */}
-          <Testimonials />
-
-          {/* Blog Section */}
-          <Blog />
-
-          {/* Lead Capture Section */}
-          <LeadCapture />
+        <Suspense fallback={<div className="h-64 bg-bg-soft" />}>
+          <Footer />
         </Suspense>
-      </main>
-
-      {/* Footer */}
-      <Suspense fallback={<div className="h-64 bg-bg-soft" />}>
-        <Footer />
-      </Suspense>
-
-      {/* Meta Pixel & Google Ads Scripts (add to index.html in production) */}
-      {/* 
-      <script>
-        !function(f,b,e,v,n,t,s)
-        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-        n.queue=[];t=b.createElement(e);t.async=!0;
-        t.src=v;s=b.getElementsByTagName(e)[0];
-        s.parentNode.insertBefore(t,s)}(window, document,'script',
-        'https://connect.facebook.net/en_US/fbevents.js');
-      </script>
-      */}
-    </div>
+      </div>
+    </BrowserRouter>
   );
 }
 

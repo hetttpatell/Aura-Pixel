@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import {
     HiOutlineMail,
     HiOutlinePhone,
@@ -13,21 +14,21 @@ import {
 } from 'react-icons/si';
 
 const quickLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'Services', href: '#services' },
-    { name: 'About Us', href: '#about' },
-    { name: 'Portfolio', href: '#portfolio' },
-    { name: 'Blog', href: '#blog' },
-    { name: 'Contact', href: '#contact' },
+    { name: 'Home', href: '/#home' },
+    { name: 'Services', href: '/#services' },
+    { name: 'About Us', href: '/about' },
+    { name: 'Portfolio', href: '/#portfolio' },
+    { name: 'Blog', href: '/#blog' },
+    { name: 'Contact', href: '/#contact' },
 ];
 
 const servicesLinks = [
-    { name: 'SEO Optimization', href: '#services' },
-    { name: 'Performance Marketing', href: '#services' },
-    { name: 'Social Media', href: '#services' },
-    { name: 'Branding', href: '#services' },
-    { name: 'Web Development', href: '#services' },
-    { name: 'Conversion Optimization', href: '#services' },
+    { name: 'SEO Optimization', href: '/#services' },
+    { name: 'Performance Marketing', href: '/#services' },
+    { name: 'Social Media', href: '/#services' },
+    { name: 'Branding', href: '/#services' },
+    { name: 'Web Development', href: '/#services' },
+    { name: 'Conversion Optimization', href: '/#services' },
 ];
 
 const socialLinks = [
@@ -41,11 +42,10 @@ const socialLinks = [
 const Footer = () => {
     const currentYear = new Date().getFullYear();
 
+    const navigate = useNavigate();
+
     const handleNavClick = (href) => {
-        const element = document.querySelector(href);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
-        }
+        navigate(href.startsWith('#') ? `/${href}` : href);
     };
 
     return (
@@ -62,7 +62,7 @@ const Footer = () => {
                 <div className="py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
                     {/* Company Info */}
                     <div className="lg:col-span-1">
-                        <a href="#home" className="inline-block mb-6" onClick={(e) => { e.preventDefault(); handleNavClick('#home'); }}>
+                        <a href="/#home" className="inline-block mb-6" onClick={(e) => { e.preventDefault(); handleNavClick('/#home'); }}>
                             <img src="/AURA-PIXEL.PNG" alt="Aura Pixel" className="h-12 brightness-0 invert" />
                         </a>
                         <p className="text-gray-400 mb-6 leading-relaxed">
