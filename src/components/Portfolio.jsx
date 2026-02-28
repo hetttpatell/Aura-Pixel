@@ -149,7 +149,7 @@ const Portfolio = () => {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.3, delay: 0.1 * index }}
-                            className={`relative px-4 sm:px-7 py-2.5 sm:py-3 rounded-full font-heading font-semibold text-xs sm:text-sm transition-all duration-300 ${activeFilter === filter
+                            className={`relative px-4 sm:px-7 py-2.5 sm:py-3 rounded-full font-heading font-semibold text-xs sm:text-sm ${activeFilter === filter
                                 ? 'text-white'
                                 : 'bg-white text-text-heading border border-border-light hover:border-primary-teal hover:text-primary-teal'
                                 }`}
@@ -170,11 +170,12 @@ const Portfolio = () => {
 
                 {/* Projects Grid */}
                 <motion.div
-                    className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-8"
+                    className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8"
                     variants={containerVariants}
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true, amount: 0.1 }}
+                    layout
                 >
                     <AnimatePresence mode="popLayout">
                         {filteredProjects.map((project, index) => (
@@ -185,110 +186,102 @@ const Portfolio = () => {
                                 initial="hidden"
                                 animate="visible"
                                 exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.3 } }}
-                                transition={{ duration: 0.4, delay: index * 0.05 }}
+                                transition={{
+                                    layout: { type: 'spring', stiffness: 200, damping: 25 },
+                                    duration: 0.5,
+                                    delay: index * 0.05
+                                }}
                                 onHoverStart={() => setHoveredProject(project.id)}
                                 onHoverEnd={() => setHoveredProject(null)}
-                                className="group relative bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-lg transition-all duration-500"
+                                className="group relative bg-white rounded-xl md:rounded-3xl overflow-hidden border border-border-light/50"
+                                whileHover={{
+                                    y: -8,
+                                    boxShadow: '0 20px 50px rgba(0,0,0,0.1)'
+                                }}
                             >
                                 {/* Card Glow Effect */}
-                                <div className={`absolute inset-0 bg-gradient-to-br ${project.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-2xl`} />
+                                <motion.div
+                                    className={`absolute inset-0 bg-gradient-to-br ${project.color} rounded-xl md:rounded-3xl`}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: hoveredProject === project.id ? 0.03 : 0 }}
+                                    transition={{ duration: 0.4 }}
+                                />
 
                                 {/* Image Container */}
-                                <div className="relative h-64 overflow-hidden rounded-t-2xl">
+                                <div className="relative h-40 md:h-64 overflow-hidden rounded-t-xl md:rounded-t-3xl">
                                     <motion.img
                                         src={project.image}
                                         alt={project.title}
                                         className="w-full h-full object-cover"
                                         animate={{
-                                            scale: hoveredProject === project.id ? 1.15 : 1
+                                            scale: hoveredProject === project.id ? 1.05 : 1
                                         }}
-                                        transition={{ duration: 0.5, ease: 'easeOut' }}
+                                        transition={{ duration: 0.6, ease: [0.33, 1, 0.68, 1] }}
                                         loading="lazy"
                                     />
 
                                     {/* Gradient Overlay */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                                    {/* Stats Badge - Animated */}
                                     <motion.div
-                                        className="absolute top-4 right-4"
-                                        initial={{ opacity: 0, x: 20 }}
+                                        className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: hoveredProject === project.id ? 1 : 0 }}
+                                        transition={{ duration: 0.4 }}
+                                    />
+
+                                    {/* Hover Actions - Simplified for Mobile */}
+                                    <motion.div
+                                        className="absolute inset-0 flex items-center justify-center gap-2 md:gap-4 z-20 pointer-events-none md:pointer-events-auto"
+                                        initial={{ opacity: 0, y: 10 }}
                                         animate={{
                                             opacity: hoveredProject === project.id ? 1 : 0,
-                                            x: hoveredProject === project.id ? 0 : 20
+                                            y: hoveredProject === project.id ? 0 : 10
                                         }}
-                                        transition={{ duration: 0.3, delay: 0.1 }}
+                                        transition={{ duration: 0.4 }}
                                     >
-                                        <div className={`px-4 py-2 bg-gradient-to-r ${project.color} text-white text-sm font-bold rounded-full shadow-lg`}>
-                                            {project.stats}
-                                            <span className="text-xs font-normal ml-1 opacity-80">{project.statsLabel}</span>
+                                        <div className="hidden md:flex items-center gap-2 px-6 py-2.5 bg-white text-slate-900 font-heading font-bold rounded-full shadow-xl">
+                                            <HiOutlineEye className="text-lg" />
+                                            View Case Study
+                                        </div>
+                                        <div className="md:hidden p-2 bg-white text-slate-900 rounded-full">
+                                            <HiOutlineEye className="text-lg" />
                                         </div>
                                     </motion.div>
 
-                                    {/* Hover Actions */}
-                                    <motion.div
-                                        className="absolute inset-0 flex items-center justify-center gap-4"
-                                        initial={{ opacity: 0 }}
-                                        animate={{
-                                            opacity: hoveredProject === project.id ? 1 : 0
-                                        }}
-                                        transition={{ duration: 0.3 }}
-                                    >
-                                        <motion.button
-                                            className="flex items-center gap-2 px-6 py-3 bg-white text-slate-900 font-heading font-bold rounded-full shadow-xl hover:shadow-2xl transition-shadow"
-                                            whileHover={{ scale: 1.1, backgroundColor: '#f0fdf4' }}
-                                            whileTap={{ scale: 0.95 }}
-                                        >
-                                            <HiOutlineEye className="text-lg" />
-                                            View Project
-                                        </motion.button>
-                                        <motion.button
-                                            className="p-3 bg-white/20 backdrop-blur-sm text-white rounded-full hover:bg-white/30 transition-colors"
-                                            whileHover={{ scale: 1.1, rotate: 45 }}
-                                            whileTap={{ scale: 0.95 }}
-                                        >
-                                            <HiOutlineExternalLink className="text-xl" />
-                                        </motion.button>
-                                    </motion.div>
-
-                                    {/* Category Badge */}
-                                    <div className="absolute top-4 left-4">
-                                        <span className="px-3 py-1.5 bg-white/90 backdrop-blur-sm text-slate-800 text-xs font-semibold rounded-full shadow-sm">
+                                    {/* Category Badge - Responsive sizing */}
+                                    <div className="absolute top-2 md:top-4 left-2 md:left-4 z-10">
+                                        <span className="px-2 md:px-3 py-1 bg-white/90 backdrop-blur-md text-slate-800 text-[10px] md:text-xs font-bold rounded-full shadow-sm border border-white/20">
                                             {project.category}
                                         </span>
                                     </div>
+
+                                    {/* Stats Corner */}
+                                    <div className="absolute bottom-2 md:bottom-4 right-2 md:right-4 z-10">
+                                        <div className={`px-2 md:px-4 py-1 bg-gradient-to-r ${project.color} text-white text-[10px] md:text-sm font-bold rounded-lg md:rounded-xl shadow-lg`}>
+                                            {project.stats}
+                                        </div>
+                                    </div>
                                 </div>
 
-                                {/* Content */}
-                                <div className="p-6 relative">
-                                    {/* Decorative Line */}
-                                    <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-primary-teal/30 to-transparent" />
-
-                                    <h3 className="text-xl font-heading font-bold text-text-heading mt-2 mb-3 group-hover:text-primary-teal transition-colors duration-300">
+                                {/* Content - Responsive Padding/Text */}
+                                <div className="p-3 md:p-6 relative">
+                                    <h3 className="text-sm md:text-xl font-heading font-bold text-text-heading group-hover:text-primary-teal line-clamp-1 mb-1">
                                         {project.title}
                                     </h3>
-                                    <p className="text-text-body text-sm leading-relaxed line-clamp-2">
+                                    <p className="text-text-body text-[11px] md:text-sm leading-tight md:leading-relaxed line-clamp-2 mb-2 md:mb-4">
                                         {project.description}
                                     </p>
 
-                                    {/* Read More Link */}
-                                    <motion.div
-                                        className="flex items-center gap-2 mt-4 text-primary-teal font-semibold text-sm cursor-pointer"
-                                        initial={{ opacity: 0.7 }}
-                                        animate={{ opacity: hoveredProject === project.id ? 1 : 0.7 }}
-                                    >
-                                        <span>Learn More</span>
+                                    {/* Premium Link Indicator - Simplified for Mobile */}
+                                    <div className="flex items-center gap-2 border-t border-border-light pt-2 mt-auto">
+                                        <span className="text-primary-teal font-bold text-[9px] md:text-xs uppercase tracking-wider">Explore</span>
                                         <motion.span
-                                            animate={{ x: hoveredProject === project.id ? 5 : 0 }}
-                                            transition={{ duration: 0.2 }}
+                                            animate={{ x: hoveredProject === project.id ? 3 : 0 }}
+                                            className="text-primary-teal text-xs"
                                         >
                                             →
                                         </motion.span>
-                                    </motion.div>
+                                    </div>
                                 </div>
-
-                                {/* Corner Accent */}
-                                <div className={`absolute -bottom-2 -right-2 w-16 h-16 bg-gradient-to-br ${project.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500 rounded-tl-2xl`} />
                             </motion.div>
                         ))}
                     </AnimatePresence>
@@ -317,7 +310,7 @@ const Portfolio = () => {
                             </motion.span>
                         </span>
                         {/* Shimmer Effect */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full" />
                     </motion.button>
                 </motion.div>
             </div>

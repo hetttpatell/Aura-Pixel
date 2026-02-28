@@ -217,29 +217,35 @@ const Services = () => {
                             variants={cardVariants}
                         >
                             {/* Mobile Card - Ultra compact for 2-column grid */}
-                            <div className="relative bg-white/95 backdrop-blur-xl rounded-xl p-3 sm:p-4 md:p-6 border border-white/50 shadow-md group-hover:shadow-xl overflow-hidden transition-all duration-300 h-full flex flex-col">
+                            <div className="relative bg-white/95 backdrop-blur-xl rounded-xl p-3 sm:p-4 md:p-6 border border-white/50 shadow-md h-full flex flex-col group-hover:shadow-xl transition-shadow duration-300">
 
                                 {/* Animated Background Gradient */}
-                                <div
-                                    className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500 rounded-2xl"
+                                <motion.div
+                                    className="absolute inset-0 rounded-xl"
+                                    initial={{ opacity: 0 }}
+                                    whileHover={{ opacity: 0.1 }}
+                                    transition={{ duration: 0.5 }}
                                     style={{
                                         background: `linear-gradient(135deg, ${service.color}30, ${service.color}15)`
                                     }}
                                 />
 
                                 {/* Glowing Border Effect */}
-                                <div
-                                    className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                                <motion.div
+                                    className="absolute inset-0 rounded-xl"
+                                    initial={{ opacity: 0 }}
+                                    whileHover={{ opacity: 1 }}
+                                    transition={{ duration: 0.5 }}
                                     style={{
                                         background: `linear-gradient(135deg, ${service.color}15, transparent, ${service.color}15)`,
                                         padding: '1px',
                                     }}
                                 >
-                                    <div className="w-full h-full bg-white/90 rounded-2xl" />
-                                </div>
+                                    <div className="w-full h-full bg-white/90 rounded-xl" />
+                                </motion.div>
 
                                 {/* Content */}
-                                <div className="relative z-10">
+                                <div className="relative z-10 flex flex-col h-full">
                                     {/* Enhanced Icon with Loading Animation - Mobile Optimized */}
                                     <motion.div
                                         className="relative w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-lg sm:rounded-xl flex items-center justify-center mb-3 sm:mb-4"
@@ -253,20 +259,25 @@ const Services = () => {
                                         }}
                                     >
                                         {/* Icon Glow Effect */}
-                                        <div
-                                            className="absolute inset-0 rounded-lg sm:rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300"
+                                        <motion.div
+                                            className="absolute inset-0 rounded-lg sm:rounded-xl"
+                                            initial={{ opacity: 0 }}
+                                            whileHover={{ opacity: 0.2 }}
+                                            transition={{ duration: 0.3 }}
                                             style={{ backgroundColor: service.color }}
                                         />
 
                                         <service.icon
                                             size={22}
                                             style={{ color: service.color }}
-                                            className="relative z-10 transition-transform duration-300 group-hover:scale-110"
+                                            className="relative z-10"
                                         />
 
                                         {/* Sparkle Effect */}
                                         <motion.div
-                                            className="absolute -top-1 -right-1 w-2 h-2 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full opacity-0 group-hover:opacity-100"
+                                            className="absolute -top-1 -right-1 w-2 h-2 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full"
+                                            initial={{ opacity: 0 }}
+                                            whileHover={{ opacity: 1 }}
                                             animate={{
                                                 scale: [0, 1, 0],
                                             }}
@@ -288,7 +299,7 @@ const Services = () => {
 
                                     {/* Enhanced Description - Mobile Compact */}
                                     <motion.p
-                                        className="text-text-body text-xs sm:text-sm md:text-base leading-relaxed mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3 flex-grow"
+                                        className="text-text-body text-xs sm:text-sm md:text-base leading-relaxed mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3"
                                         variants={contentVariants}
                                     >
                                         {service.description}
@@ -296,11 +307,11 @@ const Services = () => {
 
                                     {/* Learn More Button - Mobile Optimized */}
                                     <motion.div
-                                        className="flex items-center text-xs sm:text-sm font-semibold cursor-pointer mt-auto pt-1 sm:pt-2"
+                                        className="flex items-center text-xs sm:text-sm font-semibold cursor-pointer mt-auto pt-2"
                                         style={{ color: service.color }}
                                         variants={contentVariants}
                                     >
-                                        <span className="mr-1 sm:mr-2 group-hover:mr-2 sm:group-hover:mr-3 transition-all duration-300">Learn More</span>
+                                        <span className="mr-2">Learn More</span>
                                         <motion.svg
                                             width="16"
                                             height="16"
@@ -310,7 +321,8 @@ const Services = () => {
                                             strokeWidth="2"
                                             strokeLinecap="round"
                                             strokeLinejoin="round"
-                                            className="transition-transform duration-200"
+                                            whileHover={{ x: 5 }}
+                                            transition={{ duration: 0.2 }}
                                         >
                                             <path d="M5 12h14M12 5l7 7-7 7" />
                                         </motion.svg>
@@ -319,24 +331,26 @@ const Services = () => {
 
                                 {/* Loading Line Animation at Top */}
                                 <motion.div
-                                    className="absolute top-0 left-0 right-0 h-1 rounded-t-2xl"
+                                    className="absolute top-0 left-0 right-0 h-1 rounded-t-xl"
                                     style={{ backgroundColor: service.color }}
                                     custom={index}
                                     variants={lineVariants}
                                 />
 
                                 {/* Shimmer Effect */}
-                                <div className="absolute inset-0 -top-px overflow-hidden rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                                    <div
-                                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"
+                                <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
+                                    <motion.div
+                                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full"
                                         style={{ width: '200%' }}
+                                        whileHover={{ x: '100%' }}
+                                        transition={{ duration: 1 }}
                                     />
                                 </div>
                             </div>
 
                             {/* Floating Number Badge - Smaller on mobile */}
                             <motion.div
-                                className="absolute -top-2 -right-2 w-7 h-7 md:w-8 md:h-8 bg-gradient-to-r from-primary-teal to-blue-500 text-white text-xs md:text-sm font-bold rounded-full flex items-center justify-center shadow-md"
+                                className="absolute -top-2 -right-2 w-7 h-7 md:w-8 md:h-8 bg-gradient-to-r from-primary-teal to-blue-500 text-white text-xs md:text-sm font-bold rounded-full flex items-center justify-center shadow-md z-20"
                                 initial="hidden"
                                 whileInView="visible"
                                 viewport={{ once: true }}
@@ -369,7 +383,7 @@ const Services = () => {
                     transition={{ duration: 0.5, delay: 0.2 }}
                 >
                     <motion.button
-                        className="inline-flex items-center gap-2 sm:gap-3 px-6 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-primary-teal to-blue-600 text-white font-heading font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group text-sm sm:text-base"
+                        className="inline-flex items-center gap-2 sm:gap-3 px-6 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-primary-teal to-blue-600 text-white font-heading font-semibold rounded-xl shadow-lg group text-sm sm:text-base"
                         whileHover={{
                             scale: 1.05,
                             boxShadow: "0 20px 40px rgba(0, 128, 128, 0.3)"
@@ -386,7 +400,8 @@ const Services = () => {
                             strokeWidth="2"
                             strokeLinecap="round"
                             strokeLinejoin="round"
-                            className="group-hover:translate-x-1 transition-transform duration-300"
+                            whileHover={{ x: 5 }}
+                            transition={{ duration: 0.3 }}
                         >
                             <path d="M5 12h14M12 5l7 7-7 7" />
                         </motion.svg>

@@ -174,7 +174,11 @@ const Hero = () => {
                                     transition={{ delay: 0.7 + index * 0.08, duration: 0.4 }}
                                     whileHover={{ scale: 1.05, y: -2 }}
                                 >
-                                    <div className="relative bg-white/90 backdrop-blur-md rounded-xl p-2 sm:p-3 border border-white/50 shadow-md hover:shadow-lg transition-all duration-300">
+                                    <motion.div
+                                        className="relative bg-white/90 backdrop-blur-md rounded-xl p-2 sm:p-3 border border-white/50 shadow-md"
+                                        whileHover={{ boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)' }}
+                                        transition={{ duration: 0.3 }}
+                                    >
                                         <div className="absolute top-0 left-0 right-0 h-0.5 sm:h-1 bg-gradient-to-r from-primary-teal via-teal-400 to-primary-teal rounded-t-xl opacity-80" />
                                         <div className="text-center">
                                             <span className="block text-lg sm:text-2xl font-heading font-bold bg-gradient-to-r from-primary-teal to-teal-600 bg-clip-text text-transparent">
@@ -184,7 +188,7 @@ const Hero = () => {
                                                 {stat.label}
                                             </span>
                                         </div>
-                                    </div>
+                                    </motion.div>
                                 </motion.div>
                             ))}
                         </motion.div>
@@ -257,12 +261,14 @@ const Hero = () => {
                                             whileTap={{ scale: 0.95 }}
                                             onClick={() => handleIconClick(item.link)}
                                         >
-                                            <div
-                                                className={`${bubbleSize} rounded-full bg-white/90 backdrop-blur-xl border-2 flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow duration-300`}
+                                            <motion.div
+                                                className={`${bubbleSize} rounded-full bg-white/90 backdrop-blur-xl border-2 flex items-center justify-center shadow-lg`}
+                                                whileHover={{ boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}
+                                                transition={{ duration: 0.3 }}
                                                 style={{ borderColor: item.color }}
                                             >
                                                 <item.icon size={iconSize} style={{ color: item.color }} />
-                                            </div>
+                                            </motion.div>
                                             <span className={`mt-1 font-medium text-text-heading bg-white/90 backdrop-blur-sm px-2 py-0.5 rounded-md whitespace-nowrap ${fontSize}`}>
                                                 {item.name}
                                             </span>

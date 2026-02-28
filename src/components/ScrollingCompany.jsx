@@ -41,7 +41,9 @@ const ScrollingCompany = () => {
                 opacity: isVisible ? 1 : 0,
                 transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(40px) scale(0.8)',
                 transitionDelay: isVisible ? `${index * 80}ms` : '0ms',
-                transition: 'all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                transitionProperty: 'all',
+                transitionDuration: '0.6s',
+                transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
                 boxShadow: isVisible ? '0 4px 15px rgba(0,0,0,0.08)' : 'none'
             }}
         >
@@ -57,46 +59,60 @@ const ScrollingCompany = () => {
     return (
         <section
             ref={sectionRef}
-            className="py-20 overflow-hidden"
+            className="py-24 bg-gradient-to-b from-bg-soft via-white to-bg-soft relative overflow-hidden"
             style={{
-                backgroundColor: '#FBFDFD',
                 opacity: isVisible ? 1 : 0,
                 transform: isVisible ? 'translateY(0)' : 'translateY(30px)',
                 transition: 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
             }}
         >
-            <div className="container mx-auto px-4 mb-16">
-                <div
-                    className="text-center"
-                    style={{
-                        opacity: isVisible ? 1 : 0,
-                        transform: isVisible ? 'translateY(0)' : 'translateY(25px)',
-                        transition: 'all 0.7s cubic-bezier(0.4, 0, 0.2, 1)',
-                        transitionDelay: '100ms'
-                    }}
-                >
-                    <h2
-                        className="text-4xl md:text-5xl font-bold mb-4"
-                        style={{ color: '#0f3b44' }}
-                    >
-                        Our Partners
-                    </h2>
-                    <p
-                        className="text-lg md:text-xl max-w-2xl mx-auto"
-                        style={{ color: '#5a6b7a' }}
-                    >
-                        Trusted by leading brands worldwide
-                    </p>
+            {/* Background Decorative Elements - Matching Portfolio.jsx */}
+            <div className="absolute top-20 left-0 w-72 h-72 bg-[#007C7C]/5 rounded-full blur-3xl" />
+            <div className="absolute bottom-20 right-0 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl" />
+
+            <div className="max-w-[1280px] mx-auto px-4 sm:px-6 relative z-10">
+                {/* Section Header - Exactly matching Portfolio.jsx structure */}
+                <div className="text-center mb-16">
                     <div
-                        className="w-24 h-1 mx-auto mt-6 rounded-full"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-[#007C7C]/10 text-[#007C7C] font-heading font-semibold text-sm rounded-full mb-6 border border-[#007C7C]/20"
                         style={{
-                            background: 'linear-gradient(90deg, #0f3b44, #1a6b7c, #0f3b44)',
                             opacity: isVisible ? 1 : 0,
-                            transform: isVisible ? 'scaleX(1)' : 'scaleX(0)',
-                            transition: 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
-                            transitionDelay: '400ms'
+                            transform: isVisible ? 'scale(1)' : 'scale(0.8)',
+                            transitionProperty: 'all',
+                            transitionDuration: '0.4s',
+                            transitionDelay: '100ms'
                         }}
-                    />
+                    >
+                        <span className="w-2 h-2 bg-[#007C7C] rounded-full animate-pulse" />
+                        Our Partners
+                    </div>
+
+                    <h2
+                        className="mb-6 text-4xl md:text-5xl font-heading font-bold"
+                        style={{
+                            opacity: isVisible ? 1 : 0,
+                            transform: isVisible ? 'translateY(0)' : 'translateY(20px)',
+                            transitionProperty: 'all',
+                            transitionDuration: '0.6s',
+                            transitionDelay: '200ms'
+                        }}
+                    >
+                        Trusted by <span className="text-gradient bg-gradient-to-r from-[#007C7C] via-cyan-500 to-[#007C7C] bg-clip-text text-transparent">Leading</span> Brands
+                    </h2>
+
+                    <p
+                        className="max-w-2xl mx-auto text-text-body text-lg leading-relaxed"
+                        style={{
+                            opacity: isVisible ? 1 : 0,
+                            transform: isVisible ? 'translateY(0)' : 'translateY(20px)',
+                            transitionProperty: 'all',
+                            transitionDuration: '0.8s',
+                            transitionDelay: '300ms'
+                        }}
+                    >
+                        We collaborate with visionary companies to deliver exceptional digital
+                        experiences that drive growth and innovation worldwide.
+                    </p>
                 </div>
             </div>
 
@@ -153,9 +169,6 @@ const ScrollingCompany = () => {
                 @keyframes float {
                     0%, 100% { transform: translateY(0); }
                     50% { transform: translateY(-5px); }
-                }
-                section:hover .animate-scroll {
-                    animation-play-state: paused;
                 }
             `}</style>
         </section>

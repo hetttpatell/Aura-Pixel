@@ -140,7 +140,7 @@ const Navbar = () => {
 
             <motion.nav
                 ref={navRef}
-                className={`fixed top-0 left-0 right-0 z-[200] transition-all duration-500 py-2 border-b lg:py-2 ${isScrolled
+                className={`fixed top-0 left-0 right-0 z-[200] py-2 border-b lg:py-2 ${isScrolled
                     ? 'bg-white border-primary-teal/10 shadow-[0_4px_24px_rgba(0,128,128,0.12)]'
                     : 'bg-white lg:bg-transparent border-transparent lg:border-none lg:shadow-none'}`}
                 initial="hidden"
@@ -164,11 +164,20 @@ const Navbar = () => {
                         whileTap={{ scale: 0.98 }}
                         onClick={(e) => { e.preventDefault(); handleNavClick('#home'); }}
                     >
-                        <motion.div className="absolute -inset-4 bg-primary-teal/10 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                        <img
+                        <motion.div
+                            className="absolute -inset-4 bg-primary-teal/10 rounded-2xl blur-xl"
+                            initial={{ opacity: 0 }}
+                            whileHover={{ opacity: 1 }}
+                            transition={{ duration: 0.4 }}
+                        />
+                        <motion.img
                             src="/AURA-PIXEL.PNG"
                             alt="Aura Pixel"
-                            className={`relative transition-all duration-500 ${isScrolled ? 'h-[50px] sm:h-[60px] lg:h-[70px]' : 'h-[55px] sm:h-[65px] lg:h-[80px]'} w-auto`}
+                            animate={{
+                                height: isScrolled ? (window.innerWidth >= 1024 ? 70 : 60) : (window.innerWidth >= 1024 ? 80 : 65)
+                            }}
+                            className="relative w-auto h-auto"
+                            transition={{ duration: 0.4 }}
                         />
                     </motion.a>
 
@@ -183,7 +192,7 @@ const Navbar = () => {
                                     onMouseLeave={closeServices}
                                 >
                                     <motion.button
-                                        className="relative font-heading text-[0.95rem] font-medium text-text-heading py-2 px-4 hover:text-primary-teal group flex items-center gap-1 cursor-pointer transition-colors duration-200"
+                                        className="relative font-heading text-[0.95rem] font-medium text-text-heading py-2 px-4 hover:text-primary-teal group flex items-center gap-1 cursor-pointer"
                                         variants={linkVariants}
                                         custom={index}
                                         onMouseEnter={() => setIsHovered(link.name)}
@@ -250,16 +259,16 @@ const Navbar = () => {
                                                                 key={service.name}
                                                                 href={service.href}
                                                                 onClick={(e) => { e.preventDefault(); handleNavClick(service.href); }}
-                                                                className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-primary-light/60 group/item transition-colors duration-150 cursor-pointer"
+                                                                className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-primary-light/60 group/item cursor-pointer"
                                                                 variants={dropdownItemVariants}
                                                                 whileHover={{ x: 3 }}
                                                                 transition={{ duration: 0.18 }}
                                                             >
-                                                                <div className={`w-9 h-9 rounded-xl ${service.bg} flex items-center justify-center flex-shrink-0 transition-all duration-200 group-hover/item:scale-110 group-hover/item:shadow-sm`}>
+                                                                <div className={`w-9 h-9 rounded-xl ${service.bg} flex items-center justify-center flex-shrink-0 group-hover/item:scale-110 group-hover/item:shadow-sm transition-transform duration-200`}>
                                                                     <Icon size={18} className={service.iconColor} />
                                                                 </div>
                                                                 <div className="flex-1 min-w-0">
-                                                                    <p className="text-[13px] font-semibold text-text-heading leading-tight group-hover/item:text-primary-teal transition-colors duration-150">{service.name}</p>
+                                                                    <p className="text-[13px] font-semibold text-text-heading leading-tight group-hover/item:text-primary-teal">{service.name}</p>
                                                                     <p className="text-[11px] text-text-body mt-0.5 leading-tight truncate">{service.desc}</p>
                                                                 </div>
                                                                 <BsArrowRight size={13} className="text-primary-teal flex-shrink-0 opacity-0 group-hover/item:opacity-100 transition-opacity" />
@@ -322,7 +331,7 @@ const Navbar = () => {
                     >
                         <motion.div className="absolute -inset-1 bg-gradient-to-r from-primary-teal to-primary-dark rounded-xl blur-md opacity-0 group-hover:opacity-60 transition-opacity duration-500" />
                         <div className="relative flex items-center gap-2 bg-gradient-to-r from-primary-teal to-primary-dark text-white font-heading font-semibold text-sm py-3 px-6 rounded-xl overflow-hidden">
-                            <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                            <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full" />
                             <BsLightningChargeFill className="text-yellow-300" />
                             <span>Get Free Strategy Call</span>
                             <motion.div

@@ -56,13 +56,21 @@ const StatCard = ({ icon: StatIcon, value, suffix, label, index, inView }) => {
             transition={{ duration: 0.6, delay: index * 0.1 }}
             className="relative"
         >
-            <div className="bg-gradient-to-br from-white to-bg-soft rounded-2xl p-6 shadow-card border border-border-light hover:shadow-lg hover:shadow-md transition-all duration-500 group hover:-translate-y-1">
+            <motion.div
+                className="bg-gradient-to-br from-white to-bg-soft rounded-2xl p-6 shadow-card border border-border-light group"
+                whileHover={{ y: -4, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)" }}
+                transition={{ duration: 0.4 }}
+            >
                 <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-teal-500/10 to-transparent rounded-full blur-2xl" />
 
                 <div className="relative z-10">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center mb-4 shadow-lg shadow-teal-500/25 group-hover:scale-110 transition-transform duration-300">
+                    <motion.div
+                        className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center mb-4 shadow-lg shadow-teal-500/25"
+                        whileHover={{ scale: 1.1 }}
+                        transition={{ duration: 0.3 }}
+                    >
                         <StatIcon size={26} className="text-white" />
-                    </div>
+                    </motion.div>
 
                     <div className="flex items-baseline gap-1 mb-2">
                         <span className="text-4xl font-bold text-text-heading">
@@ -74,7 +82,7 @@ const StatCard = ({ icon: StatIcon, value, suffix, label, index, inView }) => {
                         {label}
                     </p>
                 </div>
-            </div>
+            </motion.div>
         </motion.div>
     );
 };
@@ -89,13 +97,17 @@ const ReasonCard = ({ icon: Icon, title, description, index }) => {
             className="flex gap-5 group"
         >
             <div className="flex-shrink-0">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-text-heading to-slate-900 flex items-center justify-center shadow-lg shadow-slate-800/20 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:from-primary-teal group-hover:to-primary-teal transition-all duration-300">
+                <motion.div
+                    className="w-14 h-14 rounded-2xl bg-gradient-to-br from-text-heading to-slate-900 flex items-center justify-center shadow-lg shadow-slate-800/20"
+                    whileHover={{ scale: 1.1, background: "linear-gradient(to bottom right, #008080, #008080)" }}
+                    transition={{ duration: 0.3 }}
+                >
                     <Icon size={24} className="text-white" />
-                </div>
+                </motion.div>
             </div>
 
             <div className="flex-1 pt-1">
-                <h4 className="font-heading font-bold text-lg text-text-heading mb-2 group-hover:text-primary-teal transition-colors duration-300">
+                <h4 className="font-heading font-bold text-lg text-text-heading mb-2 group-hover:text-primary-teal transition-colors">
                     {title}
                 </h4>
                 <p className="text-text-body leading-relaxed text-sm">
@@ -152,7 +164,7 @@ const FloatingSymbol = ({ icon: Icon, label, color, delay, position }) => {
 const TrustBadge = ({ icon: Icon, label, color, index }) => {
     return (
         <motion.div
-            className="flex items-center gap-3 px-5 py-3 bg-white rounded-xl shadow-md border border-slate-100 hover:shadow-lg hover:border-teal-200 transition-all duration-300 cursor-default"
+            className="flex items-center gap-3 px-5 py-3 bg-white rounded-xl shadow-md border border-slate-100 cursor-default"
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
