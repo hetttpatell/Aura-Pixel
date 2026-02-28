@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { motion, useInView, useMotionValue, useSpring } from 'framer-motion';
+import useReducedMotion from '../hooks/useReducedMotion';
 import {
     HiOutlineLightningBolt,
     HiOutlineUserGroup,
@@ -170,6 +171,7 @@ const TrustBadge = ({ icon: Icon, label, color, index }) => {
 };
 
 const WhyChooseUs = () => {
+    const shouldReduceMotion = useReducedMotion();
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, margin: "-100px" });
     const [isMobile, setIsMobile] = useState(false);

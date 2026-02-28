@@ -91,7 +91,7 @@ const Hero = () => {
     ];
 
     return (
-        <section id="home" className="relative min-h-screen flex items-center pt-20 sm:pt-24 lg:pt-28 pb-10 overflow-hidden">
+        <section id="home" className="relative min-h-screen flex items-center pt-20 sm:pt-24 lg:pt-28 pb-10 overflow-visible">
             <div className="max-w-[1280px] mx-auto px-4 sm:px-6 w-full">
                 <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 items-center w-full">
 
@@ -232,86 +232,44 @@ const Hero = () => {
                                     }}
                                 />
 
-                                {/* Mobile floating icons around Gibli - bubble style */}
+                                {/* Floating icons around image - visible immediately on all screens */}
                                 {floatingIcons.map((item, index) => {
-                                    const pos = mobilePositions[index];
+                                    const pos = isMobile ? mobilePositions[index] : desktopPositions[index];
+                                    const bubbleSize = isMobile ? 'w-10 h-10' : 'w-12 h-12';
+                                    const iconSize = isMobile ? 18 : 22;
+                                    const fontSize = isMobile ? 'text-[9px]' : 'text-[10px]';
                                     return (
                                         <motion.div
-                                            key={`mobile-${item.name}`}
-                                            className="absolute lg:hidden flex flex-col items-center cursor-pointer z-40"
+                                            key={item.name}
+                                            className="absolute flex flex-col items-center cursor-pointer z-40"
                                             style={pos}
-                                            initial={{ opacity: 0, scale: 0 }}
                                             animate={{
-                                                opacity: 1,
-                                                scale: 1,
-                                                x: [0, 2, -2, 2, 0],
-                                                y: [0, -4, -2, -5, 0],
-                                                rotate: [0, 2, -1, 2, 0],
+                                                x: [0, 6, -4, 5, 0],
+                                                y: [0, -10, -4, -12, 0],
+                                                rotate: [0, 4, -2, 3, 0],
                                             }}
                                             transition={{
-                                                opacity: { delay: 0.7 + item.delay, duration: 0.4 },
-                                                scale: { delay: 0.7 + item.delay, duration: 0.4 },
-                                                x: { delay: 0.7 + item.delay, duration: 5 + index * 0.3, repeat: Infinity, ease: 'easeInOut' },
-                                                y: { delay: 0.7 + item.delay, duration: 4 + index * 0.2, repeat: Infinity, ease: 'easeInOut' },
-                                                rotate: { delay: 0.7 + item.delay, duration: 6 + index * 0.3, repeat: Infinity, ease: 'easeInOut' },
+                                                x: { delay: 0.6 + item.delay, duration: 7 + index * 0.5, repeat: Infinity, ease: 'easeInOut' },
+                                                y: { delay: 0.6 + item.delay, duration: 6 + index * 0.3, repeat: Infinity, ease: 'easeInOut' },
+                                                rotate: { delay: 0.6 + item.delay, duration: 8 + index * 0.4, repeat: Infinity, ease: 'easeInOut' },
                                             }}
-                                            whileHover={{ scale: 1.1 }}
+                                            whileHover={{ scale: 1.12 }}
                                             whileTap={{ scale: 0.95 }}
                                             onClick={() => handleIconClick(item.link)}
                                         >
                                             <div
-                                                className="w-8 h-8 rounded-full bg-white/80 backdrop-blur-xl border-2 flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow duration-300"
-                                                style={{ borderColor: `${item.color}40` }}
+                                                className={`${bubbleSize} rounded-full bg-white/90 backdrop-blur-xl border-2 flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow duration-300`}
+                                                style={{ borderColor: item.color }}
                                             >
-                                                <item.icon size={14} style={{ color: item.color }} />
+                                                <item.icon size={iconSize} style={{ color: item.color }} />
                                             </div>
-                                            <span className="mt-0.5 text-[8px] font-medium text-text-heading bg-white/80 backdrop-blur-sm px-1 py-0.5 rounded-md whitespace-nowrap">
+                                            <span className={`mt-1 font-medium text-text-heading bg-white/90 backdrop-blur-sm px-2 py-0.5 rounded-md whitespace-nowrap ${fontSize}`}>
                                                 {item.name}
                                             </span>
                                         </motion.div>
                                     );
                                 })}
                             </div>
-
-                            {/* Desktop floating icons around image */}
-                            {floatingIcons.map((item, index) => {
-                                const pos = desktopPositions[index];
-                                return (
-                                    <motion.div
-                                        key={item.name}
-                                        className="absolute hidden lg:flex flex-col items-center cursor-pointer z-30"
-                                        style={pos}
-                                        initial={{ opacity: 0, scale: 0 }}
-                                        animate={{
-                                            opacity: 1,
-                                            scale: 1,
-                                            x: [0, 6, -4, 5, 0],
-                                            y: [0, -10, -4, -12, 0],
-                                            rotate: [0, 4, -2, 3, 0],
-                                        }}
-                                        transition={{
-                                            opacity: { delay: 0.6 + item.delay, duration: 0.4 },
-                                            scale: { delay: 0.6 + item.delay, duration: 0.4 },
-                                            x: { delay: 0.6 + item.delay, duration: 7 + index * 0.5, repeat: Infinity, ease: 'easeInOut' },
-                                            y: { delay: 0.6 + item.delay, duration: 6 + index * 0.3, repeat: Infinity, ease: 'easeInOut' },
-                                            rotate: { delay: 0.6 + item.delay, duration: 8 + index * 0.4, repeat: Infinity, ease: 'easeInOut' },
-                                        }}
-                                        whileHover={{ scale: 1.12 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        onClick={() => handleIconClick(item.link)}
-                                    >
-                                        <div
-                                            className="w-12 h-12 rounded-full bg-white/80 backdrop-blur-xl border-2 flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow duration-300"
-                                            style={{ borderColor: `${item.color}40` }}
-                                        >
-                                            <item.icon size={22} style={{ color: item.color }} />
-                                        </div>
-                                        <span className="mt-1.5 text-[10px] font-medium text-text-heading bg-white/80 backdrop-blur-sm px-2 py-0.5 rounded-md whitespace-nowrap">
-                                            {item.name}
-                                        </span>
-                                    </motion.div>
-                                );
-                            })}
                         </div>
                     </motion.div>
                 </div>

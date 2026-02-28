@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import useReducedMotion from '../hooks/useReducedMotion';
 import { HiOutlineMail, HiOutlinePhone, HiOutlineUser, HiOutlineChat, HiOutlineCurrencyDollar } from 'react-icons/hi';
 import { FiSend } from 'react-icons/fi';
 
@@ -13,6 +14,7 @@ const LeadCapture = () => {
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const shouldReduceMotion = useReducedMotion();
 
     const budgetOptions = [
         { value: '', label: 'Select Budget Range' },

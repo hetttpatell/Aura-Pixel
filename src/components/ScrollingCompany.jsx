@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
+import useReducedMotion from '../hooks/useReducedMotion';
 
 const ScrollingCompany = () => {
     const [isVisible, setIsVisible] = useState(false);
     const [isScrolling, setIsScrolling] = useState(false);
     const sectionRef = useRef(null);
+    const shouldReduceMotion = useReducedMotion();
 
     useEffect(() => {
         const observer = new IntersectionObserver(

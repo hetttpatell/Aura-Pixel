@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiStar } from 'react-icons/hi';
+import useReducedMotion from '../hooks/useReducedMotion';
 
 const Testimonials = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
+    const shouldReduceMotion = useReducedMotion();
 
     const testimonials = [
         {
@@ -73,20 +75,20 @@ const Testimonials = () => {
         setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
     };
 
-    // Elegant fade and slide animation
+    // Elegant fade and slide animation - Optimized for performance
     const cardVariants = {
-        initial: { opacity: 0, y: 30, filter: "blur(10px)" },
+        initial: { opacity: 0, y: shouldReduceMotion ? 10 : 30, filter: shouldReduceMotion ? "none" : "blur(10px)" },
         animate: {
             opacity: 1,
             y: 0,
             filter: "blur(0px)",
-            transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
+            transition: { duration: shouldReduceMotion ? 0.1 : 0.6, ease: [0.22, 1, 0.36, 1] }
         },
         exit: {
             opacity: 0,
             y: -20,
-            filter: "blur(5px)",
-            transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] }
+            filter: shouldReduceMotion ? "none" : "blur(5px)",
+            transition: { duration: shouldReduceMotion ? 0.1 : 0.4, ease: [0.22, 1, 0.36, 1] }
         }
     };
 

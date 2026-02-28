@@ -1,6 +1,15 @@
 /* Google Fonts Import */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
 
+
+/* Smooth animations with GPU acceleration */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+  -webkit-transform: translateZ(0);
+  -webkit-will-change: transform, opacity;
+}
+
 /* ========================================
    AURA-PIXEL DESIGN SYSTEM
    Premium Modern Animated Digital Marketing Website
@@ -80,6 +89,13 @@ body {
   color: var(--text-body);
   background-color: var(--bg-main);
   overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Prevent horizontal scroll on mobile */
+html {
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
 }
 
 h1,
@@ -640,7 +656,7 @@ img {
     width: 300px;
     height: 340px;
   }
-  
+
   .hexagon-grid {
     gap: 30px;
   }
@@ -651,7 +667,7 @@ img {
     width: 260px;
     height: 300px;
   }
-  
+
   .hexagon-grid {
     gap: 20px;
   }
@@ -662,11 +678,11 @@ img {
     width: 240px;
     height: 280px;
   }
-  
+
   .hexagon-wrapper:nth-child(even) {
     margin-top: 40px;
   }
-  
+
   .hexagon-grid {
     gap: 15px;
   }
@@ -676,23 +692,23 @@ img {
   .hexagon-container {
     padding: 20px 0;
   }
-  
+
   .hexagon-grid {
     flex-direction: column;
     align-items: center;
     gap: 30px;
   }
-  
+
   .hexagon-wrapper {
     width: 280px;
     height: 320px;
     margin: 0;
   }
-  
+
   .hexagon-wrapper:nth-child(even) {
     margin-top: 0;
   }
-  
+
   .hexagon-shape {
     width: 100%;
     height: 100%;
@@ -925,6 +941,7 @@ img {
 
 /* Respect user preferences for reduced motion */
 @media (prefers-reduced-motion: reduce) {
+
   .animate-float,
   .animate-scroll,
   .animate-spin,

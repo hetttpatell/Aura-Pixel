@@ -41,16 +41,16 @@ const mobileItemVariants = {
 };
 
 const dropdownVariants = {
-    hidden: { opacity: 0, y: -6, scale: 0.98, transition: { duration: 0.16, ease: 'easeIn' } },
+    hidden: { y: -6, transition: { duration: 0.16, ease: 'easeIn' } },
     visible: {
-        opacity: 1, y: 0, scale: 1,
+        y: 0,
         transition: { type: 'spring', stiffness: 280, damping: 26, staggerChildren: 0.035, delayChildren: 0.05 },
     },
 };
 
 const dropdownItemVariants = {
-    hidden: { opacity: 0, x: -8 },
-    visible: { opacity: 1, x: 0, transition: { type: 'spring', stiffness: 320, damping: 28 } },
+    hidden: { x: -8 },
+    visible: { x: 0, transition: { type: 'spring', stiffness: 320, damping: 28 } },
 };
 
 const Navbar = () => {
@@ -87,6 +87,10 @@ const Navbar = () => {
                 }
             }
         };
+
+        // Initial check on mount
+        handleScroll();
+
         window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
@@ -136,7 +140,9 @@ const Navbar = () => {
 
             <motion.nav
                 ref={navRef}
-                className="fixed top-0 left-0 right-0 z-[200] transition-all duration-500 py-2 bg-white border-b border-primary-teal/10 shadow-md lg:py-2 lg:bg-transparent lg:border-none lg:shadow-none"
+                className={`fixed top-0 left-0 right-0 z-[200] transition-all duration-500 py-2 border-b lg:py-2 ${isScrolled
+                    ? 'bg-white border-primary-teal/10 shadow-[0_4px_24px_rgba(0,128,128,0.12)]'
+                    : 'bg-white lg:bg-transparent border-transparent lg:border-none lg:shadow-none'}`}
                 initial="hidden"
                 animate="visible"
                 variants={navVariants}
@@ -220,7 +226,7 @@ const Navbar = () => {
                                     <AnimatePresence>
                                         {isServicesOpen && (
                                             <motion.div
-                                                className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-[620px] bg-white/96 backdrop-blur-2xl rounded-2xl shadow-[0_24px_64px_rgba(0,128,128,0.14)] border border-primary-teal/10 overflow-hidden"
+                                                className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-[620px] bg-white rounded-2xl shadow-[0_24px_64px_rgba(0,128,128,0.14)] border border-primary-teal/10 overflow-hidden"
                                                 variants={dropdownVariants}
                                                 initial="hidden"
                                                 animate="visible"
@@ -337,11 +343,11 @@ const Navbar = () => {
                     >
                         <AnimatePresence mode="wait">
                             {isMobileMenuOpen ? (
-                                <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.15 }}>
+                                <motion.div key="close" initial={{ rotate: -90 }} animate={{ rotate: 0 }} exit={{ rotate: 90 }} transition={{ duration: 0.15 }}>
                                     <HiX size={20} className="text-primary-teal" />
                                 </motion.div>
                             ) : (
-                                <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.15 }}>
+                                <motion.div key="menu" initial={{ rotate: 90 }} animate={{ rotate: 0 }} exit={{ rotate: -90 }} transition={{ duration: 0.15 }}>
                                     <HiMenuAlt3 size={20} className="text-primary-teal" />
                                 </motion.div>
                             )}
@@ -363,7 +369,7 @@ const Navbar = () => {
                             />
 
                             <motion.div
-                                className="absolute top-full left-0 right-0 bg-white/98 backdrop-blur-2xl border-b border-border-light shadow-[0_20px_50px_rgba(0,128,128,0.12)] overflow-y-auto lg:hidden"
+                                className="absolute top-full left-0 right-0 bg-white border-b border-border-light shadow-[0_20px_50px_rgba(0,128,128,0.12)] overflow-y-auto lg:hidden"
                                 style={{ maxHeight: 'calc(100vh - 70px)' }}
                                 variants={mobileMenuVariants}
                                 initial="closed"

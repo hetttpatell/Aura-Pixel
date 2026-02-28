@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiOutlineExternalLink, HiOutlineEye } from 'react-icons/hi';
+import useReducedMotion from '../hooks/useReducedMotion';
 
 const Portfolio = () => {
     const [activeFilter, setActiveFilter] = useState('All');
     const [hoveredProject, setHoveredProject] = useState(null);
+    const shouldReduceMotion = useReducedMotion();
 
     const filters = ['All', 'Branding', 'Web Design', 'Marketing', 'Social Media'];
 

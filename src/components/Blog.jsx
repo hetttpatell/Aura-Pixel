@@ -1,7 +1,9 @@
 import { motion } from 'framer-motion';
 import { HiOutlineCalendar, HiOutlineArrowRight } from 'react-icons/hi';
+import useReducedMotion from '../hooks/useReducedMotion';
 
 const Blog = () => {
+    const shouldReduceMotion = useReducedMotion();
     const blogPosts = [
         {
             id: 1,
