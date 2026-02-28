@@ -8,105 +8,105 @@ import {
     HiOutlineTrendingUp
 } from 'react-icons/hi';
 
+const services = [
+    {
+        icon: HiOutlineSearch,
+        title: 'SEO Optimization',
+        description: 'Dominate search rankings with our data-driven SEO strategies. We optimize your digital presence for maximum visibility and organic growth.',
+        color: '#008080',
+        gradient: 'from-teal-500 to-teal-600',
+    },
+    {
+        icon: HiOutlineChartBar,
+        title: 'Performance Marketing',
+        description: 'Drive measurable results with targeted ad campaigns. We maximize your ROI through strategic paid advertising across all platforms.',
+        color: '#4285F4',
+        gradient: 'from-blue-500 to-blue-600',
+    },
+    {
+        icon: HiOutlineShare,
+        title: 'Social Media',
+        description: 'Build a powerful social presence that engages and converts. We create scroll-stopping content that resonates with your audience.',
+        color: '#E4405F',
+        gradient: 'from-pink-500 to-rose-500',
+    },
+    {
+        icon: HiOutlineLightBulb,
+        title: 'Branding',
+        description: 'Create a memorable brand identity that stands out. We craft compelling brand stories that connect with your target market.',
+        color: '#F9AB00',
+        gradient: 'from-amber-500 to-orange-500',
+    },
+    {
+        icon: HiOutlineCode,
+        title: 'Website Development',
+        description: 'Build stunning, high-performance websites that convert. We combine beautiful design with seamless functionality.',
+        color: '#0A66C2',
+        gradient: 'from-blue-600 to-indigo-600',
+    },
+    {
+        icon: HiOutlineTrendingUp,
+        title: 'Conversion Optimization',
+        description: 'Turn visitors into customers with data-backed optimization. We analyze, test, and improve every touchpoint of your funnel.',
+        color: '#008080',
+        gradient: 'from-emerald-500 to-teal-600',
+    },
+];
+
+// Card animation variants
+const cardVariants = {
+    hidden: {
+        opacity: 0,
+        y: 50
+    },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: {
+            duration: 0.5,
+            ease: [0.25, 0.46, 0.45, 0.94]
+        }
+    }
+};
+
+// Loading line variants
+const lineVariants = {
+    hidden: {
+        scaleX: 0,
+        originX: 0
+    },
+    visible: {
+        scaleX: 1,
+        originX: 0,
+        transition: {
+            delay: 0.2,
+            duration: 0.6,
+            ease: "easeInOut"
+        }
+    }
+};
+
+// Icon animation variants
+const iconVariants = {
+    hidden: {
+        opacity: 0,
+        scale: 0,
+        rotate: -180
+    },
+    visible: {
+        opacity: 1,
+        scale: 1,
+        rotate: 0,
+        transition: {
+            type: "spring",
+            stiffness: 260,
+            damping: 20,
+            delay: 0.1
+        }
+    }
+};
+
 const Services = () => {
-    const services = [
-        {
-            icon: HiOutlineSearch,
-            title: 'SEO Optimization',
-            description: 'Dominate search rankings with our data-driven SEO strategies. We optimize your digital presence for maximum visibility and organic growth.',
-            color: '#008080',
-            gradient: 'from-teal-500 to-teal-600',
-        },
-        {
-            icon: HiOutlineChartBar,
-            title: 'Performance Marketing',
-            description: 'Drive measurable results with targeted ad campaigns. We maximize your ROI through strategic paid advertising across all platforms.',
-            color: '#4285F4',
-            gradient: 'from-blue-500 to-blue-600',
-        },
-        {
-            icon: HiOutlineShare,
-            title: 'Social Media',
-            description: 'Build a powerful social presence that engages and converts. We create scroll-stopping content that resonates with your audience.',
-            color: '#E4405F',
-            gradient: 'from-pink-500 to-rose-500',
-        },
-        {
-            icon: HiOutlineLightBulb,
-            title: 'Branding',
-            description: 'Create a memorable brand identity that stands out. We craft compelling brand stories that connect with your target market.',
-            color: '#F9AB00',
-            gradient: 'from-amber-500 to-orange-500',
-        },
-        {
-            icon: HiOutlineCode,
-            title: 'Website Development',
-            description: 'Build stunning, high-performance websites that convert. We combine beautiful design with seamless functionality.',
-            color: '#0A66C2',
-            gradient: 'from-blue-600 to-indigo-600',
-        },
-        {
-            icon: HiOutlineTrendingUp,
-            title: 'Conversion Optimization',
-            description: 'Turn visitors into customers with data-backed optimization. We analyze, test, and improve every touchpoint of your funnel.',
-            color: '#008080',
-            gradient: 'from-emerald-500 to-teal-600',
-        },
-    ];
-
-    // Card animation variants
-    const cardVariants = {
-        hidden: {
-            opacity: 0,
-            y: 50
-        },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                duration: 0.5,
-                ease: [0.25, 0.46, 0.45, 0.94]
-            }
-        }
-    };
-
-    // Loading line variants
-    const lineVariants = {
-        hidden: {
-            scaleX: 0,
-            originX: 0
-        },
-        visible: {
-            scaleX: 1,
-            originX: 0,
-            transition: {
-                delay: 0.2,
-                duration: 0.6,
-                ease: "easeInOut"
-            }
-        }
-    };
-
-    // Icon animation variants
-    const iconVariants = {
-        hidden: {
-            opacity: 0,
-            scale: 0,
-            rotate: -180
-        },
-        visible: {
-            opacity: 1,
-            scale: 1,
-            rotate: 0,
-            transition: {
-                delay: 0.15,
-                duration: 0.5,
-                type: "spring",
-                stiffness: 200,
-                damping: 15
-            }
-        }
-    };
 
     // Content fade in variants
     const contentVariants = {

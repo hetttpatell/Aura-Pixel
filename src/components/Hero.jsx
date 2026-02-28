@@ -11,6 +11,47 @@ import {
 } from 'react-icons/si';
 import { HiArrowRight, HiOutlineSearch } from 'react-icons/hi';
 
+const floatingIcons = [
+    { icon: SiGoogleads, name: 'Google Ads', color: '#4285F4', link: 'https://ads.google.com', delay: 0 },
+    { icon: SiMeta, name: 'Meta Ads', color: '#0668E1', link: 'https://www.meta.com/business', delay: 0.1 },
+    { icon: HiOutlineSearch, name: 'SEO', color: '#008080', link: '#services', delay: 0.2 },
+    { icon: SiInstagram, name: 'Instagram', color: '#E4405F', link: 'https://instagram.com', delay: 0.3 },
+    { icon: SiFacebook, name: 'Facebook', color: '#1877F2', link: 'https://facebook.com', delay: 0.4 },
+    { icon: SiLinkedin, name: 'LinkedIn', color: '#0A66C2', link: 'https://linkedin.com', delay: 0.5 },
+    { icon: SiGoogleanalytics, name: 'Analytics', color: '#F9AB00', link: 'https://analytics.google.com', delay: 0.6 },
+    { icon: SiMailchimp, name: 'Email', color: '#FFB300', link: '#services', delay: 0.7 },
+];
+
+const stats = [
+    { value: '150+', label: 'Clients' },
+    { value: '5M+', label: 'Ad Spend' },
+    { value: '300%', label: 'ROI' },
+    { value: '95%', label: 'Retention' },
+];
+
+const desktopPositions = [
+    { top: '5%', left: '10%' },
+    { top: '0%', right: '15%' },
+    { top: '25%', left: '-5%' },
+    { top: '20%', right: '-5%' },
+    { top: '55%', left: '-8%' },
+    { top: '50%', right: '-8%' },
+    { top: '75%', left: '5%' },
+    { top: '80%', right: '10%' },
+];
+
+// Mobile positions for bubble icons around the smaller image - properly spaced to avoid overlap
+const mobilePositions = [
+    { top: '10%', left: '-3%' },
+    { top: '10%', right: '-3%' },
+    { top: '30%', left: '-6%' },
+    { top: '30%', right: '-6%' },
+    { top: '50%', left: '-3%' },
+    { top: '50%', right: '-3%' },
+    { top: '70%', left: '-6%' },
+    { top: '70%', right: '-6%' },
+];
+
 const Hero = () => {
     const [isMobile, setIsMobile] = useState(false);
 
@@ -41,24 +82,6 @@ const Hero = () => {
         return () => window.removeEventListener('mousemove', handleMouseMove);
     }, [mouseX, mouseY, isMobile]);
 
-    const floatingIcons = [
-        { icon: SiGoogleads, name: 'Google Ads', color: '#4285F4', link: 'https://ads.google.com', delay: 0 },
-        { icon: SiMeta, name: 'Meta Ads', color: '#0668E1', link: 'https://www.meta.com/business', delay: 0.1 },
-        { icon: HiOutlineSearch, name: 'SEO', color: '#008080', link: '#services', delay: 0.2 },
-        { icon: SiInstagram, name: 'Instagram', color: '#E4405F', link: 'https://instagram.com', delay: 0.3 },
-        { icon: SiFacebook, name: 'Facebook', color: '#1877F2', link: 'https://facebook.com', delay: 0.4 },
-        { icon: SiLinkedin, name: 'LinkedIn', color: '#0A66C2', link: 'https://linkedin.com', delay: 0.5 },
-        { icon: SiGoogleanalytics, name: 'Analytics', color: '#F9AB00', link: 'https://analytics.google.com', delay: 0.6 },
-        { icon: SiMailchimp, name: 'Email', color: '#FFB300', link: '#services', delay: 0.7 },
-    ];
-
-    const stats = [
-        { value: '150+', label: 'Clients' },
-        { value: '5M+', label: 'Ad Spend' },
-        { value: '300%', label: 'ROI' },
-        { value: '95%', label: 'Retention' },
-    ];
-
     const handleIconClick = (link) => {
         if (link.startsWith('#')) {
             document.querySelector(link)?.scrollIntoView({ behavior: 'smooth' });
@@ -66,29 +89,6 @@ const Hero = () => {
             window.open(link, '_blank', 'noopener,noreferrer');
         }
     };
-
-    const desktopPositions = [
-        { top: '5%', left: '10%' },
-        { top: '0%', right: '15%' },
-        { top: '25%', left: '-5%' },
-        { top: '20%', right: '-5%' },
-        { top: '55%', left: '-8%' },
-        { top: '50%', right: '-8%' },
-        { top: '75%', left: '5%' },
-        { top: '80%', right: '10%' },
-    ];
-
-    // Mobile positions for bubble icons around the smaller image - properly spaced to avoid overlap
-    const mobilePositions = [
-        { top: '10%', left: '-3%' },
-        { top: '10%', right: '-3%' },
-        { top: '30%', left: '-6%' },
-        { top: '30%', right: '-6%' },
-        { top: '50%', left: '-3%' },
-        { top: '50%', right: '-3%' },
-        { top: '70%', left: '-6%' },
-        { top: '70%', right: '-6%' },
-    ];
 
     return (
         <section id="home" className="relative min-h-screen flex items-center pt-20 sm:pt-24 lg:pt-28 pb-10 overflow-visible">

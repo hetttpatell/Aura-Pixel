@@ -1,14 +1,26 @@
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Services from './components/Services';
 import WhyChooseUs from './components/WhyChooseUs';
-import Portfolio from './components/Portfolio';
-import ScrollingCompany from './components/ScrollingCompany';
-import Testimonials from './components/Testimonials';
-import Blog from './components/Blog';
-import LeadCapture from './components/LeadCapture';
-import Footer from './components/Footer';
+
+// Lazy load below-the-fold components
+const Portfolio = lazy(() => import('./components/Portfolio'));
+const ScrollingCompany = lazy(() => import('./components/ScrollingCompany'));
+const Testimonials = lazy(() => import('./components/Testimonials'));
+const Blog = lazy(() => import('./components/Blog'));
+const LeadCapture = lazy(() => import('./components/LeadCapture'));
+const Footer = lazy(() => import('./components/Footer'));
+
+// Simple loader for lazy sections
+const SectionLoader = () => (
+  <div className="w-full h-64 flex items-center justify-center bg-bg-soft/30 rounded-3xl border-2 border-dashed border-primary-teal/20 animate-pulse">
+    <div className="flex flex-col items-center gap-3">
+      <div className="w-10 h-10 border-4 border-primary-teal/30 border-t-primary-teal rounded-full animate-spin" />
+      <span className="text-sm font-medium text-primary-teal/60">Loading experience...</span>
+    </div>
+  </div>
+);
 
 function App() {
   useEffect(() => {
@@ -56,7 +68,7 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-bg-main">
+    <div className="min-h-screen bg-bg-main font-body text-text-body antialiased">
       {/* Navigation */}
       <Navbar />
 
@@ -71,24 +83,28 @@ function App() {
         {/* Why Choose Us Section */}
         <WhyChooseUs />
 
-        {/* Portfolio Section */}
-        <Portfolio />
+        <Suspense fallback={<SectionLoader />}>
+          {/* Portfolio Section */}
+          <Portfolio />
 
-        {/* Scrolling Company Logos Section */}
-        <ScrollingCompany />
+          {/* Scrolling Company Logos Section */}
+          <ScrollingCompany />
 
-        {/* Testimonials Section */}
-        <Testimonials />
+          {/* Testimonials Section */}
+          <Testimonials />
 
-        {/* Blog Section */}
-        <Blog />
+          {/* Blog Section */}
+          <Blog />
 
-        {/* Lead Capture Section */}
-        <LeadCapture />
+          {/* Lead Capture Section */}
+          <LeadCapture />
+        </Suspense>
       </main>
 
       {/* Footer */}
-      <Footer />
+      <Suspense fallback={<div className="h-64 bg-bg-soft" />}>
+        <Footer />
+      </Suspense>
 
       {/* Meta Pixel & Google Ads Scripts (add to index.html in production) */}
       {/* 

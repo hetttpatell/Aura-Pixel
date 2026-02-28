@@ -1,11 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 import useReducedMotion from '../hooks/useReducedMotion';
 
+const companies = Array.from({ length: 9 }, (_, i) => ({
+    id: i + 1,
+    name: 'AuraPixel',
+    logo: '/AURA-PIXEL.PNG'
+}));
+
 const ScrollingCompany = () => {
     const [isVisible, setIsVisible] = useState(false);
     const [isScrolling, setIsScrolling] = useState(false);
     const sectionRef = useRef(null);
-    const shouldReduceMotion = useReducedMotion();
+    const isMobile = useReducedMotion();
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -16,7 +22,7 @@ const ScrollingCompany = () => {
                     setTimeout(() => setIsScrolling(true), 500);
                 }
             },
-            { threshold: 0.3 }
+            { threshold: 0.1 }
         );
 
         if (sectionRef.current) {
@@ -25,12 +31,6 @@ const ScrollingCompany = () => {
 
         return () => observer.disconnect();
     }, []);
-
-    const companies = Array.from({ length: 9 }, (_, i) => ({
-        id: i + 1,
-        name: 'AuraPixel',
-        logo: '/AURA-PIXEL.PNG'
-    }));
 
     const logoItems = companies.map((company, index) => (
         <div

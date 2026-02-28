@@ -49,9 +49,18 @@ const dropdownVariants = {
 };
 
 const dropdownItemVariants = {
-    hidden: { x: -8 },
-    visible: { x: 0, transition: { type: 'spring', stiffness: 320, damping: 28 } },
+    hidden: { x: -10, opacity: 0 },
+    visible: { x: 0, opacity: 1, transition: { duration: 0.2, ease: EASE } },
 };
+
+const navLinks = [
+    { name: 'Home', href: '#home' },
+    { name: 'Services', href: '#services', hasDropdown: true },
+    { name: 'About Us', href: '#about' },
+    { name: 'Portfolio', href: '#portfolio' },
+    { name: 'Blog', href: '#blog' },
+    { name: 'Contact', href: '#contact' },
+];
 
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -62,15 +71,6 @@ const Navbar = () => {
     const [isMobileServicesOpen, setIsMobileServicesOpen] = useState(false);
     const navRef = useRef(null);
     const servicesTimeout = useRef(null);
-
-    const navLinks = [
-        { name: 'Home', href: '#home' },
-        { name: 'Services', href: '#services', hasDropdown: true },
-        { name: 'About Us', href: '#about' },
-        { name: 'Portfolio', href: '#portfolio' },
-        { name: 'Blog', href: '#blog' },
-        { name: 'Contact', href: '#contact' },
-    ];
 
     const { scrollYProgress } = useScroll();
     const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });

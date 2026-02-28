@@ -3,101 +3,101 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { HiOutlineExternalLink, HiOutlineEye } from 'react-icons/hi';
 import useReducedMotion from '../hooks/useReducedMotion';
 
+const filters = ['All', 'Branding', 'Web Design', 'Marketing', 'Social Media'];
+
+const projects = [
+    {
+        id: 1,
+        title: 'TechFlow SaaS Platform',
+        category: 'Web Design',
+        image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop',
+        description: 'Complete website redesign with 200% increase in conversions',
+        stats: '200% ROI',
+        statsLabel: 'Increase',
+        color: 'from-teal-500 to-cyan-500',
+    },
+    {
+        id: 2,
+        title: 'Luxe Fashion Brand',
+        category: 'Branding',
+        image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop',
+        description: 'Brand identity and social media strategy',
+        stats: '500K',
+        statsLabel: 'Reach',
+        color: 'from-purple-500 to-pink-500',
+    },
+    {
+        id: 3,
+        title: 'FitLife App Campaign',
+        category: 'Marketing',
+        image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop',
+        description: 'Performance marketing campaign for fitness app',
+        stats: '150%',
+        statsLabel: 'Installs',
+        color: 'from-orange-500 to-red-500',
+    },
+    {
+        id: 4,
+        title: 'Gourmet Kitchen',
+        category: 'Social Media',
+        image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=400&fit=crop',
+        description: 'Instagram and Facebook growth strategy',
+        stats: '1M',
+        statsLabel: 'Followers',
+        color: 'from-green-500 to-emerald-500',
+    },
+    {
+        id: 5,
+        title: 'EcoTech Solutions',
+        category: 'Branding',
+        image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop',
+        description: 'Complete brand transformation for sustainability company',
+        stats: '85%',
+        statsLabel: 'Awareness',
+        color: 'from-blue-500 to-indigo-500',
+    },
+    {
+        id: 6,
+        title: 'FinanceHub Dashboard',
+        category: 'Web Design',
+        image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop',
+        description: 'Financial dashboard UI/UX design',
+        stats: '40%',
+        statsLabel: 'Engagement',
+        color: 'from-violet-500 to-purple-500',
+    },
+];
+
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1,
+        },
+    },
+};
+
+const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: {
+            duration: 0.5,
+            ease: 'easeOut',
+        },
+    },
+};
+
 const Portfolio = () => {
     const [activeFilter, setActiveFilter] = useState('All');
     const [hoveredProject, setHoveredProject] = useState(null);
     const shouldReduceMotion = useReducedMotion();
 
-    const filters = ['All', 'Branding', 'Web Design', 'Marketing', 'Social Media'];
-
-    const projects = [
-        {
-            id: 1,
-            title: 'TechFlow SaaS Platform',
-            category: 'Web Design',
-            image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop',
-            description: 'Complete website redesign with 200% increase in conversions',
-            stats: '200% ROI',
-            statsLabel: 'Increase',
-            color: 'from-teal-500 to-cyan-500',
-        },
-        {
-            id: 2,
-            title: 'Luxe Fashion Brand',
-            category: 'Branding',
-            image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop',
-            description: 'Brand identity and social media strategy',
-            stats: '500K',
-            statsLabel: 'Reach',
-            color: 'from-purple-500 to-pink-500',
-        },
-        {
-            id: 3,
-            title: 'FitLife App Campaign',
-            category: 'Marketing',
-            image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop',
-            description: 'Performance marketing campaign for fitness app',
-            stats: '150%',
-            statsLabel: 'Installs',
-            color: 'from-orange-500 to-red-500',
-        },
-        {
-            id: 4,
-            title: 'Gourmet Kitchen',
-            category: 'Social Media',
-            image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=400&fit=crop',
-            description: 'Instagram and Facebook growth strategy',
-            stats: '1M',
-            statsLabel: 'Followers',
-            color: 'from-green-500 to-emerald-500',
-        },
-        {
-            id: 5,
-            title: 'EcoTech Solutions',
-            category: 'Branding',
-            image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop',
-            description: 'Complete brand transformation for sustainability company',
-            stats: '85%',
-            statsLabel: 'Awareness',
-            color: 'from-blue-500 to-indigo-500',
-        },
-        {
-            id: 6,
-            title: 'FinanceHub Dashboard',
-            category: 'Web Design',
-            image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop',
-            description: 'Financial dashboard UI/UX design',
-            stats: '40%',
-            statsLabel: 'Engagement',
-            color: 'from-violet-500 to-purple-500',
-        },
-    ];
-
     const filteredProjects = activeFilter === 'All'
         ? projects
         : projects.filter(project => project.category === activeFilter);
-
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.1,
-            },
-        },
-    };
-
-    const itemVariants = {
-        hidden: { opacity: 0, y: 30 },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                duration: 0.5,
-                ease: 'easeOut',
-            },
-        },
-    };
 
     return (
         <section id="portfolio" className="pb-[100px] bg-gradient-to-b from-bg-soft via-white to-bg-soft relative overflow-hidden">

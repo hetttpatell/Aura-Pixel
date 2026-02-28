@@ -57,7 +57,7 @@ const StatCard = ({ icon: StatIcon, value, suffix, label, index, inView }) => {
             className="relative"
         >
             <motion.div
-                className="bg-gradient-to-br from-white to-bg-soft rounded-2xl p-6 shadow-card border border-border-light group"
+                className="bg-gradient-to-br from-white to-bg-soft rounded-2xl p-4 sm:p-6 shadow-card border border-border-light group"
                 whileHover={{ y: -4, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)" }}
                 transition={{ duration: 0.4 }}
             >
@@ -65,20 +65,20 @@ const StatCard = ({ icon: StatIcon, value, suffix, label, index, inView }) => {
 
                 <div className="relative z-10">
                     <motion.div
-                        className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center mb-4 shadow-lg shadow-teal-500/25"
+                        className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center mb-3 sm:mb-4 shadow-lg shadow-teal-500/25"
                         whileHover={{ scale: 1.1 }}
                         transition={{ duration: 0.3 }}
                     >
-                        <StatIcon size={26} className="text-white" />
+                        <StatIcon className="text-white w-5 h-5 sm:w-7 sm:h-7" />
                     </motion.div>
 
-                    <div className="flex items-baseline gap-1 mb-2">
-                        <span className="text-4xl font-bold text-text-heading">
+                    <div className="flex items-baseline gap-1 mb-1 sm:mb-2">
+                        <span className="text-2xl sm:text-4xl font-bold text-text-heading">
                             <Counter value={value} suffix={suffix} inView={inView} />
                         </span>
                     </div>
 
-                    <p className="text-text-body font-medium text-sm uppercase tracking-wide">
+                    <p className="text-text-body font-medium text-[10px] sm:text-sm uppercase tracking-wide">
                         {label}
                     </p>
                 </div>
@@ -161,31 +161,71 @@ const FloatingSymbol = ({ icon: Icon, label, color, delay, position }) => {
     );
 };
 
-const TrustBadge = ({ icon: Icon, label, color, index }) => {
-    return (
-        <motion.div
-            className="flex items-center gap-3 px-5 py-3 bg-white rounded-xl shadow-md border border-slate-100 cursor-default"
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.5 + index * 0.1 }}
-            whileHover={{ y: -4, scale: 1.02 }}
-        >
-            <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{ backgroundColor: `${color}15` }}
-            >
-                <Icon size={20} style={{ color }} />
-            </div>
-            <span className="text-text-heading font-semibold text-sm">{label}</span>
-        </motion.div>
-    );
-};
+
+const features = [
+    {
+        icon: HiOutlineLightningBolt,
+        value: 10,
+        suffix: '+',
+        label: 'Years Experience',
+    },
+    {
+        icon: HiOutlineUserGroup,
+        value: 150,
+        suffix: '+',
+        label: 'Happy Clients',
+    },
+    {
+        icon: HiOutlineBadgeCheck,
+        value: 500,
+        suffix: '+',
+        label: 'Projects Delivered',
+    },
+    {
+        icon: HiOutlineTrendingUp,
+        value: 300,
+        suffix: '%',
+        label: 'Average ROI',
+    },
+];
+
+const reasons = [
+    {
+        icon: FaRocket,
+        title: 'Results-Driven Approach',
+        description: 'We focus on measurable outcomes, not just vanity metrics. Every strategy is designed to drive real business growth and ROI.',
+    },
+    {
+        icon: FaHandshake,
+        title: 'Partnership Mentality',
+        description: 'We treat your business like our own. Our team becomes an extension of yours, fully invested in achieving your goals.',
+    },
+    {
+        icon: HiOutlineChartBar,
+        title: 'Data-Backed Decisions',
+        description: 'All our recommendations are backed by comprehensive analytics and industry research. No guesswork—just proven strategies.',
+    },
+    {
+        icon: HiOutlineShieldCheck,
+        title: 'Trusted & Certified',
+        description: 'With industry-recognized certifications and a proven track record, you can rest assured your digital presence is in expert hands.',
+    },
+];
+
+const floatingSymbols = [
+    { icon: FaCrown, label: 'Premium Service', color: '#f59e0b', delay: 0.7, position: { top: '0%', left: '-5%' } },
+    { icon: FaShieldAlt, label: '100% Secure', color: '#10b981', delay: 0.8, position: { top: '5%', right: '-8%' } },
+    { icon: FaMedal, label: 'Award Winner', color: '#8b5cf6', delay: 0.9, position: { top: '40%', left: '-12%' } },
+    { icon: FaChartLine, label: '300% Growth', color: '#06b6d4', delay: 1.0, position: { top: '35%', right: '-12%' } },
+    { icon: FaUsers, label: 'Expert Team', color: '#ef4444', delay: 1.1, position: { top: '70%', left: '-8%' } },
+    { icon: HiOutlineClock, label: 'On-Time', color: '#f97316', delay: 1.2, position: { top: '75%', right: '-5%' } },
+];
+
 
 const WhyChooseUs = () => {
-    const shouldReduceMotion = useReducedMotion();
     const ref = useRef(null);
-    const isInView = useInView(ref, { once: true, margin: "-100px" });
+    const isInView = useInView(ref, { once: true, amount: 0.1 });
+
     const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
@@ -198,93 +238,22 @@ const WhyChooseUs = () => {
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
 
-    const springConfig = { damping: 25, stiffness: 150 };
+    const springConfig = { damping: 30, stiffness: 120 };
     const x = useSpring(mouseX, springConfig);
     const y = useSpring(mouseY, springConfig);
 
     useEffect(() => {
         if (isMobile) return;
         const handleMouseMove = (e) => {
-            if (!ref.current) return;
-            const rect = ref.current.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            mouseX.set((e.clientX - centerX) / 60);
-            mouseY.set((e.clientY - centerY) / 60);
+            const { clientX, clientY } = e;
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            mouseX.set((clientX - centerX) / 50);
+            mouseY.set((clientY - centerY) / 50);
         };
         window.addEventListener('mousemove', handleMouseMove, { passive: true });
         return () => window.removeEventListener('mousemove', handleMouseMove);
     }, [mouseX, mouseY, isMobile]);
-
-    const features = [
-        {
-            icon: HiOutlineLightningBolt,
-            value: 10,
-            suffix: '+',
-            label: 'Years Experience',
-        },
-        {
-            icon: HiOutlineUserGroup,
-            value: 150,
-            suffix: '+',
-            label: 'Happy Clients',
-        },
-        {
-            icon: HiOutlineBadgeCheck,
-            value: 500,
-            suffix: '+',
-            label: 'Projects Delivered',
-        },
-        {
-            icon: HiOutlineTrendingUp,
-            value: 300,
-            suffix: '%',
-            label: 'Average ROI',
-        },
-    ];
-
-    const reasons = [
-        {
-            icon: FaRocket,
-            title: 'Results-Driven Approach',
-            description: 'We focus on measurable outcomes, not just vanity metrics. Every strategy is designed to drive real business growth and ROI.',
-        },
-        {
-            icon: FaHandshake,
-            title: 'Partnership Mentality',
-            description: 'We treat your business like our own. Our team becomes an extension of yours, fully invested in achieving your goals.',
-        },
-        {
-            icon: HiOutlineChartBar,
-            title: 'Data-Backed Decisions',
-            description: 'All our recommendations are backed by comprehensive analytics and industry research. No guesswork—just proven strategies.',
-        },
-        {
-            icon: HiOutlineShieldCheck,
-            title: 'Trusted & Certified',
-            description: 'With industry-recognized certifications and a proven track record, you can rest assured your digital presence is in expert hands.',
-        },
-    ];
-
-    const floatingSymbols = [
-        { icon: FaCrown, label: 'Premium Service', color: '#f59e0b', delay: 0.7, position: { top: '0%', left: '-5%' } },
-        { icon: FaShieldAlt, label: '100% Secure', color: '#10b981', delay: 0.8, position: { top: '5%', right: '-8%' } },
-        { icon: FaMedal, label: 'Award Winner', color: '#8b5cf6', delay: 0.9, position: { top: '40%', left: '-12%' } },
-        { icon: FaChartLine, label: '300% Growth', color: '#06b6d4', delay: 1.0, position: { top: '35%', right: '-12%' } },
-        { icon: FaUsers, label: 'Expert Team', color: '#ef4444', delay: 1.1, position: { top: '70%', left: '-8%' } },
-        { icon: HiOutlineClock, label: 'On-Time', color: '#f97316', delay: 1.2, position: { top: '75%', right: '-5%' } },
-    ];
-
-    const trustBadges = [
-        { icon: FaAward, label: 'Industry Award Winner', color: '#f59e0b' },
-        { icon: HiOutlineShieldCheck, label: 'Google Certified Partner', color: '#4285f4' },
-        { icon: HiOutlineBadgeCheck, label: '100% Satisfaction', color: '#10b981' },
-        { icon: HiOutlineCurrencyRupee, label: 'Best Pricing', color: '#8b5cf6' },
-        { icon: HiOutlineGlobe, label: 'Global Clients', color: '#06b6d4' },
-        { icon: HiOutlineStar, label: '5-Star Rating', color: '#f59e0b' },
-        { icon: HiOutlineCheckCircle, label: 'ISO Certified', color: '#10b981' },
-        { icon: HiOutlineUserAdd, label: 'Dedicated Support', color: '#ef4444' },
-    ];
 
     return (
         <section id="about" className="py-16 md:py-24 bg-bg-soft relative overflow-hidden" ref={ref}>
@@ -339,7 +308,7 @@ const WhyChooseUs = () => {
 
                 {/* Stats Grid */}
                 <motion.div
-                    className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-12 md:mb-20"
+                    className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-6 mb-12 md:mb-20"
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}

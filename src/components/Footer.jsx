@@ -12,34 +12,34 @@ import {
     SiX
 } from 'react-icons/si';
 
+const quickLinks = [
+    { name: 'Home', href: '#home' },
+    { name: 'Services', href: '#services' },
+    { name: 'About Us', href: '#about' },
+    { name: 'Portfolio', href: '#portfolio' },
+    { name: 'Blog', href: '#blog' },
+    { name: 'Contact', href: '#contact' },
+];
+
+const servicesLinks = [
+    { name: 'SEO Optimization', href: '#services' },
+    { name: 'Performance Marketing', href: '#services' },
+    { name: 'Social Media', href: '#services' },
+    { name: 'Branding', href: '#services' },
+    { name: 'Web Development', href: '#services' },
+    { name: 'Conversion Optimization', href: '#services' },
+];
+
+const socialLinks = [
+    { icon: SiFacebook, href: 'https://facebook.com', label: 'Facebook' },
+    { icon: SiInstagram, href: 'https://instagram.com', label: 'Instagram' },
+    { icon: SiLinkedin, href: 'https://linkedin.com', label: 'LinkedIn' },
+    { icon: SiX, href: 'https://x.com', label: 'X (Twitter)' },
+    { icon: SiYoutube, href: 'https://youtube.com', label: 'YouTube' },
+];
+
 const Footer = () => {
     const currentYear = new Date().getFullYear();
-
-    const quickLinks = [
-        { name: 'Home', href: '#home' },
-        { name: 'Services', href: '#services' },
-        { name: 'About Us', href: '#about' },
-        { name: 'Portfolio', href: '#portfolio' },
-        { name: 'Blog', href: '#blog' },
-        { name: 'Contact', href: '#contact' },
-    ];
-
-    const services = [
-        { name: 'SEO Optimization', href: '#services' },
-        { name: 'Performance Marketing', href: '#services' },
-        { name: 'Social Media', href: '#services' },
-        { name: 'Branding', href: '#services' },
-        { name: 'Web Development', href: '#services' },
-        { name: 'Conversion Optimization', href: '#services' },
-    ];
-
-    const socialLinks = [
-        { icon: SiFacebook, href: 'https://facebook.com', label: 'Facebook' },
-        { icon: SiInstagram, href: 'https://instagram.com', label: 'Instagram' },
-        { icon: SiLinkedin, href: 'https://linkedin.com', label: 'LinkedIn' },
-        { icon: SiX, href: 'https://x.com', label: 'X (Twitter)' },
-        { icon: SiYoutube, href: 'https://youtube.com', label: 'YouTube' },
-    ];
 
     const handleNavClick = (href) => {
         const element = document.querySelector(href);
@@ -109,7 +109,7 @@ const Footer = () => {
                     <div>
                         <h4 className="text-white font-heading font-semibold text-lg mb-6">Services</h4>
                         <ul className="space-y-3">
-                            {services.map((service) => (
+                            {servicesLinks.map((service) => (
                                 <li key={service.name}>
                                     <a
                                         href={service.href}

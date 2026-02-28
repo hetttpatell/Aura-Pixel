@@ -3,60 +3,89 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { HiStar } from 'react-icons/hi';
 import useReducedMotion from '../hooks/useReducedMotion';
 
+const testimonials = [
+    {
+        id: 1,
+        initials: "AK",
+        name: 'Ankit Kumar',
+        title: 'CEO, TechVentures',
+        content: 'Working with AuraPixel transformed our digital presence. Their strategic approach and dedication delivered results beyond our expectations. Truly a game-changer for our business.',
+        rating: 5,
+    },
+    {
+        id: 2,
+        initials: "SJ",
+        name: 'Sarah Johnson',
+        title: 'CEO, TechFlow',
+        content: 'Aura Pixel transformed our digital presence completely. Their strategic approach to marketing helped us achieve 300% growth in just 6 months. Highly recommended!',
+        rating: 5,
+    },
+    {
+        id: 3,
+        initials: "MC",
+        name: 'Michael Chen',
+        title: 'Founder, StartupX',
+        content: 'The team at Aura Pixel is exceptional. They understand the nuances of digital marketing and deliver results that exceed expectations. Our ROI has never been better.',
+        rating: 5,
+    },
+    {
+        id: 4,
+        initials: "ER",
+        name: 'Emily Rodriguez',
+        title: 'Marketing Director, Luxe Brand',
+        content: 'Working with Aura Pixel was a game-changer for our brand. Their creative campaigns and data-driven strategies helped us reach our target audience effectively.',
+        rating: 5,
+    },
+    {
+        id: 5,
+        initials: "DK",
+        name: 'David Kim',
+        title: 'CTO, FinanceHub',
+        content: 'The level of professionalism and expertise at Aura Pixel is unmatched. They took our marketing to the next level with innovative strategies and flawless execution.',
+        rating: 5,
+    },
+    {
+        id: 6,
+        initials: "AF",
+        name: 'Amanda Foster',
+        title: 'Owner, EcoTech Solutions',
+        content: 'Aura Pixel helped us build a strong online presence from scratch. Their team is responsive, creative, and truly invested in our success. Amazing results!',
+        rating: 5,
+    },
+];
+
+// Staggered reveal animation
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.12,
+            delayChildren: 0.15
+        }
+    }
+};
+
+const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.5, ease: "easeOut" }
+    }
+};
+
+// Gentle pulse for trust indicators
+const pulseAnimation = {
+    animate: {
+        scale: [1, 1.15, 1],
+        transition: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+    }
+};
+
 const Testimonials = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const shouldReduceMotion = useReducedMotion();
-
-    const testimonials = [
-        {
-            id: 1,
-            initials: "AK",
-            name: 'Ankit Kumar',
-            title: 'CEO, TechVentures',
-            content: 'Working with AuraPixel transformed our digital presence. Their strategic approach and dedication delivered results beyond our expectations. Truly a game-changer for our business.',
-            rating: 5,
-        },
-        {
-            id: 2,
-            initials: "SJ",
-            name: 'Sarah Johnson',
-            title: 'CEO, TechFlow',
-            content: 'Aura Pixel transformed our digital presence completely. Their strategic approach to marketing helped us achieve 300% growth in just 6 months. Highly recommended!',
-            rating: 5,
-        },
-        {
-            id: 3,
-            initials: "MC",
-            name: 'Michael Chen',
-            title: 'Founder, StartupX',
-            content: 'The team at Aura Pixel is exceptional. They understand the nuances of digital marketing and deliver results that exceed expectations. Our ROI has never been better.',
-            rating: 5,
-        },
-        {
-            id: 4,
-            initials: "ER",
-            name: 'Emily Rodriguez',
-            title: 'Marketing Director, Luxe Brand',
-            content: 'Working with Aura Pixel was a game-changer for our brand. Their creative campaigns and data-driven strategies helped us reach our target audience effectively.',
-            rating: 5,
-        },
-        {
-            id: 5,
-            initials: "DK",
-            name: 'David Kim',
-            title: 'CTO, FinanceHub',
-            content: 'The level of professionalism and expertise at Aura Pixel is unmatched. They took our marketing to the next level with innovative strategies and flawless execution.',
-            rating: 5,
-        },
-        {
-            id: 6,
-            initials: "AF",
-            name: 'Amanda Foster',
-            title: 'Owner, EcoTech Solutions',
-            content: 'Aura Pixel helped us build a strong online presence from scratch. Their team is responsive, creative, and truly invested in our success. Amazing results!',
-            rating: 5,
-        },
-    ];
 
     // Auto-slide with 10 seconds for reading time
     useEffect(() => {
@@ -89,35 +118,6 @@ const Testimonials = () => {
             y: -20,
             filter: shouldReduceMotion ? "none" : "blur(5px)",
             transition: { duration: shouldReduceMotion ? 0.1 : 0.4, ease: [0.22, 1, 0.36, 1] }
-        }
-    };
-
-    // Staggered reveal animation
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.12,
-                delayChildren: 0.15
-            }
-        }
-    };
-
-    const itemVariants = {
-        hidden: { opacity: 0, y: 15 },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: { duration: 0.5, ease: "easeOut" }
-        }
-    };
-
-    // Gentle pulse for trust indicators
-    const pulseAnimation = {
-        animate: {
-            scale: [1, 1.15, 1],
-            transition: { duration: 2, repeat: Infinity, ease: "easeInOut" }
         }
     };
 
