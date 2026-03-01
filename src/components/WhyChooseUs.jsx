@@ -57,8 +57,9 @@ const StatCard = ({ icon: StatIcon, value, suffix, label, index, inView }) => {
             className="relative"
         >
             <motion.div
-                className="bg-gradient-to-br from-white to-bg-soft rounded-2xl p-4 sm:p-6 shadow-card border border-border-light group"
-                whileHover={{ y: -4, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)" }}
+                className="bg-gradient-to-br from-white to-bg-soft rounded-2xl p-4 sm:p-6 shadow-card border border-border-light group will-change-transform"
+                whileHover={{ y: -2, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)" }}
+                style={{ transform: 'translateZ(0)' }}
                 transition={{ duration: 0.4 }}
             >
                 <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-teal-500/10 to-transparent rounded-full blur-2xl" />
@@ -140,7 +141,7 @@ const FloatingSymbol = ({ icon: Icon, label, color, delay, position }) => {
                 className="w-14 h-14 rounded-2xl bg-white/95 backdrop-blur-xl border-2 flex items-center justify-center shadow-xl"
                 style={{ borderColor: color }}
                 animate={{
-                    y: [0, -8, 0],
+                    y: [0, -4, 0],
                     boxShadow: [
                         '0 4px 20px rgba(0,0,0,0.1)',
                         '0 8px 30px rgba(0,0,0,0.15)',
@@ -213,12 +214,12 @@ const reasons = [
 ];
 
 const floatingSymbols = [
-    { icon: FaCrown, label: 'Premium Service', color: '#f59e0b', delay: 0.7, position: { top: '0%', left: '-5%' } },
-    { icon: FaShieldAlt, label: '100% Secure', color: '#10b981', delay: 0.8, position: { top: '5%', right: '-8%' } },
-    { icon: FaMedal, label: 'Award Winner', color: '#8b5cf6', delay: 0.9, position: { top: '40%', left: '-12%' } },
-    { icon: FaChartLine, label: '300% Growth', color: '#06b6d4', delay: 1.0, position: { top: '35%', right: '-12%' } },
-    { icon: FaUsers, label: 'Expert Team', color: '#ef4444', delay: 1.1, position: { top: '70%', left: '-8%' } },
-    { icon: HiOutlineClock, label: 'On-Time', color: '#f97316', delay: 1.2, position: { top: '75%', right: '-5%' } },
+    { icon: FaCrown, label: 'Premium Service', color: '#f59e0b', delay: 0.7, position: { top: '0%', left: '2%' } },
+    { icon: FaShieldAlt, label: '100% Secure', color: '#10b981', delay: 0.8, position: { top: '5%', right: '2%' } },
+    { icon: FaMedal, label: 'Award Winner', color: '#8b5cf6', delay: 0.9, position: { top: '40%', left: '0%' } },
+    { icon: FaChartLine, label: '300% Growth', color: '#06b6d4', delay: 1.0, position: { top: '35%', right: '0%' } },
+    { icon: FaUsers, label: 'Expert Team', color: '#ef4444', delay: 1.1, position: { top: '70%', left: '2%' } },
+    { icon: HiOutlineClock, label: 'On-Time', color: '#f97316', delay: 1.2, position: { top: '75%', right: '2%' } },
 ];
 
 

@@ -413,7 +413,7 @@ const Navbar = () => {
 
                             <motion.div
                                 className="absolute top-full left-0 right-0 bg-white border-b border-border-light shadow-[0_20px_50px_rgba(0,128,128,0.12)] overflow-y-auto lg:hidden"
-                                style={{ maxHeight: 'calc(100vh - 70px)' }}
+                                style={{ maxHeight: 'calc(100dvh - 70px)' }}
                                 variants={mobileMenuVariants}
                                 initial="closed"
                                 animate="open"

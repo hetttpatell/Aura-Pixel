@@ -53,11 +53,11 @@ const services = [
     },
 ];
 
-// Card animation variants
+// Card animation variants - Reduced offset to prevent layout overflow
 const cardVariants = {
     hidden: {
         opacity: 0,
-        y: 50
+        y: 20
     },
     visible: {
         opacity: 1,
@@ -121,9 +121,9 @@ const Services = () => {
         }
     };
 
-    // Header variants
+    // Header variants - Reduced offset to prevent layout overflow
     const headerVariants = {
-        hidden: { opacity: 0, y: 30 },
+        hidden: { opacity: 0, y: 15 },
         visible: {
             opacity: 1,
             y: 0,
@@ -143,9 +143,9 @@ const Services = () => {
     };
 
     return (
-        <section id="services" className="relative py-12 sm:py-16 md:py-[100px] bg-gradient-to-br from-bg-soft via-white to-bg-soft overflow-hidden">
-            {/* Enhanced Background Elements */}
-            <div className="absolute inset-0 pointer-events-none">
+        <section id="services" className="relative py-12 sm:py-16 md:py-[100px] bg-gradient-to-br from-bg-soft via-white to-bg-soft overflow-x-clip overflow-y-visible">
+            {/* Enhanced Background Elements - Constrained to prevent overflow */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
                 {/* Animated Pixel Grid */}
                 <div
                     className="w-full h-full opacity-40"
@@ -159,20 +159,21 @@ const Services = () => {
                     }}
                 />
 
-                {/* Floating Orbs */}
-                <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-r from-primary-teal/10 to-blue-500/10 rounded-full blur-xl animate-float" />
-                <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-r from-pink-500/10 to-purple-500/10 rounded-full blur-xl animate-float" style={{ animationDelay: '2s' }} />
-                <div className="absolute top-1/2 left-1/4 w-24 h-24 bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-full blur-xl animate-float" style={{ animationDelay: '4s' }} />
+                {/* Floating Orbs - Repositioned to stay within bounds */}
+                <div className="absolute top-20 left-4 sm:left-10 w-24 sm:w-32 h-24 sm:h-32 bg-gradient-to-r from-primary-teal/10 to-blue-500/10 rounded-full blur-xl animate-float" />
+                <div className="absolute bottom-20 right-4 sm:right-10 w-28 sm:w-40 h-28 sm:h-40 bg-gradient-to-r from-pink-500/10 to-purple-500/10 rounded-full blur-xl animate-float" style={{ animationDelay: '2s' }} />
+                <div className="absolute top-1/2 left-8 sm:left-1/4 w-16 sm:w-24 h-16 sm:h-24 bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-full blur-xl animate-float hidden sm:block" style={{ animationDelay: '4s' }} />
             </div>
 
             <div className="max-w-[1280px] mx-auto px-4 sm:px-6 relative z-10">
                 {/* Enhanced Section Header - Mobile Optimized */}
                 <motion.div
-                    className="text-center mb-8 sm:mb-10 md:mb-16"
+                    className="text-center mb-8 sm:mb-10 md:mb-16 overflow-hidden"
                     initial="hidden"
                     whileInView="visible"
-                    viewport={{ once: true, amount: 0.3 }}
+                    viewport={{ once: true, amount: 0.3, margin: "-50px" }}
                     variants={headerVariants}
+                    style={{ willChange: 'transform, opacity' }}
                 >
                     <motion.span
                         className="inline-block px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-primary-light to-blue-50 text-primary-teal font-heading font-semibold text-xs sm:text-sm rounded-full mb-4 sm:mb-6 border border-primary-teal/20 shadow-sm"
@@ -210,11 +211,12 @@ const Services = () => {
                     {services.map((service, index) => (
                         <motion.div
                             key={service.title}
-                            className="group relative"
+                            className="group relative overflow-hidden"
                             initial="hidden"
                             whileInView="visible"
-                            viewport={{ once: true, amount: 0.1 }}
+                            viewport={{ once: true, amount: 0.1, margin: "-50px" }}
                             variants={cardVariants}
+                            style={{ willChange: 'transform, opacity' }}
                         >
                             {/* Mobile Card - Ultra compact for 2-column grid */}
                             <div className="relative bg-white/95 backdrop-blur-xl rounded-xl p-3 sm:p-4 md:p-6 border border-white/50 shadow-md h-full flex flex-col group-hover:shadow-xl transition-shadow duration-300">
@@ -337,20 +339,19 @@ const Services = () => {
                                     variants={lineVariants}
                                 />
 
-                                {/* Shimmer Effect */}
+                                {/* Shimmer Effect - constrained to prevent overflow */}
                                 <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
                                     <motion.div
-                                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full"
-                                        style={{ width: '200%' }}
+                                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full w-full"
                                         whileHover={{ x: '100%' }}
                                         transition={{ duration: 1 }}
                                     />
                                 </div>
                             </div>
 
-                            {/* Floating Number Badge - Smaller on mobile */}
+                            {/* Floating Number Badge - Smaller on mobile, constrained to prevent overflow */}
                             <motion.div
-                                className="absolute -top-2 -right-2 w-7 h-7 md:w-8 md:h-8 bg-gradient-to-r from-primary-teal to-blue-500 text-white text-xs md:text-sm font-bold rounded-full flex items-center justify-center shadow-md z-20"
+                                className="absolute -top-1 right-2 sm:-top-2 sm:right-2 md:right-0 w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 bg-gradient-to-r from-primary-teal to-blue-500 text-white text-[10px] sm:text-xs md:text-sm font-bold rounded-full flex items-center justify-center shadow-md z-20"
                                 initial="hidden"
                                 whileInView="visible"
                                 viewport={{ once: true }}

@@ -200,8 +200,9 @@ const AboutUs = () => {
                     <div className="grid md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 mt-8 sm:mt-10 md:mt-12">
                         <FadeIn direction="right" delay={0.2}>
                             <motion.div
-                                className="bg-bg-soft p-6 sm:p-8 md:p-10 rounded-xl sm:rounded-2xl shadow-card border border-border-light text-left"
-                                whileHover={{ y: -5, boxShadow: '0 20px 40px rgba(0,128,128,0.1)' }}
+                                className="bg-bg-soft p-6 sm:p-8 md:p-10 rounded-xl sm:rounded-2xl shadow-card border border-border-light text-left will-change-transform"
+                                whileHover={{ y: -2, boxShadow: '0 20px 40px rgba(0,128,128,0.1)' }}
+                                style={{ transform: 'translateZ(0)' }}
                             >
                                 <div className="inline-flex items-center justify-center px-3 py-1 rounded-full bg-primary-light text-primary-dark text-[10px] sm:text-xs font-bold tracking-widest uppercase mb-4 sm:mb-6">
                                     Our Mission
@@ -217,8 +218,9 @@ const AboutUs = () => {
 
                         <FadeIn direction="left" delay={0.4}>
                             <motion.div
-                                className="bg-gradient-to-br from-primary-teal to-primary-dark p-6 sm:p-8 md:p-10 rounded-xl sm:rounded-2xl shadow-card text-white relative overflow-hidden"
-                                whileHover={{ y: -5, boxShadow: '0 20px 40px rgba(0,128,128,0.3)' }}
+                                className="bg-gradient-to-br from-primary-teal to-primary-dark p-6 sm:p-8 md:p-10 rounded-xl sm:rounded-2xl shadow-card text-white relative overflow-hidden will-change-transform"
+                                whileHover={{ y: -2, boxShadow: '0 20px 40px rgba(0,128,128,0.3)' }}
+                                style={{ transform: 'translateZ(0)' }}
                             >
                                 <div className="absolute right-0 top-0 w-20 sm:w-32 h-20 sm:h-32 bg-white/10 rounded-full blur-2xl sm:blur-3xl" />
                                 <div className="relative z-10">
@@ -261,8 +263,9 @@ const AboutUs = () => {
                         {team.map((member, idx) => (
                             <FadeIn key={idx} delay={idx * 0.15}>
                                 <motion.div
-                                    className="group relative bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-card border border-border-light hover:shadow-xl"
-                                    whileHover={{ y: -8 }}
+                                    className="group relative bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-card border border-border-light hover:shadow-xl will-change-transform"
+                                    whileHover={{ y: -4 }}
+                                    style={{ transform: 'translateZ(0)' }}
                                 >
                                     {/* Image Container */}
                                     <div className="relative aspect-[3/4] sm:aspect-[4/5] bg-gradient-to-br from-bg-soft to-white">

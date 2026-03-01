@@ -193,11 +193,12 @@ const Portfolio = () => {
                                 }}
                                 onHoverStart={() => setHoveredProject(project.id)}
                                 onHoverEnd={() => setHoveredProject(null)}
-                                className="group relative bg-white rounded-xl md:rounded-3xl overflow-hidden border border-border-light/50"
+                                className="group relative bg-white rounded-xl md:rounded-3xl overflow-hidden border border-border-light/50 will-change-transform"
                                 whileHover={{
-                                    y: -8,
+                                    y: -4,
                                     boxShadow: '0 20px 50px rgba(0,0,0,0.1)'
                                 }}
+                                style={{ transform: 'translateZ(0)' }}
                             >
                                 {/* Card Glow Effect */}
                                 <motion.div

@@ -205,8 +205,8 @@ const LeadCapture = () => {
                         transition={{ duration: 0.6, delay: 0.2, type: "spring", stiffness: 100 }}
                         className="relative"
                     >
-                        {/* Decorative blob behind form */}
-                        <div className="absolute -inset-4 bg-gradient-to-tr from-primary-teal/10 to-transparent rounded-[2rem] blur-2xl -z-10 animate-pulse-glow" />
+                        {/* Decorative blob behind form - constrained to prevent overflow */}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-primary-teal/10 to-transparent rounded-[2rem] blur-2xl -z-10 animate-pulse-glow scale-110" />
 
                         <div className="glass-card p-6 sm:p-8 md:p-10 relative z-10 border border-border-light/50 shadow-xl shadow-primary-teal/5">
                             {isSubmitted ? (
@@ -374,7 +374,7 @@ const LeadCapture = () => {
                                                 initial={{ opacity: 0, height: 0, marginTop: 0 }}
                                                 animate={{ opacity: 1, height: 'auto', marginTop: 20 }}
                                                 exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                                                className="relative group overflow-visible"
+                                                className="relative group"
                                                 ref={subDropdownRef}
                                             >
                                                 <label htmlFor="subService" className="block text-sm font-medium text-text-heading mb-2 group-[.is-active]:text-primary-teal transition-colors">

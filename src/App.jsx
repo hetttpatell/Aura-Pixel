@@ -84,14 +84,12 @@ function App() {
   return (
     <BrowserRouter>
       <ScrollToHash />
-      <div className="min-h-screen bg-bg-main font-body text-text-body antialiased">
+      <div className="min-h-[100dvh] bg-bg-main font-body text-text-body antialiased">
         <Navbar />
-
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutUs />} />
         </Routes>
-
         <Suspense fallback={<div className="h-64 bg-bg-soft" />}>
           <Footer />
         </Suspense>

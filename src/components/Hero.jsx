@@ -41,16 +41,16 @@ const desktopPositions = [
     { top: '80%', right: '10%' },
 ];
 
-// Mobile positions for bubble icons around the smaller image - properly spaced to avoid overlap
+// Mobile positions for bubble icons around the smaller image - constrained to prevent overflow
 const mobilePositions = [
-    { top: '10%', left: '-3%' },
-    { top: '10%', right: '-3%' },
-    { top: '30%', left: '-6%' },
-    { top: '30%', right: '-6%' },
-    { top: '50%', left: '-3%' },
-    { top: '50%', right: '-3%' },
-    { top: '70%', left: '-6%' },
-    { top: '70%', right: '-6%' },
+    { top: '10%', left: '2%' },
+    { top: '10%', right: '2%' },
+    { top: '30%', left: '0%' },
+    { top: '30%', right: '0%' },
+    { top: '50%', left: '2%' },
+    { top: '50%', right: '2%' },
+    { top: '70%', left: '0%' },
+    { top: '70%', right: '0%' },
 ];
 
 const Hero = () => {
@@ -93,7 +93,7 @@ const Hero = () => {
     };
 
     return (
-        <section id="home" className="relative min-h-screen flex items-center pt-20 sm:pt-24 lg:pt-28 pb-10 overflow-visible">
+        <section id="home" className="relative min-h-[100dvh] flex items-center pt-20 sm:pt-24 lg:pt-28 pb-10 overflow-hidden">
             <div className="max-w-[1280px] mx-auto px-4 sm:px-6 w-full">
                 <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 items-center w-full">
 
@@ -205,7 +205,7 @@ const Hero = () => {
                     >
                         <div className="relative">
                             {/* Image container — smaller on mobile */}
-                            <div className="relative w-full max-w-[280px] sm:max-w-xs md:max-w-sm lg:max-w-md mx-auto mt-4 lg:mt-0 overflow-visible">
+                            <div className="relative w-full max-w-[280px] sm:max-w-xs md:max-w-sm lg:max-w-md mx-auto mt-4 lg:mt-0">
                                 {/* Splash background */}
                                 <motion.img
                                     src="/Splash.png"

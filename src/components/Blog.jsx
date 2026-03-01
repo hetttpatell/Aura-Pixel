@@ -91,11 +91,12 @@ const Blog = () => {
                             transition={{ duration: 0.5, delay: index * 0.1 }}
                             onHoverStart={() => setHoveredPost(post.id)}
                             onHoverEnd={() => setHoveredPost(null)}
-                            className="group relative bg-white rounded-xl md:rounded-3xl overflow-hidden border border-border-light/50 flex flex-col h-full"
+                            className="group relative bg-white rounded-xl md:rounded-3xl overflow-hidden border border-border-light/50 flex flex-col h-full will-change-transform"
                             whileHover={{
-                                y: -8,
+                                y: -4,
                                 boxShadow: '0 20px 50px rgba(0,0,0,0.1)'
                             }}
+                            style={{ transform: 'translateZ(0)' }}
                         >
                             {/* Card Glow Effect */}
                             <motion.div
