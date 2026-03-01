@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiOutlineExternalLink, HiOutlineEye } from 'react-icons/hi';
-import useReducedMotion from '../hooks/useReducedMotion';
+import { useReducedMotion } from '../../hooks';
 
 const filters = ['All', 'Branding', 'Web Design', 'Marketing', 'Social Media'];
 

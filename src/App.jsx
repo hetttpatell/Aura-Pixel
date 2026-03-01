@@ -1,22 +1,29 @@
 import { useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, useParams } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import SkipToContent from './components/SkipToContent';
-import Hero from './components/Hero';
-import Services from './components/Services';
-import WhyChooseUs from './components/WhyChooseUs';
-import AboutUs from './components/AboutUs/AboutUs';
-import ServicesDetail from './components/Services/ServicesDetail';
-import useSEO from './hooks/useSEO';
 
-// Lazy load below-the-fold components
-const Portfolio = lazy(() => import('./components/Portfolio'));
-const ScrollingCompany = lazy(() => import('./components/ScrollingCompany'));
-const Testimonials = lazy(() => import('./components/Testimonials'));
-const Blog = lazy(() => import('./components/Blog'));
-const LeadCapture = lazy(() => import('./components/LeadCapture'));
-const Footer = lazy(() => import('./components/Footer'));
-const BlogPage = lazy(() => import('./components/Blog/BlogPage'));
+// Layout Components
+import { Navbar, Footer } from './components/layout';
+
+// Common Components
+import { SkipToContent } from './components/common';
+
+// Section Components
+import { Hero, Services, WhyChooseUs } from './components/sections';
+
+// Feature Components
+import AboutUs from './features/about/AboutUs';
+import ServicesDetail from './features/services/ServicesDetail';
+import BlogPage from './features/blog/BlogPage';
+
+// Hooks
+import { useSEO } from './hooks';
+
+// Lazy load below-the-fold section components
+const Portfolio = lazy(() => import('./components/sections/Portfolio'));
+const ScrollingCompany = lazy(() => import('./components/sections/ScrollingCompany'));
+const Testimonials = lazy(() => import('./components/sections/Testimonials'));
+const Blog = lazy(() => import('./components/sections/Blog'));
+const LeadCapture = lazy(() => import('./components/sections/LeadCapture'));
 
 // Simple loader for lazy sections
 const SectionLoader = () => (

@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import useReducedMotion from '../hooks/useReducedMotion';
+import { useReducedMotion } from '../../hooks';
 import { HiOutlineMail, HiOutlinePhone, HiOutlineUser, HiOutlineChat, HiChevronDown } from 'react-icons/hi';
 import { FiSend } from 'react-icons/fi';
 import emailjs from '@emailjs/browser';
-import { services } from '../constants/services';
+import { services } from '../../constants';
 
 // Removed budgetOptions as we're switching to services dropdown
 

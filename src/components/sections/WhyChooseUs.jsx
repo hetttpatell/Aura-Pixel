@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { motion, useInView, useMotionValue, useSpring } from 'framer-motion';
-import useReducedMotion from '../hooks/useReducedMotion';
+import { useReducedMotion } from '../../hooks';
 import {
     HiOutlineLightningBolt,
     HiOutlineUserGroup,

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import useReducedMotion from '../hooks/useReducedMotion';
+import { useReducedMotion } from '../../hooks';
 
 const companies = Array.from({ length: 9 }, (_, i) => ({
     id: i + 1,

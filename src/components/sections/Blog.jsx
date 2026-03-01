@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { HiOutlineCalendar, HiOutlineArrowRight } from 'react-icons/hi';
-import useReducedMotion from '../hooks/useReducedMotion';
+import { useReducedMotion } from '../../hooks';
 
 const blogPosts = [
     {

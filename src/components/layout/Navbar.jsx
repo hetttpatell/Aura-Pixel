@@ -5,8 +5,8 @@ import { HiMenuAlt3, HiX, HiChevronDown } from 'react-icons/hi';
 import { BsArrowRight, BsLightningChargeFill } from 'react-icons/bs';
 
 
-import { services } from '../constants/services';
-import { serviceCategories, subServicesContent } from './Services/servicesContent';
+import { services } from '../../constants';
+import { serviceCategories, subServicesContent } from '../../features/services/servicesContent';
 
 // Helper function to convert service name to URL-friendly ID
 const getServiceId = (serviceName) => {
