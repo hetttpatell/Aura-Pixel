@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { HiOutlineCalendar, HiOutlineArrowRight } from 'react-icons/hi';
 import useReducedMotion from '../hooks/useReducedMotion';
 
@@ -176,22 +177,24 @@ const Blog = () => {
                     viewport={{ once: true, amount: 0.3 }}
                     transition={{ duration: 0.5, delay: 0.3 }}
                 >
-                    <motion.button
-                        className="relative px-8 md:px-10 py-3 md:py-4 bg-gradient-to-r from-primary-teal to-cyan-500 text-white font-heading font-bold text-base md:text-lg rounded-full shadow-lg overflow-hidden group"
-                        whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(0, 128, 128, 0.4)' }}
-                        whileTap={{ scale: 0.95 }}
-                    >
-                        <span className="relative z-10 flex items-center gap-2">
-                            View All Articles
-                            <motion.span
-                                animate={{ x: [0, 5, 0] }}
-                                transition={{ duration: 1.5, repeat: Infinity }}
-                            >
-                                →
-                            </motion.span>
-                        </span>
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                    </motion.button>
+                    <Link to="/blog">
+                        <motion.button
+                            className="relative px-8 md:px-10 py-3 md:py-4 bg-gradient-to-r from-primary-teal to-cyan-500 text-white font-heading font-bold text-base md:text-lg rounded-full shadow-lg overflow-hidden group"
+                            whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(0, 128, 128, 0.4)' }}
+                            whileTap={{ scale: 0.95 }}
+                        >
+                            <span className="relative z-10 flex items-center gap-2">
+                                View All Articles
+                                <motion.span
+                                    animate={{ x: [0, 5, 0] }}
+                                    transition={{ duration: 1.5, repeat: Infinity }}
+                                >
+                                    →
+                                </motion.span>
+                            </span>
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                        </motion.button>
+                    </Link>
                 </motion.div>
             </div>
         </section>

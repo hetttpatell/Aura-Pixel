@@ -5,6 +5,7 @@ import Hero from './components/Hero';
 import Services from './components/Services';
 import WhyChooseUs from './components/WhyChooseUs';
 import AboutUs from './components/AboutUs/AboutUs';
+import ServicesDetail from './components/Services/ServicesDetail';
 
 // Lazy load below-the-fold components
 const Portfolio = lazy(() => import('./components/Portfolio'));
@@ -13,6 +14,7 @@ const Testimonials = lazy(() => import('./components/Testimonials'));
 const Blog = lazy(() => import('./components/Blog'));
 const LeadCapture = lazy(() => import('./components/LeadCapture'));
 const Footer = lazy(() => import('./components/Footer'));
+const BlogPage = lazy(() => import('./components/Blog/BlogPage'));
 
 // Simple loader for lazy sections
 const SectionLoader = () => (
@@ -29,12 +31,13 @@ const ScrollToHash = () => {
 
   useEffect(() => {
     if (hash) {
+      // Wait longer for lazy-loaded components to render
       setTimeout(() => {
         const element = document.querySelector(hash);
         if (element) {
           element.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-      }, 100);
+      }, 300);
     } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -89,6 +92,13 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutUs />} />
+          <Route path="/blog" element={
+            <Suspense fallback={<SectionLoader />}>
+              <BlogPage />
+            </Suspense>
+          } />
+          <Route path="/services" element={<ServicesDetail />} />
+          <Route path="/services/:serviceId" element={<ServicesDetail />} />
         </Routes>
         <Suspense fallback={<div className="h-64 bg-bg-soft" />}>
           <Footer />

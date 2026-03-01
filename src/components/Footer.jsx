@@ -45,7 +45,15 @@ const Footer = () => {
     const navigate = useNavigate();
 
     const handleNavClick = (href) => {
+        // Check if navigating to a different page (not just a hash on the same page)
+        const isFullPageNavigation = href.startsWith('/') && !href.startsWith('/#');
+
         navigate(href.startsWith('#') ? `/${href}` : href);
+
+        // Scroll to top for full page navigations
+        if (isFullPageNavigation) {
+            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        }
     };
 
     return (

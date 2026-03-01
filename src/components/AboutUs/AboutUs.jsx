@@ -8,7 +8,7 @@ const stats = [
     { value: '3.4k+', label: 'Active Clients', suffix: '+', prefix: '', endValue: 3400 },
     { value: '85k', label: 'Projects Done', suffix: '', prefix: '', endValue: 85 },
     { value: '180K', label: 'Work Joined', suffix: 'K', prefix: '', endValue: 180 },
-    { value: '8.5k', label: 'Successful Campaigns', suffix: 'k', prefix: '', endValue: 8500 },
+    { value: '8.5', label: 'Successful Campaigns', suffix: 'k', prefix: '', endValue: 8500 },
 ];
 
 const team = [
@@ -99,29 +99,21 @@ const Counter = ({ value, suffix, prefix, inView }) => {
     return <span>{prefix}{count}{suffix}</span>;
 };
 
-const StatCard = ({ stat, index, inView }) => {
-    return (
-        <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
-            className="text-center"
-        >
-            <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-text-heading tracking-tight font-heading">
-                <Counter value={stat.value} suffix={stat.suffix} prefix={stat.prefix} inView={inView} />
-            </span>
-            <span className="block text-[10px] sm:text-xs md:text-sm text-text-body font-medium uppercase tracking-wider mt-1 sm:mt-2">
-                {stat.label}
-            </span>
-        </motion.div>
-    );
-};
+// StatCard component has been replaced with inline motion.div for better performance
 
 const AboutUs = () => {
     const [openFaqIndex, setOpenFaqIndex] = useState(0);
     const statsRef = useRef(null);
     const isStatsInView = useInView(statsRef, { once: true, amount: 0.3 });
+
+    // Scroll to top when component mounts
+    useEffect(() => {
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'smooth'
+        });
+    }, []);
 
     return (
         <div className="bg-bg-main font-body overflow-x-hidden text-text-body">
@@ -143,99 +135,290 @@ const AboutUs = () => {
             </section>
 
             {/* Dedicated to Your Success */}
-            <section className="py-10 sm:py-14 md:py-20 px-4 sm:px-6 bg-gradient-to-br from-bg-soft via-white to-bg-soft">
+            <section className="py-12 sm:py-16 md:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-50 via-white to-cyan-50/30 overflow-hidden">
                 <div className="max-w-[1280px] mx-auto">
-                    <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+                    <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
                         {/* Left - Image */}
-                        <FadeIn direction="right">
-                            <div className="relative rounded-xl sm:rounded-2xl overflow-hidden aspect-[4/3] md:aspect-[16/10] shadow-lg">
-                                <img
+                        <motion.div
+                            initial={{ opacity: 0, x: -60 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true, margin: "-100px" }}
+                            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+                            className="relative order-2 md:order-1"
+                        >
+                            <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden aspect-[4/3] md:aspect-[16/10] shadow-2xl image-hover-lift gpu-smooth">
+                                <motion.img
                                     src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80"
                                     alt="Team working"
                                     className="w-full h-full object-cover"
+                                    whileHover={{ scale: 1.05 }}
+                                    transition={{ duration: 0.6 }}
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 via-transparent to-transparent" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent" />
                             </div>
-                        </FadeIn>
+                            {/* Decorative Element */}
+                            <motion.div
+                                className="absolute -bottom-4 -right-4 w-24 h-24 bg-gradient-to-br from-primary-teal/20 to-cyan-400/20 rounded-full blur-2xl"
+                                animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
+                                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                            />
+                        </motion.div>
 
                         {/* Right - Text */}
-                        <FadeIn direction="left" delay={0.2}>
-                            <div className="space-y-4 sm:space-y-6">
-                                <h2 className="text-2xl sm:text-3xl md:text-[42px] font-bold leading-tight font-heading text-text-heading">
-                                    Dedicated to Your <br />
-                                    <span className="text-primary-teal">Success</span> with <br />
-                                    <span className="text-cyan-500">Innovative</span> Digital <br />
-                                    Marketing Solutions
-                                </h2>
-                                <p className="text-sm sm:text-base text-text-body leading-relaxed max-xl">
-                                    When you choose our full-service digital marketing agency, you get a custom strategy that fits your unique goals.
-                                </p>
-                            </div>
-                        </FadeIn>
+                        <motion.div
+                            initial={{ opacity: 0, x: 60 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true, margin: "-100px" }}
+                            transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+                            className="space-y-6 sm:space-y-8 order-1 md:order-2"
+                        >
+                            {/* Section Label */}
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.6, delay: 0.3 }}
+                                className="inline-flex items-center gap-2 px-4 py-2 bg-primary-light/80 rounded-full"
+                            >
+                                <span className="w-2 h-2 bg-primary-teal rounded-full animate-pulse" />
+                                <span className="text-sm font-semibold text-primary-teal tracking-wide">Our Commitment</span>
+                            </motion.div>
+
+                            {/* Enhanced Heading */}
+                            <h2 className="dedicated-heading text-shadow-soft">
+                                <motion.span
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 0.7, delay: 0.35 }}
+                                    className="line block"
+                                >
+                                    Dedicated to Your{' '}
+                                    <span className="highlight">Success</span>
+                                </motion.span>
+                                <motion.span
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 0.7, delay: 0.45 }}
+                                    className="line block"
+                                >
+                                    with <span className="highlight-cyan">Innovative</span>
+                                </motion.span>
+                                <motion.span
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 0.7, delay: 0.55 }}
+                                    className="line block"
+                                >
+                                    Digital Marketing Solutions
+                                </motion.span>
+                            </h2>
+
+                            {/* Description */}
+                            <motion.p
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.6, delay: 0.65 }}
+                                className="text-base sm:text-lg text-text-body leading-relaxed max-w-lg"
+                            >
+                                When you choose our full-service digital marketing agency, you get a custom strategy that fits your unique goals. We blend creativity with data-driven insights to deliver exceptional results.
+                            </motion.p>
+
+                            {/* CTA Button */}
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.6, delay: 0.75 }}
+                            >
+                                <motion.a
+                                    href="/#services"
+                                    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-teal to-cyan-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-shadow"
+                                    whileHover={{ scale: 1.02, y: -2 }}
+                                    whileTap={{ scale: 0.98 }}
+                                >
+                                    Explore Our Services
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                    </svg>
+                                </motion.a>
+                            </motion.div>
+                        </motion.div>
                     </div>
 
                     {/* Stats */}
-                    <div ref={statsRef} className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 md:gap-8 border-t border-border-light pt-8 sm:pt-10 md:pt-12 mt-8 sm:mt-10 md:mt-12">
+                    <motion.div
+                        ref={statsRef}
+                        className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 md:gap-8 pt-10 sm:pt-14 md:pt-16 mt-10 sm:mt-14 md:mt-16"
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        viewport={{ once: true, amount: 0.3 }}
+                        transition={{ duration: 0.6 }}
+                    >
+                        {/* Animated Border Top */}
+                        <motion.div
+                            className="col-span-full h-px bg-gradient-to-r from-transparent via-primary-teal/30 to-transparent mb-8 sm:mb-10"
+                            initial={{ scaleX: 0 }}
+                            whileInView={{ scaleX: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+                        />
                         {stats.map((stat, idx) => (
-                            <StatCard key={idx} stat={stat} index={idx} inView={isStatsInView} />
+                            <motion.div
+                                key={idx}
+                                initial={{ opacity: 0, y: 40, scale: 0.9 }}
+                                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                                viewport={{ once: true, amount: 0.5 }}
+                                transition={{
+                                    duration: 0.7,
+                                    delay: idx * 0.12,
+                                    ease: [0.22, 1, 0.36, 1]
+                                }}
+                                whileHover={{ y: -4, scale: 1.02 }}
+                                className="relative text-center p-4 sm:p-6 rounded-2xl bg-white/50 backdrop-blur-sm border border-primary-teal/10 hover:border-primary-teal/30 hover:bg-white/80 hover:shadow-lg transition-all duration-500 gpu-smooth"
+                            >
+                                {/* Subtle gradient background */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-primary-teal/5 to-cyan-400/5 rounded-2xl opacity-0 hover:opacity-100 transition-opacity duration-500" />
+                                <div className="relative z-10">
+                                    <span className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-text-heading tracking-tight font-heading bg-gradient-to-r from-primary-teal to-cyan-600 bg-clip-text text-transparent">
+                                        <Counter value={stat.value} suffix={stat.suffix} prefix={stat.prefix} inView={isStatsInView} />
+                                    </span>
+                                    <span className="block text-xs sm:text-sm text-text-body font-medium uppercase tracking-widest mt-2 sm:mt-3">
+                                        {stat.label}
+                                    </span>
+                                </div>
+                            </motion.div>
                         ))}
-                    </div>
+                    </motion.div>
                 </div>
             </section>
 
             {/* Vision & Mission */}
-            <section className="py-10 sm:py-14 md:py-20 px-4 sm:px-6 bg-white">
-                <div className="max-w-[1280px] mx-auto text-center">
-                    <FadeIn>
-                        <div className="inline-flex items-center justify-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-gradient-to-r from-primary-light to-cyan-50 text-primary-teal font-heading font-semibold text-xs sm:text-sm rounded-full mb-4 sm:mb-6 border border-primary-teal/20">
+            <section className="py-12 sm:py-16 md:py-24 px-4 sm:px-6 lg:px-8 bg-white relative overflow-hidden">
+                {/* Background Decoration */}
+                <div className="absolute inset-0 pointer-events-none">
+                    <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary-teal/5 rounded-full blur-3xl" />
+                    <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-400/5 rounded-full blur-3xl" />
+                </div>
+
+                <div className="max-w-[1280px] mx-auto text-center relative z-10">
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: "-100px" }}
+                        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.5, delay: 0.2 }}
+                            className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-light to-cyan-50 text-primary-teal font-heading font-semibold text-sm rounded-full mb-6 sm:mb-8 border border-primary-teal/20"
+                        >
                             <span className="w-2 h-2 bg-primary-teal rounded-full animate-pulse" />
                             Our Vision & Mission
-                        </div>
-                        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-text-heading mb-6 sm:mb-8 max-w-3xl mx-auto leading-tight font-heading">
-                            Empowering Brands to Thrive in the <span className="text-gradient">Digital World</span>
+                        </motion.div>
+                        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-text-heading mb-6 sm:mb-8 max-w-4xl mx-auto leading-tight font-heading">
+                            <motion.span
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.6, delay: 0.3 }}
+                                className="block"
+                            >
+                                Empowering Brands to
+                            </motion.span>
+                            <motion.span
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.6, delay: 0.4 }}
+                                className="block"
+                            >
+                                Thrive in the <span className="text-gradient">Digital World</span>
+                            </motion.span>
                         </h2>
-                    </FadeIn>
+                    </motion.div>
 
                     {/* Mission & Vision Cards */}
-                    <div className="grid md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 mt-8 sm:mt-10 md:mt-12">
-                        <FadeIn direction="right" delay={0.2}>
+                    <div className="grid md:grid-cols-2 gap-6 sm:gap-8 mt-10 sm:mt-14 md:mt-16">
+                        <motion.div
+                            initial={{ opacity: 0, x: -50, rotateY: -5 }}
+                            whileInView={{ opacity: 1, x: 0, rotateY: 0 }}
+                            viewport={{ once: true, margin: "-50px" }}
+                            transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                        >
                             <motion.div
-                                className="bg-bg-soft p-6 sm:p-8 md:p-10 rounded-xl sm:rounded-2xl shadow-card border border-border-light text-left will-change-transform"
-                                whileHover={{ y: -2, boxShadow: '0 20px 40px rgba(0,128,128,0.1)' }}
-                                style={{ transform: 'translateZ(0)' }}
+                                className="bg-gradient-to-br from-slate-50 to-white p-8 sm:p-10 md:p-12 rounded-2xl sm:rounded-3xl shadow-lg border border-slate-100 text-left h-full gpu-smooth relative overflow-hidden group"
+                                whileHover={{ y: -6, boxShadow: '0 25px 50px -12px rgba(0,128,128,0.15)' }}
+                                transition={{ duration: 0.4 }}
                             >
-                                <div className="inline-flex items-center justify-center px-3 py-1 rounded-full bg-primary-light text-primary-dark text-[10px] sm:text-xs font-bold tracking-widest uppercase mb-4 sm:mb-6">
-                                    Our Mission
-                                </div>
-                                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-text-heading mb-3 sm:mb-4 font-heading">
-                                    Empowering brands through innovation
-                                </h3>
-                                <p className="text-sm sm:text-base text-text-body leading-relaxed">
-                                    We empower brands to thrive digitally through cutting-edge strategies that consistently engage, inspire, and foster sustainable growth.
-                                </p>
-                            </motion.div>
-                        </FadeIn>
-
-                        <FadeIn direction="left" delay={0.4}>
-                            <motion.div
-                                className="bg-gradient-to-br from-primary-teal to-primary-dark p-6 sm:p-8 md:p-10 rounded-xl sm:rounded-2xl shadow-card text-white relative overflow-hidden will-change-transform"
-                                whileHover={{ y: -2, boxShadow: '0 20px 40px rgba(0,128,128,0.3)' }}
-                                style={{ transform: 'translateZ(0)' }}
-                            >
-                                <div className="absolute right-0 top-0 w-20 sm:w-32 h-20 sm:h-32 bg-white/10 rounded-full blur-2xl sm:blur-3xl" />
+                                {/* Hover gradient overlay */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-primary-teal/5 to-cyan-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                                 <div className="relative z-10">
-                                    <div className="inline-flex items-center justify-center px-3 py-1 rounded-full bg-white/20 text-white text-[10px] sm:text-xs font-bold tracking-widest uppercase mb-4 sm:mb-6 backdrop-blur-sm">
+                                    <motion.div
+                                        initial={{ opacity: 0, scale: 0.8 }}
+                                        whileInView={{ opacity: 1, scale: 1 }}
+                                        viewport={{ once: true }}
+                                        transition={{ duration: 0.5, delay: 0.4 }}
+                                        className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-primary-light text-primary-dark text-xs font-bold tracking-widest uppercase mb-6"
+                                    >
+                                        Our Mission
+                                    </motion.div>
+                                    <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-text-heading mb-4 font-heading">
+                                        Empowering brands through innovation
+                                    </h3>
+                                    <p className="text-base sm:text-lg text-text-body leading-relaxed">
+                                        We empower brands to thrive digitally through cutting-edge strategies that consistently engage, inspire, and foster sustainable growth.
+                                    </p>
+                                </div>
+                            </motion.div>
+                        </motion.div>
+
+                        <motion.div
+                            initial={{ opacity: 0, x: 50, rotateY: 5 }}
+                            whileInView={{ opacity: 1, x: 0, rotateY: 0 }}
+                            viewport={{ once: true, margin: "-50px" }}
+                            transition={{ duration: 0.8, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                        >
+                            <motion.div
+                                className="bg-gradient-to-br from-primary-teal via-teal-600 to-cyan-700 p-8 sm:p-10 md:p-12 rounded-2xl sm:rounded-3xl shadow-xl text-white relative overflow-hidden h-full gpu-smooth group"
+                                whileHover={{ y: -6, boxShadow: '0 25px 50px -12px rgba(0,128,128,0.35)' }}
+                                transition={{ duration: 0.4 }}
+                            >
+                                {/* Animated background elements */}
+                                <motion.div
+                                    className="absolute right-0 top-0 w-40 h-40 bg-white/10 rounded-full blur-3xl"
+                                    animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+                                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                                />
+                                <motion.div
+                                    className="absolute left-0 bottom-0 w-32 h-32 bg-cyan-400/20 rounded-full blur-2xl"
+                                    animate={{ scale: [1, 1.3, 1], opacity: [0.2, 0.4, 0.2] }}
+                                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                                />
+                                <div className="relative z-10">
+                                    <motion.div
+                                        initial={{ opacity: 0, scale: 0.8 }}
+                                        whileInView={{ opacity: 1, scale: 1 }}
+                                        viewport={{ once: true }}
+                                        transition={{ duration: 0.5, delay: 0.5 }}
+                                        className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-white/20 text-white text-xs font-bold tracking-widest uppercase mb-6 backdrop-blur-sm"
+                                    >
                                         Our Vision
-                                    </div>
-                                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-3 sm:mb-4 font-heading">
+                                    </motion.div>
+                                    <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 font-heading">
                                         Leading digital transformation
                                     </h3>
-                                    <p className="text-sm sm:text-base text-white/80 leading-relaxed">
+                                    <p className="text-base sm:text-lg text-white/90 leading-relaxed">
                                         To be the primary catalyst for digital transformation, setting new standards of creative excellence worldwide.
                                     </p>
                                 </div>
                             </motion.div>
-                        </FadeIn>
+                        </motion.div>
                     </div>
                 </div>
             </section>

@@ -2,11 +2,60 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
 import { HiMenuAlt3, HiX, HiChevronDown } from 'react-icons/hi';
-import { BsArrowRight, BsLightningChargeFill, BsCameraFill, BsBagCheckFill, BsFilm, BsPenFill } from 'react-icons/bs';
-import { MdTrendingUp, MdBrush, MdMicNone } from 'react-icons/md';
-import { FaInstagram, FaGoogle, FaFacebook } from 'react-icons/fa';
+import { BsArrowRight, BsLightningChargeFill } from 'react-icons/bs';
+
 
 import { services } from '../constants/services';
+import { serviceCategories, subServicesContent } from './Services/servicesContent';
+
+// Helper function to convert service name to URL-friendly ID
+const getServiceId = (serviceName) => {
+    const nameToIdMap = {
+        'Social Media': 'social-media',
+        'SEO': 'seo',
+        'Google Ads': 'google-ads',
+        'Meta Ads': 'meta-ads',
+        'E-commerce': 'e-commerce',
+        'Content Writing': 'content-writing',
+        'Podcast Productions': 'podcast-productions',
+        'Product Photography': 'product-photography',
+        'Content Creation': 'content-creation',
+        'Video & Photo Editing': 'video-photo-editing'
+    };
+    return nameToIdMap[serviceName] || serviceName.toLowerCase().replace(/\s+/g, '-');
+};
+
+// Helper function to convert sub-service name to URL-friendly ID
+const getSubServiceId = (subServiceName) => {
+    const nameToIdMap = {
+        'Instagram': 'instagram',
+        'Facebook': 'facebook',
+        'LinkedIn': 'linkedin',
+        'YouTube': 'youtube',
+        'Website SEO': 'website-seo',
+        'On-Page SEO': 'on-page-seo',
+        'Off-Page SEO': 'off-page-seo',
+        'Keyword Angles': 'keyword-angles',
+        'Research and Development': 'research-and-development',
+        'GMB': 'gmb',
+        'YouTube SEO': 'youtube-seo',
+        'App SEO': 'app-seo',
+        'E-commerce SEO': 'e-commerce-seo',
+        'PPC Ads': 'ppc-ads',
+        'Search Ads': 'search-ads',
+        'Display Ads': 'display-ads',
+        'Video Ads': 'video-ads',
+        'App Install Ads': 'app-install-ads',
+        'Performance MAX': 'performance-max',
+        'Shopping Ads': 'shopping-ads',
+        'Campaign Management': 'campaign-management',
+        'Awareness Ads': 'awareness-ads',
+        'Branding Ads': 'branding-ads',
+        'Lead Generation': 'lead-generation',
+        'Sales': 'sales'
+    };
+    return nameToIdMap[subServiceName] || subServiceName.toLowerCase().replace(/\s+/g, '-');
+};
 
 const EASE = [0.25, 0.46, 0.45, 0.94];
 
@@ -48,7 +97,7 @@ const navLinks = [
     { name: 'Services', href: '/#services', hasDropdown: true },
     { name: 'About Us', href: '/about' },
     { name: 'Portfolio', href: '/#portfolio' },
-    { name: 'Blog', href: '/#blog' },
+    { name: 'Blog', href: '/blog' },
     { name: 'Contact', href: '/#contact' },
 ];
 
@@ -76,6 +125,17 @@ const Navbar = () => {
 
             if (location.pathname === '/about') {
                 setActiveSection('about');
+                return;
+            }
+
+            if (location.pathname === '/blog') {
+                setActiveSection('blog');
+                return;
+            }
+
+            // Check if on services page (either /services or /services/:serviceId)
+            if (location.pathname.startsWith('/services')) {
+                setActiveSection('services');
                 return;
             }
 
@@ -123,7 +183,16 @@ const Navbar = () => {
         setIsServicesOpen(false);
         setIsMobileServicesOpen(false);
         document.body.style.overflow = '';
+
+        // Check if navigating to a different page (not just a hash on the same page)
+        const isFullPageNavigation = href.startsWith('/') && !href.startsWith('/#');
+
         navigate(href.startsWith('#') ? `/${href}` : href);
+
+        // Scroll to top for full page navigations
+        if (isFullPageNavigation) {
+            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        }
     };
 
     const openServices = () => { clearTimeout(servicesTimeout.current); setIsServicesOpen(true); };
@@ -263,8 +332,11 @@ const Navbar = () => {
                                                                 className="flex flex-col px-3 py-2.5 rounded-xl hover:bg-primary-light/60 group/item cursor-pointer overflow-hidden transform-gpu"
                                                             >
                                                                 <a
-                                                                    href={service.href}
-                                                                    onClick={(e) => { e.preventDefault(); handleNavClick(service.href); }}
+                                                                    href={`/services/${getServiceId(service.name)}`}
+                                                                    onClick={(e) => {
+                                                                        e.preventDefault();
+                                                                        handleNavClick(`/services/${getServiceId(service.name)}`);
+                                                                    }}
                                                                     className="flex items-center gap-3"
                                                                 >
                                                                     <div className={`w-9 h-9 rounded-xl ${service.bg} flex items-center justify-center flex-shrink-0 group-hover/item:scale-110 group-hover/item:shadow-sm transition-transform duration-200`}>
@@ -288,8 +360,13 @@ const Navbar = () => {
                                                                                 className="flex flex-wrap gap-1.5 pl-[48px] overflow-hidden transform-gpu pt-3"
                                                                             >
                                                                                 {service.subServices.map((sub, i) => (
-                                                                                    <motion.div
+                                                                                    <motion.a
                                                                                         key={i}
+                                                                                        href={`/services/${getSubServiceId(sub)}`}
+                                                                                        onClick={(e) => {
+                                                                                            e.preventDefault();
+                                                                                            handleNavClick(`/services/${getSubServiceId(sub)}`);
+                                                                                        }}
                                                                                         initial={{ opacity: 0, y: 5 }}
                                                                                         animate={{ opacity: 1, y: 0 }}
                                                                                         transition={{ delay: i * 0.02, duration: 0.15 }}
@@ -300,7 +377,7 @@ const Navbar = () => {
                                                                                             {sub}
                                                                                         </span>
                                                                                         <BsArrowRight className="relative z-10 ml-2 text-[10px] opacity-0 -translate-x-2 group-hover/sub:opacity-100 group-hover/sub:translate-x-0 transition-all duration-200" />
-                                                                                    </motion.div>
+                                                                                    </motion.a>
                                                                                 ))}
                                                                             </motion.div>
                                                                         )}
@@ -329,7 +406,7 @@ const Navbar = () => {
                                     transition={{ duration: 0.18 }}
                                 >
                                     <span className="relative z-10">{link.name}</span>
-                                    {activeSection === (link.href === '/about' ? 'about' : link.href.substring(2)) && (
+                                    {activeSection === (link.href === '/about' ? 'about' : link.href === '/blog' ? 'blog' : link.href.substring(2)) && (
                                         <motion.div
                                             className="absolute inset-0 bg-primary-light rounded-lg"
                                             layoutId="activeNav"
@@ -343,7 +420,7 @@ const Navbar = () => {
                                     />
                                     <motion.span
                                         className="absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 bg-gradient-to-r from-primary-teal to-primary-dark rounded-full"
-                                        animate={{ width: activeSection === (link.href === '/about' ? 'about' : link.href.substring(2)) ? '60%' : 0 }}
+                                        animate={{ width: activeSection === (link.href === '/about' ? 'about' : link.href === '/blog' ? 'blog' : link.href.substring(2)) ? '60%' : 0 }}
                                         whileHover={{ width: '60%' }}
                                         transition={{ duration: 0.3 }}
                                     />
@@ -463,14 +540,14 @@ const Navbar = () => {
                                                                             transition={{ delay: i * 0.02, duration: 0.15 }}
                                                                             className="flex flex-col py-2 px-3 rounded-xl bg-gray-50 hover:bg-primary-light/80 group/ms transition-colors duration-200 cursor-pointer overflow-hidden transform-gpu"
                                                                         >
-                                                                            <a
-                                                                                href={service.href}
+                                                                            <motion.a
+                                                                                href={`/services/${getServiceId(service.name)}`}
                                                                                 onClick={(e) => {
                                                                                     e.preventDefault();
                                                                                     if (service.subServices) {
                                                                                         setExpandedMobileService(isExpandedUrl ? null : service.name);
                                                                                     } else {
-                                                                                        handleNavClick(service.href);
+                                                                                        handleNavClick(`/services/${getServiceId(service.name)}`);
                                                                                     }
                                                                                 }}
                                                                                 className="flex items-center gap-2.5"
@@ -490,7 +567,7 @@ const Navbar = () => {
                                                                                 ) : (
                                                                                     <BsArrowRight size={12} className="text-primary-teal flex-shrink-0 opacity-0 group-hover/ms:opacity-100 transition-opacity duration-200" />
                                                                                 )}
-                                                                            </a>
+                                                                            </motion.a>
 
                                                                             {service.subServices && (
                                                                                 <AnimatePresence>
@@ -503,8 +580,13 @@ const Navbar = () => {
                                                                                             className="flex flex-col gap-2 pl-[42px] pr-2 overflow-hidden py-2 transform-gpu"
                                                                                         >
                                                                                             {service.subServices.map((sub, idx) => (
-                                                                                                <motion.div
+                                                                                                <motion.a
                                                                                                     key={idx}
+                                                                                                    href={`/services/${getSubServiceId(sub)}`}
+                                                                                                    onClick={(e) => {
+                                                                                                        e.preventDefault();
+                                                                                                        handleNavClick(`/services/${getSubServiceId(sub)}`);
+                                                                                                    }}
                                                                                                     initial={{ opacity: 0, x: -5 }}
                                                                                                     animate={{ opacity: 1, x: 0 }}
                                                                                                     transition={{ delay: idx * 0.03, duration: 0.15 }}
@@ -515,7 +597,7 @@ const Navbar = () => {
                                                                                                         {sub}
                                                                                                     </span>
                                                                                                     <BsArrowRight className="text-[11px] text-primary-teal opacity-0 -translate-x-1 group-hover/subm:opacity-100 group-hover/subm:translate-x-0 transition-all duration-200" />
-                                                                                                </motion.div>
+                                                                                                </motion.a>
                                                                                             ))}
                                                                                         </motion.div>
                                                                                     )}

@@ -988,3 +988,320 @@ a {
   background: var(--primary-teal);
   border-radius: 20px;
 }
+
+/* ========================================
+   ENHANCED ANIMATION SYSTEM
+   ======================================== */
+
+/* Smooth Fade Up Animation */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Smooth Scale Up Animation */
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Slide In from Left */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Slide In from Right */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(60px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Stagger Children Animation */
+@keyframes staggerFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Text Reveal Animation */
+@keyframes textReveal {
+  from {
+    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+    opacity: 1;
+  }
+}
+
+/* Line Draw Animation */
+@keyframes lineDraw {
+  from {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  to {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+}
+
+/* Glow Pulse Animation */
+@keyframes glowPulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(0, 128, 128, 0.2), 0 0 40px rgba(0, 128, 128, 0.1);
+  }
+
+  50% {
+    box-shadow: 0 0 30px rgba(0, 128, 128, 0.4), 0 0 60px rgba(0, 128, 128, 0.2);
+  }
+}
+
+/* Floating Animation - Smooth */
+@keyframes floatSmooth {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+/* ========================================
+   UTILITY ANIMATION CLASSES
+   ======================================== */
+
+.animate-fade-up {
+  animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.animate-scale-up {
+  animation: scaleUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.animate-slide-left {
+  animation: slideInLeft 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.animate-slide-right {
+  animation: slideInRight 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.animate-float-smooth {
+  animation: floatSmooth 4s ease-in-out infinite;
+}
+
+.animate-glow-pulse {
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+/* Animation Delays */
+.delay-100 {
+  animation-delay: 100ms;
+}
+
+.delay-200 {
+  animation-delay: 200ms;
+}
+
+.delay-300 {
+  animation-delay: 300ms;
+}
+
+.delay-400 {
+  animation-delay: 400ms;
+}
+
+.delay-500 {
+  animation-delay: 500ms;
+}
+
+.delay-600 {
+  animation-delay: 600ms;
+}
+
+.delay-700 {
+  animation-delay: 700ms;
+}
+
+.delay-800 {
+  animation-delay: 800ms;
+}
+
+/* ========================================
+   ENHANCED HEADING STYLES
+   ======================================== */
+
+/* Elegant Heading Style */
+.heading-elegant {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--text-heading) 0%, #334155 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Display Heading - Large Impact */
+.heading-display {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+/* Accent Word Styling */
+.accent-word {
+  position: relative;
+  display: inline-block;
+  color: var(--primary-teal);
+  font-weight: 800;
+}
+
+.accent-word::after {
+  content: '';
+  position: absolute;
+  bottom: 0.1em;
+  left: 0;
+  width: 100%;
+  height: 0.15em;
+  background: linear-gradient(90deg, var(--primary-teal), var(--primary-dark));
+  border-radius: 2px;
+  opacity: 0.3;
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: lineDraw 0.8s ease-out 0.5s forwards;
+}
+
+/* Cyan Accent Word */
+.accent-cyan {
+  color: #0891b2;
+  font-weight: 700;
+}
+
+/* Subtle Text Shadow for Depth */
+.text-shadow-soft {
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* ========================================
+   DEDICATED SECTION STYLES
+   ======================================== */
+
+.dedicated-heading {
+  font-family: var(--font-heading);
+  font-size: clamp(1.75rem, 4vw, 3rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--text-heading);
+}
+
+.dedicated-heading .line {
+  display: block;
+  margin-bottom: 0.15em;
+}
+
+.dedicated-heading .highlight {
+  color: var(--primary-teal);
+  font-weight: 800;
+  position: relative;
+}
+
+.dedicated-heading .highlight-cyan {
+  color: #06b6d4;
+  font-weight: 800;
+}
+
+/* GPU Accelerated Transforms */
+.gpu-smooth {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  will-change: transform, opacity;
+}
+
+/* Smooth Image Hover */
+.image-hover-lift {
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.5s ease;
+}
+
+.image-hover-lift:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 25px 50px -12px rgba(0, 128, 128, 0.25);
+}
+
+/* Stagger Container */
+.stagger-container>* {
+  opacity: 0;
+  animation: staggerFadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.stagger-container>*:nth-child(1) {
+  animation-delay: 0ms;
+}
+
+.stagger-container>*:nth-child(2) {
+  animation-delay: 100ms;
+}
+
+.stagger-container>*:nth-child(3) {
+  animation-delay: 200ms;
+}
+
+.stagger-container>*:nth-child(4) {
+  animation-delay: 300ms;
+}
+
+.stagger-container>*:nth-child(5) {
+  animation-delay: 400ms;
+}
+
+.stagger-container>*:nth-child(6) {
+  animation-delay: 500ms;
+}
