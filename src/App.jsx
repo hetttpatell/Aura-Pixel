@@ -1,11 +1,13 @@
 import { useEffect, lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, useParams } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import SkipToContent from './components/SkipToContent';
 import Hero from './components/Hero';
 import Services from './components/Services';
 import WhyChooseUs from './components/WhyChooseUs';
 import AboutUs from './components/AboutUs/AboutUs';
 import ServicesDetail from './components/Services/ServicesDetail';
+import useSEO from './hooks/useSEO';
 
 // Lazy load below-the-fold components
 const Portfolio = lazy(() => import('./components/Portfolio'));
@@ -46,20 +48,63 @@ const ScrollToHash = () => {
   return null;
 };
 
-const Home = () => (
-  <main>
-    <Hero />
-    <Services />
-    <WhyChooseUs />
+// SEO wrapper for Home page
+const HomeSEO = () => {
+  useSEO('home');
+  return (
+    <main id="main-content" role="main">
+      <Hero />
+      <Services />
+      <WhyChooseUs />
+      <Suspense fallback={<SectionLoader />}>
+        <Portfolio />
+        <ScrollingCompany />
+        <Testimonials />
+        <Blog />
+        <LeadCapture />
+      </Suspense>
+    </main>
+  );
+};
+
+// SEO wrapper for About page
+const AboutSEO = () => {
+  useSEO('about');
+  return <AboutUs />;
+};
+
+// SEO wrapper for Services page with dynamic service detection
+const ServicesSEOWrapper = () => {
+  const { serviceId } = useParams();
+
+  // Map service IDs to SEO keys
+  const serviceSeoMap = {
+    'seo': 'serviceSeo',
+    'social-media': 'serviceSocialMedia',
+    'performance-marketing': 'servicePerformance',
+    'branding': 'serviceBranding',
+    'web-development': 'serviceWebDev',
+    'conversion-optimization': 'serviceConversion',
+    'marketing-automation': 'serviceAutomation',
+    'google-ads': 'serviceGoogleAds',
+    'meta-ads': 'serviceMetaAds',
+  };
+
+  const seoKey = serviceId && serviceSeoMap[serviceId] ? serviceSeoMap[serviceId] : 'services';
+  useSEO(seoKey);
+
+  return <ServicesDetail />;
+};
+
+// SEO wrapper for Blog page
+const BlogSEOWrapper = () => {
+  useSEO('blog');
+  return (
     <Suspense fallback={<SectionLoader />}>
-      <Portfolio />
-      <ScrollingCompany />
-      <Testimonials />
-      <Blog />
-      <LeadCapture />
+      <BlogPage />
     </Suspense>
-  </main>
-);
+  );
+};
 
 function App() {
   useEffect(() => {
@@ -82,23 +127,38 @@ function App() {
     };
 
     // Init tracking here if needed
+
+    // Preload critical resources
+    const preloadResources = () => {
+      // Preload critical fonts
+      const fontLinks = [
+        'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap'
+      ];
+
+      fontLinks.forEach(href => {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'style';
+        link.href = href;
+        document.head.appendChild(link);
+      });
+    };
+
+    preloadResources();
   }, []);
 
   return (
     <BrowserRouter>
+      <SkipToContent />
       <ScrollToHash />
       <div className="min-h-[100dvh] bg-bg-main font-body text-text-body antialiased">
         <Navbar />
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<AboutUs />} />
-          <Route path="/blog" element={
-            <Suspense fallback={<SectionLoader />}>
-              <BlogPage />
-            </Suspense>
-          } />
-          <Route path="/services" element={<ServicesDetail />} />
-          <Route path="/services/:serviceId" element={<ServicesDetail />} />
+          <Route path="/" element={<HomeSEO />} />
+          <Route path="/about" element={<AboutSEO />} />
+          <Route path="/blog" element={<BlogSEOWrapper />} />
+          <Route path="/services" element={<ServicesSEOWrapper />} />
+          <Route path="/services/:serviceId" element={<ServicesSEOWrapper />} />
         </Routes>
         <Suspense fallback={<div className="h-64 bg-bg-soft" />}>
           <Footer />

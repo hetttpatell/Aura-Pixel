@@ -6,37 +6,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <!-- Primary Meta Tags -->
-    <title>Aura Pixel | Premium Digital Marketing Agency</title>
-    <meta name="title" content="Aura Pixel | Premium Digital Marketing Agency" />
-    <meta name="description" content="Transform your business with Aura Pixel's intelligent digital marketing strategies. Performance-driven marketing that turns traffic into measurable revenue. Get your free growth blueprint today." />
-    <meta name="keywords" content="digital marketing, SEO, performance marketing, social media marketing, branding, web development, conversion optimization, Google Ads, Meta Ads, marketing agency" />
+    <title>Aura Pixel | Premium Digital Marketing Agency | SEO & Performance Marketing</title>
+    <meta name="title" content="Aura Pixel | Premium Digital Marketing Agency | SEO & Performance Marketing" />
+    <meta name="description" content="Transform your business with Aura Pixel's intelligent digital marketing strategies. Expert SEO, performance marketing, social media & branding that turns traffic into revenue. Get your free growth blueprint today!" />
+    <meta name="keywords" content="digital marketing agency, SEO services, performance marketing, social media marketing, branding agency, web development, conversion optimization, Google Ads, Meta Ads, PPC management, content marketing, marketing automation" />
     <meta name="author" content="Aura Pixel" />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="bingbot" content="index, follow" />
+    
+    <!-- Language and Region -->
+    <meta name="language" content="English" />
+    <meta name="geo.region" content="US" />
+    <meta name="geo.placename" content="Digital City" />
+    <meta name="geo.position" content="40.7128;-74.0060" />
+    <meta name="ICBM" content="40.7128, -74.0060" />
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://aurapixel.com/" />
     <meta property="og:title" content="Aura Pixel | Premium Digital Marketing Agency" />
     <meta property="og:description" content="Transform your business with Aura Pixel's intelligent digital marketing strategies. Performance-driven marketing that turns traffic into measurable revenue." />
-    <meta property="og:image" content="/AURA-PIXEL.PNG" />
+    <meta property="og:image" content="https://aurapixel.com/AURA-PIXEL.PNG" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Aura Pixel - Premium Digital Marketing Agency Logo" />
     <meta property="og:site_name" content="Aura Pixel" />
+    <meta property="og:locale" content="en_US" />
     
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://aurapixel.com/" />
-    <meta property="twitter:title" content="Aura Pixel | Premium Digital Marketing Agency" />
-    <meta property="twitter:description" content="Transform your business with Aura Pixel's intelligent digital marketing strategies. Performance-driven marketing that turns traffic into measurable revenue." />
-    <meta property="twitter:image" content="/AURA-PIXEL.PNG" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://aurapixel.com/" />
+    <meta name="twitter:title" content="Aura Pixel | Premium Digital Marketing Agency" />
+    <meta name="twitter:description" content="Transform your business with Aura Pixel's intelligent digital marketing strategies. Performance-driven marketing that turns traffic into measurable revenue." />
+    <meta name="twitter:image" content="https://aurapixel.com/AURA-PIXEL.PNG" />
+    <meta name="twitter:image:alt" content="Aura Pixel - Premium Digital Marketing Agency Logo" />
+    <meta name="twitter:site" content="@aurapixel" />
+    <meta name="twitter:creator" content="@aurapixel" />
     
     <!-- Canonical URL -->
     <link rel="canonical" href="https://aurapixel.com/" />
     
-    <!-- Preconnect to external resources -->
+    <!-- Preconnect to external resources for performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
     
-    <!-- Theme Color -->
-    <meta name="theme-color" content="#008080" />
+    <!-- Preload critical fonts -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" /></noscript>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/AURA-PIXEL.PNG" />
+    
+    <!-- Theme Color for mobile browsers -->
+    <meta name="theme-color" content="#008080" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#006666" media="(prefers-color-scheme: dark)" />
+    
+    <!-- Mobile App Capabilities -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Aura Pixel" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="Aura Pixel" />
+    <meta name="msapplication-TileColor" content="#008080" />
+    <meta name="msapplication-config" content="/browserconfig.xml" />
     
     <!-- Schema.org markup for Organization -->
     <script type="application/ld+json">
@@ -44,9 +82,18 @@
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": "Aura Pixel",
+      "alternateName": "Aura Pixel Digital Marketing Agency",
       "url": "https://aurapixel.com",
-      "logo": "https://aurapixel.com/AURA-PIXEL.PNG",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://aurapixel.com/AURA-PIXEL.PNG",
+        "width": 512,
+        "height": 512
+      },
+      "image": "https://aurapixel.com/AURA-PIXEL.PNG",
       "description": "Premium Digital Marketing Agency specializing in SEO, Performance Marketing, Social Media, Branding, and Web Development.",
+      "slogan": "Transform Traffic Into Revenue",
+      "foundingDate": "2020",
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "123 Marketing Street",
@@ -59,6 +106,7 @@
         "@type": "ContactPoint",
         "telephone": "+1-234-567-890",
         "contactType": "sales",
+        "availableLanguage": ["English"],
         "email": "hello@aurapixel.com"
       },
       "sameAs": [
@@ -79,6 +127,8 @@
       "image": "https://aurapixel.com/AURA-PIXEL.PNG",
       "priceRange": "$$$",
       "telephone": "+1-234-567-890",
+      "email": "hello@aurapixel.com",
+      "url": "https://aurapixel.com",
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "123 Marketing Street",
@@ -92,12 +142,32 @@
         "latitude": 40.7128,
         "longitude": -74.0060
       },
-      "openingHoursSpecification": {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-        "opens": "09:00",
-        "closes": "18:00"
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          "opens": "09:00",
+          "closes": "18:00"
+        }
+      ],
+      "serviceType": ["Digital Marketing", "SEO Services", "Social Media Marketing", "Web Development", "Brand Strategy"]
+    }
+    </script>
+    
+    <!-- Schema.org markup for WebSite -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Aura Pixel",
+      "url": "https://aurapixel.com",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://aurapixel.com/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
       }
+    }
+    </script>
     }
     </script>
     

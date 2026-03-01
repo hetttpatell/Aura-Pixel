@@ -1,0 +1,44 @@
+# robots.txt for Aura Pixel
+# https://aurapixel.com/robots.txt
+
+# Allow all search engines
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://aurapixel.com/sitemap.xml
+
+# Crawl rate optimization
+Crawl-delay: 1
+
+# Allow specific search engine bots
+User-agent: Googlebot
+Allow: /
+User-agent: Googlebot-Image
+Allow: /
+User-agent: Bingbot
+Allow: /
+User-agent: Slurp
+Allow: /
+User-agent: DuckDuckBot
+Allow: /
+User-agent: Baiduspider
+Allow: /
+
+# Disallow admin and private areas
+User-agent: *
+Disallow: /admin/
+Disallow: /private/
+Disallow: /api/
+Disallow: /temp/
+Disallow: /*?*
+Disallow: /404
+Disallow: /500
+
+# Allow specific query parameters for tracking
+Allow: /*?utm_
+Allow: /*?fbclid=
+Allow: /*?gclid=
+
+# Host
+Host: https://aurapixel.com

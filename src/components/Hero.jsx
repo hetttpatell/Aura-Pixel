@@ -93,7 +93,11 @@ const Hero = () => {
     };
 
     return (
-        <section id="home" className="relative min-h-[100dvh] flex items-center pt-20 sm:pt-24 lg:pt-28 pb-10 overflow-hidden">
+        <section
+            id="home"
+            className="relative min-h-[100dvh] flex items-center pt-20 sm:pt-24 lg:pt-28 pb-10 overflow-hidden"
+            aria-label="Hero Section - Aura Pixel Digital Marketing"
+        >
             <div className="max-w-[1280px] mx-auto px-4 sm:px-6 w-full">
                 <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 items-center w-full">
 
@@ -109,6 +113,7 @@ const Hero = () => {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
+                            role="doc-subtitle"
                         >
                             Digital Marketing Excellence
                         </motion.span>
@@ -119,7 +124,7 @@ const Hero = () => {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3, duration: 0.6 }}
                         >
-                            Ignite Your Brand's Aura{' '}
+                            Ignite Your Brand&apos;s Aura{' '}
                             <span className="text-gradient">Pixel-Perfect Growth</span>
                         </motion.h1>
 
@@ -138,6 +143,8 @@ const Hero = () => {
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.5, duration: 0.6 }}
+                            role="group"
+                            aria-label="Call to action buttons"
                         >
                             <motion.a
                                 href="/#contact"
@@ -145,9 +152,11 @@ const Hero = () => {
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={(e) => { e.preventDefault(); navigate('/#contact'); }}
+                                role="button"
+                                aria-label="Get started with Aura Pixel digital marketing services"
                             >
                                 Get Started
-                                <HiArrowRight className="text-base sm:text-lg" />
+                                <HiArrowRight className="text-base sm:text-lg" aria-hidden="true" />
                             </motion.a>
                             <motion.a
                                 href="/#portfolio"
@@ -155,20 +164,23 @@ const Hero = () => {
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={(e) => { e.preventDefault(); navigate('/#portfolio'); }}
+                                role="button"
+                                aria-label="View our portfolio of successful digital marketing campaigns"
                             >
                                 View Portfolio
                             </motion.a>
                         </motion.div>
 
                         {/* Stats Grid */}
-                        <motion.div
+                        <motion.section
                             className="grid grid-cols-4 gap-2 sm:gap-4 mt-2"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.6, duration: 0.6 }}
+                            aria-label="Company Statistics"
                         >
                             {stats.map((stat, index) => (
-                                <motion.div
+                                <motion.article
                                     key={stat.label}
                                     className="relative group"
                                     initial={{ opacity: 0, scale: 0.8 }}
@@ -183,7 +195,10 @@ const Hero = () => {
                                     >
                                         <div className="absolute top-0 left-0 right-0 h-0.5 sm:h-1 bg-gradient-to-r from-primary-teal via-teal-400 to-primary-teal rounded-t-xl opacity-80" />
                                         <div className="text-center">
-                                            <span className="block text-lg sm:text-2xl font-heading font-bold bg-gradient-to-r from-primary-teal to-teal-600 bg-clip-text text-transparent">
+                                            <span
+                                                className="block text-lg sm:text-2xl font-heading font-bold bg-gradient-to-r from-primary-teal to-teal-600 bg-clip-text text-transparent"
+                                                aria-label={`${stat.value} ${stat.label}`}
+                                            >
                                                 {stat.value}
                                             </span>
                                             <span className="block text-[10px] sm:text-xs text-text-body mt-0.5 font-medium leading-tight">
@@ -191,17 +206,18 @@ const Hero = () => {
                                             </span>
                                         </div>
                                     </motion.div>
-                                </motion.div>
+                                </motion.article>
                             ))}
-                        </motion.div>
+                        </motion.section>
                     </motion.div>
 
                     {/* Right Content — Image */}
-                    <motion.div
+                    <motion.aside
                         className="order-1 lg:order-2 relative"
                         initial={{ opacity: 0, x: 40 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.7, ease: 'easeOut', delay: 0.2 }}
+                        aria-label="Visual showcase of digital marketing tools"
                     >
                         <div className="relative">
                             {/* Image container — smaller on mobile */}
@@ -209,17 +225,20 @@ const Hero = () => {
                                 {/* Splash background */}
                                 <motion.img
                                     src="/Splash.png"
-                                    alt="Splash Background"
+                                    alt="Creative splash background representing digital marketing innovation and brand transformation"
                                     className="w-full h-auto relative z-10"
                                     initial={{ scale: 0.9, opacity: 0 }}
                                     animate={{ scale: 1, opacity: 1 }}
                                     transition={{ delay: 0.4, duration: 0.6 }}
+                                    loading="eager"
+                                    width="600"
+                                    height="600"
                                 />
 
                                 {/* Gibli character — floating, mobile friendly */}
                                 <motion.img
                                     src="/Gibli.png"
-                                    alt="Gibli Character"
+                                    alt="Aura Pixel mascot character representing creative digital marketing solutions"
                                     className="absolute top-0 left-0 w-full h-auto z-20"
                                     style={isMobile ? {} : { x, y }}
                                     initial={{ opacity: 0, y: 20 }}
@@ -236,6 +255,9 @@ const Hero = () => {
                                             ease: 'easeInOut',
                                         },
                                     }}
+                                    loading="eager"
+                                    width="600"
+                                    height="600"
                                 />
 
                                 {/* Floating icons around image - visible immediately on all screens */}
@@ -279,12 +301,12 @@ const Hero = () => {
                                 })}
                             </div>
                         </div>
-                    </motion.div>
+                    </motion.aside>
                 </div>
             </div>
 
             {/* Background Elements */}
-            <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
+            <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden="true">
                 <div className="absolute top-20 left-4 sm:left-10 w-48 sm:w-72 h-48 sm:h-72 bg-primary-teal/5 rounded-full blur-3xl" />
                 <div className="absolute bottom-20 right-4 sm:right-10 w-64 sm:w-96 h-64 sm:h-96 bg-primary-teal/5 rounded-full blur-3xl" />
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[500px] lg:w-[600px] h-[300px] sm:h-[500px] lg:h-[600px] bg-primary-light/30 rounded-full blur-3xl" />

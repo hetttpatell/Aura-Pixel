@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import useReducedMotion from '../../hooks/useReducedMotion';
 
 const stats = [
-    { value: '3.4k+', label: 'Active Clients', suffix: '+', prefix: '', endValue: 3400 },
+    { value: '3.4k', label: 'Active Clients', suffix: '+', prefix: '', endValue: 3400 },
     { value: '85k', label: 'Projects Done', suffix: '', prefix: '', endValue: 85 },
     { value: '180K', label: 'Work Joined', suffix: 'K', prefix: '', endValue: 180 },
     { value: '8.5', label: 'Successful Campaigns', suffix: 'k', prefix: '', endValue: 8500 },

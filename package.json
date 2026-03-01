@@ -1,13 +1,29 @@
 {
-  "name": "kathan-aurapixel",
+  "name": "aurapixel-digital-marketing",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "Aura Pixel - Premium Digital Marketing Agency Website. SEO-optimized, performance-focused React application.",
+  "author": "Aura Pixel <hello@aurapixel.com>",
+  "license": "UNLICENSED",
+  "keywords": [
+    "digital marketing",
+    "seo",
+    "react",
+    "vite",
+    "performance marketing",
+    "web development"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:analyze": "vite build --mode analyze",
+    "preview": "vite preview",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "lint:fix": "eslint . --fix",
+    "test": "echo 'No tests specified' && exit 0",
+    "seo:validate": "echo 'Run SEO validation checks'",
+    "deploy": "npm run build && echo 'Ready for deployment'"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",

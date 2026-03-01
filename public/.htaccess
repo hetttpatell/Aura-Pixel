@@ -1,0 +1,159 @@
+# Aura Pixel - Apache Server Configuration
+# Enable rewrite engine
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  
+  # Redirect www to non-www (SEO best practice)
+  RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+  RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L]
+  
+  # Redirect HTTP to HTTPS
+  RewriteCond %{HTTPS} off
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+  
+  # Remove trailing slashes (SEO best practice)
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(.*)/$ /$1 [R=301,L]
+  
+  # Handle client-side routing for React Router
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
+
+# Enable compression
+<IfModule mod_deflate.c>
+  # Compress HTML, CSS, JavaScript, Text, XML and fonts
+  AddOutputFilterByType DEFLATE application/javascript
+  AddOutputFilterByType DEFLATE application/rss+xml
+  AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+  AddOutputFilterByType DEFLATE application/x-font
+  AddOutputFilterByType DEFLATE application/x-font-opentype
+  AddOutputFilterByType DEFLATE application/x-font-otf
+  AddOutputFilterByType DEFLATE application/x-font-truetype
+  AddOutputFilterByType DEFLATE application/x-font-ttf
+  AddOutputFilterByType DEFLATE application/x-javascript
+  AddOutputFilterByType DEFLATE application/xhtml+xml
+  AddOutputFilterByType DEFLATE application/xml
+  AddOutputFilterByType DEFLATE font/opentype
+  AddOutputFilterByType DEFLATE font/otf
+  AddOutputFilterByType DEFLATE font/ttf
+  AddOutputFilterByType DEFLATE image/svg+xml
+  AddOutputFilterByType DEFLATE image/x-icon
+  AddOutputFilterByType DEFLATE text/css
+  AddOutputFilterByType DEFLATE text/html
+  AddOutputFilterByType DEFLATE text/javascript
+  AddOutputFilterByType DEFLATE text/plain
+  AddOutputFilterByType DEFLATE text/xml
+  
+  # Remove browser bugs
+  BrowserMatch ^Mozilla/4 gzip-only-text/html
+  BrowserMatch ^Mozilla/4\.0[678] no-gzip
+  BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+  Header append Vary User-Agent env=!dont-vary
+</IfModule>
+
+# Enable browser caching
+<IfModule mod_expires.c>
+  ExpiresActive On
+  
+  # Images
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/gif "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType image/x-icon "access plus 1 year"
+  
+  # CSS and JavaScript
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType application/javascript "access plus 1 month"
+  ExpiresByType text/javascript "access plus 1 month"
+  
+  # Fonts
+  ExpiresByType font/ttf "access plus 1 year"
+  ExpiresByType font/otf "access plus 1 year"
+  ExpiresByType font/woff "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType application/font-woff "access plus 1 year"
+  
+  # HTML
+  ExpiresByType text/html "access plus 1 hour"
+  
+  # Default
+  ExpiresDefault "access plus 1 month"
+</IfModule>
+
+# Cache-Control headers
+<IfModule mod_headers.c>
+  # Set cache control for static assets
+  <FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|webp|js|css|swf|svg)$">
+    Header set Cache-Control "max-age=31536000, public, immutable"
+  </FilesMatch>
+  
+  # Set cache control for HTML
+  <FilesMatch "\.(html|htm)$">
+    Header set Cache-Control "max-age=3600, public, must-revalidate"
+  </FilesMatch>
+  
+  # Disable caching for dynamic content
+  <FilesMatch "\.(pl|php|cgi|spl|scgi|fcgi)$">
+    Header unset Cache-Control
+  </FilesMatch>
+  
+  # Security headers
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-XSS-Protection "1; mode=block"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+  
+  # Content Security Policy (adjust as needed)
+  # Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https:;"
+</IfModule>
+
+# Disable server signature
+ServerSignature Off
+
+# Disable directory browsing
+Options -Indexes
+
+# Protect sensitive files
+<FilesMatch "^\.">
+  Order allow,deny
+  Deny from all
+</FilesMatch>
+
+<FilesMatch "^(README|LICENSE|CHANGELOG|INSTALL|UPGRADE|CONTRIBUTING|CODE_OF_CONDUCT)\.(md|txt|markdown)$">
+  Order allow,deny
+  Deny from all
+</FilesMatch>
+
+# Block access to config and environment files
+<FilesMatch "\.(env|config|ini|log|sh|sql)$">
+  Order allow,deny
+  Deny from all
+</FilesMatch>
+
+# Block access to version control directories
+<IfModule mod_rewrite.c>
+  RewriteRule ^(.*/)?\.git+ - [F,L]
+  ErrorDocument 403 "Access Forbidden"
+</IfModule>
+
+# MIME types for modern formats
+<IfModule mod_mime.c>
+  AddType image/webp .webp
+  AddType image/avif .avif
+  AddType font/woff2 .woff2
+  AddType font/woff .woff
+</IfModule>
+
+# Charset
+AddDefaultCharset UTF-8
+
+# Enable keep-alive
+<IfModule mod_headers.c>
+  Header set Connection keep-alive
+</IfModule>
