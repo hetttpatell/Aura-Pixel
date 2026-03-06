@@ -5,7 +5,7 @@ import { HiMenuAlt3, HiX, HiChevronDown } from 'react-icons/hi';
 import { BsArrowRight, BsLightningChargeFill } from 'react-icons/bs';
 
 
-import { services } from '../../constants';
+import { services } from '../Services/constants';
 import { serviceCategories, subServicesContent } from '../../features/services/servicesContent';
 
 // Helper function to convert service name to URL-friendly ID
@@ -184,15 +184,8 @@ const Navbar = () => {
         setIsMobileServicesOpen(false);
         document.body.style.overflow = '';
 
-        // Check if navigating to a different page (not just a hash on the same page)
-        const isFullPageNavigation = href.startsWith('/') && !href.startsWith('/#');
-
         navigate(href.startsWith('#') ? `/${href}` : href);
-
-        // Scroll to top for full page navigations
-        if (isFullPageNavigation) {
-            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-        }
+        // Note: scroll-to-top is handled by individual page components and ScrollToHash
     };
 
     const openServices = () => { clearTimeout(servicesTimeout.current); setIsServicesOpen(true); };

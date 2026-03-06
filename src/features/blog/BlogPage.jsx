@@ -22,7 +22,7 @@ import {
     FaCamera,
     FaUsers
 } from 'react-icons/fa';
-import { blogPosts, blogCategories } from '../../constants/blogs';
+import { blogPosts, blogCategories } from '../../components/Services/constants/blogs';
 import useReducedMotion from '../../hooks/useReducedMotion';
 
 // Icon mapping

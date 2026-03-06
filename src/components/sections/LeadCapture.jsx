@@ -4,7 +4,7 @@ import { useReducedMotion } from '../../hooks';
 import { HiOutlineMail, HiOutlinePhone, HiOutlineUser, HiOutlineChat, HiChevronDown } from 'react-icons/hi';
 import { FiSend } from 'react-icons/fi';
 import emailjs from '@emailjs/browser';
-import { services } from '../../constants';
+import { services } from '../Services/constants';
 
 // Removed budgetOptions as we're switching to services dropdown
 

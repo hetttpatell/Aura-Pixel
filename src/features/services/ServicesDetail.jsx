@@ -1,1153 +1,1606 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { motion, AnimatePresence, useScroll, useTransform, useInView } from 'framer-motion';
+import { HiArrowLeft, HiArrowRight, HiOutlineCheckCircle, HiOutlineChevronRight, HiSparkles, HiLightningBolt } from 'react-icons/hi';
 import {
-    HiArrowLeft, HiChevronRight, HiSparkles, HiCheck,
-    HiOutlineChartBar, HiOutlineLightningBolt, HiOutlineShieldCheck,
-    HiOutlineClock, HiOutlineCurrencyDollar, HiOutlineHeart,
-    HiOutlineArrowRight, HiOutlineStar, HiOutlineUserGroup,
-    HiOutlineGlobe, HiOutlineTrendingUp, HiOutlineSparkles
-} from 'react-icons/hi';
-import { BsArrowRight, BsArrowUpRight, BsPlayFill, BsLightningCharge } from 'react-icons/bs';
-import useReducedMotion from '../../hooks/useReducedMotion';
-import {
-    getContentById,
+    serviceCategories,
+    subServicesContent,
     getServiceById,
     getSubServiceById,
     getSubServicesByCategory,
-    serviceCategories,
-    subServicesContent
-} from './servicesContent';
+    getContentById
+} from '../../components/Services/servicesContent';
+import { services as servicesList } from '../../components/Services/constants/services';
 
-// Animation constants
-const EASE = [0.25, 0.46, 0.45, 0.94];
-const SPRING = { type: 'spring', stiffness: 280, damping: 26 };
+// ============================================
+// VIEW TYPES
+// ============================================
+const VIEW_TYPES = {
+    ALL_SERVICES: 'all-services',
+    SERVICE_DETAIL: 'service-detail',
+    SUB_SERVICE_DETAIL: 'sub-service-detail'
+};
 
-// Animation variants
+// ============================================
+// ANIMATION VARIANTS
+// ============================================
 const pageVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: {
-            duration: 0.5,
-            ease: EASE,
-            staggerChildren: 0.08,
-            delayChildren: 0.1
-        }
-    },
-    exit: { opacity: 0, transition: { duration: 0.3 } }
-};
-
-const heroVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: { duration: 0.7, ease: EASE }
-    }
-};
-
-const cardVariants = {
-    hidden: { opacity: 0, y: 40, scale: 0.95 },
-    visible: (i) => ({
+    initial: { opacity: 0, y: 40, scale: 0.98 },
+    enter: {
         opacity: 1,
         y: 0,
         scale: 1,
         transition: {
-            duration: 0.5,
-            delay: i * 0.08,
-            ease: EASE
+            duration: 0.7,
+            ease: [0.43, 0.13, 0.23, 0.96],
+            staggerChildren: 0.1
         }
-    })
+    },
+    exit: {
+        opacity: 0,
+        y: -30,
+        scale: 0.98,
+        transition: { duration: 0.4, ease: [0.43, 0.13, 0.23, 0.96] }
+    }
 };
 
-const fadeInUp = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
+const cardVariants = {
+    hidden: { opacity: 0, y: 50, rotateX: -15 },
+    visible: (i) => ({
         opacity: 1,
         y: 0,
-        transition: { duration: 0.5, ease: EASE }
-    }
+        rotateX: 0,
+        transition: {
+            delay: i * 0.08,
+            duration: 0.6,
+            ease: [0.43, 0.13, 0.23, 0.96]
+        }
+    })
 };
 
 const staggerContainer = {
     hidden: { opacity: 0 },
     visible: {
         opacity: 1,
-        transition: { staggerChildren: 0.1, delayChildren: 0.2 }
+        transition: {
+            staggerChildren: 0.08,
+            delayChildren: 0.1
+        }
     }
 };
 
-const processStepVariants = {
-    hidden: { opacity: 0, x: -30 },
-    visible: (i) => ({
-        opacity: 1,
-        x: 0,
-        transition: { duration: 0.5, delay: i * 0.15, ease: EASE }
-    })
+const floatingVariants = {
+    animate: {
+        y: [0, -15, 0],
+        rotate: [0, 5, -5, 0],
+        transition: {
+            duration: 6,
+            repeat: Infinity,
+            ease: "easeInOut"
+        }
+    }
 };
 
-// Service Card Component
-const ServiceCard = ({ service, index, onClick, isActive }) => {
-    const prefersReducedMotion = useReducedMotion();
-    const Icon = service.icon;
+const pulseVariants = {
+    animate: {
+        scale: [1, 1.05, 1],
+        opacity: [0.7, 1, 0.7],
+        transition: {
+            duration: 3,
+            repeat: Infinity,
+            ease: "easeInOut"
+        }
+    }
+};
 
-    return (
-        <motion.div
-            layoutId={`service-${service.id}`}
-            variants={prefersReducedMotion ? {} : cardVariants}
-            custom={index}
-            whileHover={prefersReducedMotion ? {} : { y: -8, scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => onClick(service.id)}
-            className={`group relative overflow-hidden rounded-2xl cursor-pointer transition-all duration-300 ${isActive
-                ? 'bg-gradient-to-br from-primary-teal to-primary-dark text-white shadow-xl shadow-primary-teal/25'
-                : 'bg-white hover:shadow-xl shadow-md border border-gray-100'
-                }`}
-        >
-            {/* Background gradient animation */}
-            <div className={`absolute inset-0 bg-gradient-to-br ${service.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500 ${isActive ? 'opacity-20' : ''}`} />
+const shimmerVariants = {
+    animate: {
+        backgroundPosition: ['200% 0', '-200% 0'],
+        transition: {
+            duration: 8,
+            repeat: Infinity,
+            ease: "linear"
+        }
+    }
+};
 
-            {/* Animated border on hover */}
+// Custom hook for scroll-triggered animations
+const useScrollAnimation = () => {
+    const ref = useRef(null);
+    const isInView = useInView(ref, { once: true, margin: "-100px" });
+    return { ref, isInView };
+};
+
+// ============================================
+// HELPER FUNCTIONS
+// ============================================
+const slugify = (text) => text?.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '') || '';
+
+const getServiceIdFromName = (name) => {
+    const mapping = {
+        'Social Media': 'social-media',
+        'SEO': 'seo',
+        'Google Ads': 'google-ads',
+        'Meta Ads': 'meta-ads',
+        'E-commerce': 'e-commerce',
+        'Content Writing': 'content-writing',
+        'Podcast Productions': 'podcast-productions',
+        'Product Photography': 'product-photography',
+        'Content Creation': 'content-creation',
+        'Video & Photo Editing': 'video-photo-editing'
+    };
+    return mapping[name] || slugify(name);
+};
+
+const getSubServiceIdFromName = (name) => slugify(name);
+
+// ============================================
+// ANIMATED BACKGROUND PARTICLES
+// ============================================
+const FloatingParticles = () => (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(6)].map((_, i) => (
             <motion.div
-                className="absolute inset-0 rounded-2xl"
-                initial={{ opacity: 0 }}
-                whileHover={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
+                key={i}
+                className="absolute rounded-full bg-gradient-to-r from-primary-teal/20 to-blue-500/20 blur-xl"
                 style={{
-                    background: `linear-gradient(135deg, ${service.primaryColor}20, transparent)`,
+                    width: Math.random() * 100 + 50,
+                    height: Math.random() * 100 + 50,
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
+                }}
+                animate={{
+                    x: [0, Math.random() * 100 - 50, 0],
+                    y: [0, Math.random() * 100 - 50, 0],
+                    scale: [1, 1.2, 1],
+                    opacity: [0.3, 0.6, 0.3],
+                }}
+                transition={{
+                    duration: Math.random() * 10 + 10,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: i * 0.5,
                 }}
             />
+        ))}
+    </div>
+);
 
-            <div className="relative p-6">
-                {/* Icon with floating animation */}
-                <motion.div
-                    className={`w-14 h-14 rounded-xl flex items-center justify-center mb-4 ${isActive ? 'bg-white/20' : `bg-gradient-to-br ${service.bgGradient}`
-                        }`}
-                    whileHover={prefersReducedMotion ? {} : {
-                        rotate: [0, -10, 10, 0],
-                        scale: 1.1
-                    }}
-                    animate={prefersReducedMotion ? {} : {
-                        y: [0, -5, 0],
-                    }}
-                    transition={{
-                        rotate: { duration: 0.5 },
-                        y: { duration: 3, repeat: Infinity, ease: "easeInOut" }
-                    }}
-                >
-                    <Icon className={`w-7 h-7 ${isActive ? 'text-white' : service.primaryColor}`} style={{ color: isActive ? 'white' : service.primaryColor }} />
-                </motion.div>
+// ============================================
+// BACK BUTTON COMPONENT
+// ============================================
+const BackButton = ({ onClick, label = 'Back' }) => (
+    <motion.button
+        onClick={onClick}
+        className="relative inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-primary-teal bg-gradient-to-r from-primary-light to-teal-50 hover:from-primary-teal hover:to-teal-600 hover:text-white rounded-full transition-all duration-500 shadow-sm hover:shadow-lg hover:shadow-primary-teal/25 group overflow-hidden"
+        whileHover={{ x: -6, scale: 1.02 }}
+        whileTap={{ scale: 0.95 }}
+    >
+        <motion.span
+            className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0"
+            initial={{ x: '-100%' }}
+            whileHover={{ x: '100%' }}
+            transition={{ duration: 0.6 }}
+        />
+        <HiArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1.5" />
+        {label}
+    </motion.button>
+);
 
-                {/* Title */}
-                <h3 className={`font-heading font-bold text-lg mb-2 ${isActive ? 'text-white' : 'text-text-heading'}`}>
-                    {service.title}
-                </h3>
-
-                {/* Description */}
-                <p className={`text-sm mb-4 line-clamp-2 ${isActive ? 'text-white/80' : 'text-text-body'}`}>
-                    {service.description}
-                </p>
-
-                {/* Stats preview with pulse animation */}
-                <div className="flex items-center gap-3">
-                    <motion.span
-                        className={`text-xs font-semibold px-3 py-1.5 rounded-full ${isActive ? 'bg-white/20 text-white' : 'bg-primary-light text-primary-teal'
-                            }`}
-                        whileHover={{ scale: 1.05 }}
-                    >
-                        {service.stats[0].value} {service.stats[0].label}
-                    </motion.span>
-                </div>
-
-                {/* Arrow indicator with slide animation */}
-                <motion.div
-                    className={`absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${isActive ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-primary-light'
-                        }`}
-                    initial={{ x: 0 }}
-                    whileHover={{ x: 4 }}
-                >
-                    <BsArrowUpRight className={`w-4 h-4 transition-transform duration-300 ${isActive ? 'text-white' : 'text-text-body group-hover:text-primary-teal'}`} />
-                </motion.div>
-            </div>
-        </motion.div>
-    );
-};
-
-// Sub-service Card Component
-const SubServiceCard = ({ subService, index }) => {
-    const prefersReducedMotion = useReducedMotion();
-    const Icon = subService.icon;
-    const safeColor = subService?.color || '#14B8A6';
-
+// ============================================
+// ANIMATED SECTION WRAPPER
+// ============================================
+const AnimatedSection = ({ children, delay = 0, className = '' }) => {
+    const { ref, isInView } = useScrollAnimation();
     return (
         <motion.div
-            variants={prefersReducedMotion ? {} : cardVariants}
-            custom={index}
-            whileHover={prefersReducedMotion ? {} : { y: -6, scale: 1.02 }}
-            className="group relative bg-white rounded-2xl p-6 shadow-md hover:shadow-xl border border-gray-100 transition-all duration-300 overflow-hidden"
+            ref={ref}
+            className={className}
+            initial={{ opacity: 0, y: 50 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+            transition={{ duration: 0.7, delay, ease: [0.43, 0.13, 0.23, 0.96] }}
         >
-            {/* Decorative gradient line */}
-            <motion.div
-                className="absolute top-0 left-0 right-0 h-1 opacity-60"
-                initial={{ scaleX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                style={{
-                    background: `linear-gradient(90deg, ${safeColor}, transparent)`,
-                    originX: 0
-                }}
-            />
-
-            {/* Icon with hover effect */}
-            <motion.div
-                className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-colors duration-300"
-                style={{ backgroundColor: `${safeColor}15` }}
-                whileHover={prefersReducedMotion ? {} : { scale: 1.1, rotate: 5 }}
-                animate={prefersReducedMotion ? {} : {
-                    boxShadow: [`0 0 0 ${safeColor}00`, `0 0 20px ${safeColor}30`, `0 0 0 ${safeColor}00`]
-                }}
-                transition={{ duration: 2, repeat: Infinity }}
-            >
-                <Icon className="w-6 h-6" style={{ color: safeColor }} />
-            </motion.div>
-
-            {/* Title */}
-            <h4 className="font-heading font-bold text-text-heading mb-2 group-hover:text-primary-teal transition-colors">
-                {subService.title}
-            </h4>
-
-            {/* Description */}
-            <p className="text-sm text-text-body mb-4 line-clamp-2">
-                {subService.description}
-            </p>
-
-            {/* Features preview with staggered animation */}
-            <div className="flex flex-wrap gap-2">
-                {subService.features.slice(0, 3).map((feature, i) => (
-                    <motion.span
-                        key={i}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: i * 0.1 }}
-                        className="text-xs px-2 py-1 rounded-full bg-gray-100 text-text-body"
-                    >
-                        {feature}
-                    </motion.span>
-                ))}
-                {subService.features.length > 3 && (
-                    <motion.span
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        className="text-xs px-2 py-1 rounded-full bg-primary-light text-primary-teal font-medium"
-                    >
-                        +{subService.features.length - 3} more
-                    </motion.span>
-                )}
-            </div>
-
-            {/* Hover arrow */}
-            <motion.div
-                className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity"
-                initial={{ x: -10 }}
-                whileHover={{ x: 0 }}
-            >
-                <BsArrowRight className="w-5 h-5" style={{ color: safeColor }} />
-            </motion.div>
+            {children}
         </motion.div>
     );
 };
 
-// Feature Card Component
-const FeatureCard = ({ feature, index, color = '#14B8A6' }) => {
-    const safeColor = color || '#14B8A6';
-    return (
-        <motion.div
-            variants={fadeInUp}
-            whileHover={{ scale: 1.02, x: 5 }}
-            className="flex items-start gap-4 p-4 rounded-xl bg-gray-50 hover:bg-primary-light/50 transition-all duration-300 group cursor-pointer"
-        >
-            <motion.div
-                className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-300"
-                style={{ backgroundColor: `${safeColor}15` }}
-                whileHover={{ scale: 1.1, rotate: 5 }}
-            >
-                <HiCheck className="w-5 h-5" style={{ color: safeColor }} />
-            </motion.div>
-            <span className="text-text-heading font-medium group-hover:text-primary-teal transition-colors">{feature}</span>
-        </motion.div>
-    );
-};
+// ============================================
+// 3D CARD COMPONENT
+// ============================================
+const Card3D = ({ children, className = '', onClick }) => {
+    const [rotateX, setRotateX] = useState(0);
+    const [rotateY, setRotateY] = useState(0);
+    const cardRef = useRef(null);
 
-// Process Step Component
-const ProcessStep = ({ step, index, color }) => {
-    const prefersReducedMotion = useReducedMotion();
+    const handleMouseMove = (e) => {
+        if (!cardRef.current) return;
+        const rect = cardRef.current.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const mouseX = e.clientX - centerX;
+        const mouseY = e.clientY - centerY;
+        setRotateX(-mouseY / 20);
+        setRotateY(mouseX / 20);
+    };
 
-    return (
-        <motion.div
-            variants={prefersReducedMotion ? {} : processStepVariants}
-            custom={index}
-            className="relative flex gap-6"
-        >
-            {/* Step number with line */}
-            <div className="flex flex-col items-center">
-                <motion.div
-                    className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg shadow-lg text-white"
-                    style={{ background: `linear-gradient(135deg, ${color}, ${color}dd)` }}
-                    whileHover={prefersReducedMotion ? {} : { scale: 1.1, rotate: 10 }}
-                    animate={prefersReducedMotion ? {} : {
-                        boxShadow: [`0 0 0 ${color}00`, `0 0 20px ${color}50`, `0 0 0 ${color}00`]
-                    }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                >
-                    {step.step}
-                </motion.div>
-                {index < 3 && (
-                    <motion.div
-                        className="w-0.5 flex-1 mt-2"
-                        style={{ background: `linear-gradient(to bottom, ${color}, ${color}20)` }}
-                        initial={{ scaleY: 0 }}
-                        whileInView={{ scaleY: 1 }}
-                        transition={{ duration: 0.5, delay: 0.3 }}
-                        viewport={{ once: true }}
-                    />
-                )}
-            </div>
-
-            {/* Content */}
-            <div className="flex-1 pb-8">
-                <motion.h4
-                    className="font-heading font-bold text-xl text-text-heading mb-2"
-                    whileHover={{ x: 5 }}
-                >
-                    {step.title}
-                </motion.h4>
-                <p className="text-text-body">{step.desc}</p>
-            </div>
-        </motion.div>
-    );
-};
-
-// Stat Card Component
-const StatCard = ({ stat, index, color }) => {
-    const prefersReducedMotion = useReducedMotion();
-
-    return (
-        <motion.div
-            variants={prefersReducedMotion ? {} : cardVariants}
-            custom={index}
-            whileHover={prefersReducedMotion ? {} : { y: -5, scale: 1.03 }}
-            className="bg-white rounded-2xl p-6 text-center shadow-lg border border-gray-100 relative overflow-hidden group"
-        >
-            {/* Decorative corner */}
-            <motion.div
-                className="absolute -top-10 -right-10 w-20 h-20 rounded-full"
-                style={{ background: `linear-gradient(135deg, ${color}20, ${color}05)` }}
-                initial={{ scale: 0 }}
-                whileInView={{ scale: 1 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-            />
-
-            <motion.div
-                className="relative"
-                initial={{ scale: 0.5, opacity: 0 }}
-                whileInView={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-            >
-                <motion.span
-                    className="text-4xl font-heading font-bold bg-gradient-to-r from-primary-teal to-primary-dark bg-clip-text text-transparent"
-                    animate={prefersReducedMotion ? {} : {
-                        scale: [1, 1.1, 1],
-                    }}
-                    transition={{ duration: 2, repeat: Infinity, delay: index * 0.3 }}
-                >
-                    {stat.value}
-                </motion.span>
-            </motion.div>
-            <p className="text-text-body text-sm mt-2 relative">{stat.label}</p>
-        </motion.div>
-    );
-};
-
-// Benefit Card Component
-const BenefitCard = ({ benefit, index, color }) => {
-    const prefersReducedMotion = useReducedMotion();
-    const icons = [HiOutlineChartBar, HiOutlineLightningBolt, HiOutlineShieldCheck, HiOutlineHeart, HiOutlineStar, HiOutlineUserGroup];
-    const Icon = icons[index % icons.length];
-
-    return (
-        <motion.div
-            variants={prefersReducedMotion ? {} : cardVariants}
-            custom={index}
-            whileHover={prefersReducedMotion ? {} : { y: -4, scale: 1.02, x: 5 }}
-            className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300"
-        >
-            <motion.div
-                className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: `${color}15` }}
-                whileHover={{ rotate: 10, scale: 1.1 }}
-            >
-                <Icon className="w-5 h-5" style={{ color }} />
-            </motion.div>
-            <span className="font-medium text-text-heading">{benefit}</span>
-        </motion.div>
-    );
-};
-
-// Hero Section Component
-const HeroSection = ({ content, type, onBack, backLabel }) => {
-    const prefersReducedMotion = useReducedMotion();
-    const { scrollY } = useScroll();
-    const y = useTransform(scrollY, [0, 500], [0, 150]);
-    const opacity = useTransform(scrollY, [0, 400], [1, 0]);
-    const navigate = useNavigate();
-
-    // Handle missing content or icons gracefully
-    const Icon = content?.icon || HiOutlineSparkles;
-    const isService = type === 'service';
-    const color = isService ? content?.primaryColor : content?.color || '#14B8A6';
-
-    // Navigate to LeadCapture section
-    const handleGetStarted = () => {
-        navigate('/#contact');
-        setTimeout(() => {
-            const element = document.getElementById('contact');
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }, 100);
+    const handleMouseLeave = () => {
+        setRotateX(0);
+        setRotateY(0);
     };
 
     return (
-        <motion.section
-            className="relative min-h-[70vh] flex items-center overflow-hidden"
-            style={{ opacity: prefersReducedMotion ? 1 : opacity }}
+        <motion.div
+            ref={cardRef}
+            className={`${className} cursor-pointer`}
+            onClick={onClick}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            style={{
+                transformStyle: 'preserve-3d',
+                perspective: 1000,
+            }}
+            animate={{
+                rotateX,
+                rotateY,
+            }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            whileHover={{ z: 50 }}
         >
-            {/* Animated background */}
-            <motion.div
-                className={`absolute inset-0 ${isService ? `bg-gradient-to-br ${content.bgGradient}` : 'from-gray-50 to-white'}`}
-                style={{ y: prefersReducedMotion ? 0 : y }}
-            />
-
-            {/* Animated decorative elements */}
-            <div className="absolute inset-0 overflow-hidden">
-                <motion.div
-                    className="absolute -top-40 -right-40 w-96 h-96 rounded-full"
-                    style={{
-                        background: `radial-gradient(circle, ${color}15 0%, transparent 70%)`,
-                    }}
-                    animate={prefersReducedMotion ? {} : {
-                        scale: [1, 1.2, 1],
-                        rotate: [0, 90, 0],
-                        x: [0, 30, 0],
-                        y: [0, -30, 0]
-                    }}
-                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                />
-                <motion.div
-                    className="absolute -bottom-40 -left-40 w-80 h-80 rounded-full"
-                    style={{
-                        background: `radial-gradient(circle, ${color}20 0%, transparent 70%)`,
-                    }}
-                    animate={prefersReducedMotion ? {} : {
-                        scale: [1, 1.3, 1],
-                        x: [0, -20, 0],
-                        y: [0, 20, 0]
-                    }}
-                    transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-                />
-                {/* Additional floating circles */}
-                <motion.div
-                    className="absolute top-1/4 left-1/4 w-32 h-32 rounded-full"
-                    style={{
-                        background: `radial-gradient(circle, ${color}10 0%, transparent 70%)`,
-                    }}
-                    animate={prefersReducedMotion ? {} : {
-                        y: [0, -20, 0],
-                        x: [0, 10, 0]
-                    }}
-                    transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                />
-                <motion.div
-                    className="absolute bottom-1/4 right-1/4 w-48 h-48 rounded-full"
-                    style={{
-                        background: `radial-gradient(circle, ${color}08 0%, transparent 70%)`,
-                    }}
-                    animate={prefersReducedMotion ? {} : {
-                        y: [0, 30, 0],
-                        x: [0, -15, 0]
-                    }}
-                    transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-                />
-            </div>
-
-            {/* Grid pattern */}
-            <div
-                className="absolute inset-0 opacity-[0.03]"
-                style={{
-                    backgroundImage: `linear-gradient(${color} 1px, transparent 1px), linear-gradient(90deg, ${color} 1px, transparent 1px)`,
-                    backgroundSize: '60px 60px'
-                }}
-            />
-
-            <div className="relative w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-20">
-                {/* Back button with smooth animation */}
-                <motion.button
-                    onClick={onBack}
-                    className="flex items-center gap-2 text-text-body hover:text-primary-teal transition-colors mb-8 group"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.2 }}
-                    whileHover={{ x: -4 }}
-                    whileTap={{ scale: 0.95 }}
-                >
-                    <motion.div
-                        className="w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center group-hover:shadow-lg transition-shadow"
-                        whileHover={{ scale: 1.1 }}
-                    >
-                        <HiArrowLeft className="w-5 h-5" />
-                    </motion.div>
-                    <span className="font-medium">{backLabel}</span>
-                </motion.button>
-
-                <div className="grid lg:grid-cols-2 gap-12 items-center">
-                    {/* Content */}
-                    <motion.div variants={heroVariants}>
-                        <motion.div
-                            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-md mb-6"
-                            initial={{ opacity: 0, y: 20, scale: 0.9 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            transition={{ delay: 0.2, type: "spring" }}
-                            whileHover={{ scale: 1.05 }}
-                        >
-                            <motion.div
-                                animate={{ rotate: [0, 360] }}
-                                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                            >
-                                <HiSparkles className="w-4 h-4 text-primary-teal" />
-                            </motion.div>
-                            <span className="text-sm font-medium text-text-heading">
-                                {isService ? 'Service Category' : 'Specialized Service'}
-                            </span>
-                        </motion.div>
-
-                        <motion.h1
-                            className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-text-heading leading-tight mb-6"
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.3, duration: 0.6 }}
-                        >
-                            {content.title}
-                        </motion.h1>
-
-                        <motion.p
-                            className="text-xl text-text-body mb-4"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.4 }}
-                        >
-                            {isService ? content?.tagline : content?.description}
-                        </motion.p>
-
-                        <motion.p
-                            className="text-text-body/80 mb-8 leading-relaxed"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.5 }}
-                        >
-                            {isService ? content?.description : subServicesContent[content?.id]?.description || ''}
-                        </motion.p>
-
-                        {/* CTA Buttons - Only Get Started, no Watch Demo */}
-                        <motion.div
-                            className="flex flex-wrap gap-4"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.6 }}
-                        >
-                            <motion.button
-                                onClick={handleGetStarted}
-                                className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-white shadow-lg relative overflow-hidden group"
-                                style={{ background: `linear-gradient(135deg, ${color}, ${color}dd)` }}
-                                whileHover={{ scale: 1.05, boxShadow: `0 20px 40px ${color}40` }}
-                                whileTap={{ scale: 0.95 }}
-                            >
-                                <span className="relative z-10">Get Started</span>
-                                <motion.div
-                                    className="relative z-10"
-                                    animate={{ x: [0, 5, 0] }}
-                                    transition={{ duration: 1.5, repeat: Infinity }}
-                                >
-                                    <BsArrowRight className="w-5 h-5" />
-                                </motion.div>
-                                <motion.div
-                                    className="absolute inset-0 bg-white/20"
-                                    initial={{ x: '-100%' }}
-                                    whileHover={{ x: '100%' }}
-                                    transition={{ duration: 0.5 }}
-                                />
-                            </motion.button>
-                        </motion.div>
-                    </motion.div>
-
-                    {/* Hero Visual */}
-                    <motion.div
-                        className="relative hidden lg:block"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.4, duration: 0.6 }}
-                    >
-                        <motion.div
-                            className="relative w-full aspect-square max-w-md mx-auto"
-                            animate={prefersReducedMotion ? {} : {
-                                y: [0, -20, 0],
-                            }}
-                            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                        >
-                            {/* Main icon container */}
-                            <motion.div
-                                className="absolute inset-0 rounded-3xl flex items-center justify-center"
-                                style={{
-                                    background: `linear-gradient(135deg, ${color}15, ${color}05)`,
-                                    border: `1px solid ${color}20`
-                                }}
-                            >
-                                <motion.div
-                                    className="w-40 h-40 rounded-3xl flex items-center justify-center"
-                                    style={{ background: `linear-gradient(135deg, ${color}, ${color}dd)` }}
-                                    whileHover={prefersReducedMotion ? {} : { rotate: 5, scale: 1.05 }}
-                                    animate={prefersReducedMotion ? {} : {
-                                        boxShadow: [`0 20px 60px ${color}30`, `0 40px 80px ${color}50`, `0 20px 60px ${color}30`]
-                                    }}
-                                    transition={{ duration: 3, repeat: Infinity }}
-                                >
-                                    <Icon className="w-20 h-20 text-white" />
-                                </motion.div>
-                            </motion.div>
-
-                            {/* Floating elements */}
-                            {[...Array(3)].map((_, i) => (
-                                <motion.div
-                                    key={i}
-                                    className="absolute w-16 h-16 rounded-2xl bg-white shadow-xl flex items-center justify-center"
-                                    style={{
-                                        top: `${20 + i * 25}%`,
-                                        left: i % 2 === 0 ? '-10%' : 'auto',
-                                        right: i % 2 === 1 ? '-10%' : 'auto',
-                                    }}
-                                    animate={prefersReducedMotion ? {} : {
-                                        y: [0, -10, 0],
-                                        rotate: [0, 5, 0],
-                                        scale: [1, 1.1, 1]
-                                    }}
-                                    transition={{
-                                        duration: 4 + i,
-                                        repeat: Infinity,
-                                        ease: "easeInOut",
-                                        delay: i * 0.5
-                                    }}
-                                >
-                                    <div
-                                        className="w-8 h-8 rounded-lg"
-                                        style={{ backgroundColor: `${color}20` }}
-                                    />
-                                </motion.div>
-                            ))}
-                        </motion.div>
-                    </motion.div>
-                </div>
-            </div>
-        </motion.section>
+            {children}
+        </motion.div>
     );
 };
 
-// Main ServicesDetail Component
-const ServicesDetail = () => {
-    const { serviceId } = useParams();
-    const navigate = useNavigate();
-    const location = useLocation();
-    const prefersReducedMotion = useReducedMotion();
-    const [isLoading, setIsLoading] = useState(true);
+// ============================================
+// ALL SERVICES VIEW COMPONENT
+// ============================================
+const AllServicesView = ({ onServiceClick }) => {
+    const headerRef = useRef(null);
+    const { scrollYProgress } = useScroll({
+        target: headerRef,
+        offset: ["start start", "end start"]
+    });
+    const headerY = useTransform(scrollYProgress, [0, 1], [0, 100]);
+    const headerOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
-    // Get content based on URL parameter
-    const contentData = useMemo(() => {
-        if (!serviceId) return { type: 'all', data: null };
-        return getContentById(serviceId) || { type: 'all', data: null };
-    }, [serviceId]);
-
-    const { type, data: content } = contentData;
-
-    // Handle loading state on route change
-    useEffect(() => {
-        setIsLoading(true);
-        const timer = setTimeout(() => {
-            setIsLoading(false);
-        }, 50);
-        return () => clearTimeout(timer);
-    }, [location.pathname, serviceId]);
-
-    // Get sub-services for a service category
-    const subServices = useMemo(() => {
-        if (type === 'service' && content) {
-            return getSubServicesByCategory(content.id);
-        }
-        if (type === 'sub-service' && content) {
-            return [];
-        }
-        return Object.values(subServicesContent);
-    }, [type, content]);
-
-    // Get all services for "all" view
-    const allServices = useMemo(() => Object.values(serviceCategories), []);
-
-    // Pre-compute back navigation target and label
-    const backUrl = useMemo(() => {
-        if (type === 'sub-service') {
-            const parentCategory = content?.category;
-            if (parentCategory && serviceCategories[parentCategory]) {
-                return `/services/${parentCategory}`;
-            }
-            return '/services';
-        }
-        return '/services';
-    }, [type, content]);
-
-    const backLabel = useMemo(() => {
-        if (type === 'sub-service' && content?.category && serviceCategories[content.category]) {
-            return `Back to ${serviceCategories[content.category].title}`;
-        }
-        if (type === 'service') return 'Back to All Services';
-        return 'Back to Services';
-    }, [type, content]);
-
-    // Handle back button - uses pre-computed backUrl for reliability
-    const handleBack = useCallback(() => {
-        navigate(backUrl);
-        window.scrollTo({ top: 0, behavior: 'auto' });
-    }, [navigate, backUrl]);
-
-    // Handle service card click - simple navigation
-    const handleServiceClick = useCallback((id) => {
-        navigate(`/services/${id}`);
-        window.scrollTo({ top: 0, behavior: 'auto' });
-    }, [navigate]);
-
-    // Handle consultation click
-    const handleConsultation = () => {
-        navigate('/#contact');
-        setTimeout(() => {
-            const element = document.getElementById('contact');
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }, 100);
-    };
-
-    // Scroll to top when route changes
-    useEffect(() => {
-        window.scrollTo({ top: 0, behavior: 'auto' });
-    }, [location.pathname]);
-
-    // Render all services grid
-    const renderAllServices = () => (
+    return (
         <motion.div
-            className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-20"
+            key="all-services"
             variants={pageVariants}
-            initial="hidden"
-            animate="visible"
+            initial="initial"
+            animate="enter"
+            exit="exit"
         >
+            <FloatingParticles />
+
             {/* Header */}
-            <motion.div className="text-center mb-16" variants={heroVariants}>
+            <motion.div
+                ref={headerRef}
+                className="text-center mb-16 relative"
+                style={{ y: headerY, opacity: headerOpacity }}
+            >
+                {/* Animated badge */}
                 <motion.span
-                    className="inline-block px-4 py-2 rounded-full bg-primary-light text-primary-teal text-sm font-semibold mb-4"
-                    whileHover={{ scale: 1.05, boxShadow: '0 0 20px rgba(0,128,128,0.2)' }}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-primary-light via-teal-50 to-primary-light text-primary-teal font-heading font-semibold text-sm rounded-full mb-8 border border-primary-teal/20 shadow-lg shadow-primary-teal/10 relative overflow-hidden"
+                    initial={{ opacity: 0, y: -20, scale: 0.9 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
                 >
+                    <motion.span
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent"
+                        animate={{ x: ['-200%', '200%'] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                    />
+                    <HiSparkles className="w-4 h-4 animate-pulse" />
                     Our Services
                 </motion.span>
-                <h1 className="font-heading text-4xl sm:text-5xl font-bold text-text-heading mb-6">
-                    Digital Marketing Solutions
-                </h1>
-                <p className="text-xl text-text-body max-w-2xl mx-auto">
-                    Comprehensive digital marketing services to grow your business online. Choose a category to explore specialized solutions tailored to your unique needs.
-                </p>
+
+                {/* Animated title with gradient */}
+                <motion.h1
+                    className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-bold text-text-heading mb-6 leading-tight"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3, duration: 0.8 }}
+                >
+                    Comprehensive Digital{' '}
+                    <motion.span
+                        className="relative inline-block"
+                        whileHover={{ scale: 1.05 }}
+                    >
+                        <span className="text-gradient bg-gradient-to-r from-primary-teal via-blue-500 to-purple-500 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
+                            Solutions
+                        </span>
+                        <motion.span
+                            className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-primary-teal via-blue-500 to-purple-500 rounded-full"
+                            initial={{ scaleX: 0 }}
+                            animate={{ scaleX: 1 }}
+                            transition={{ delay: 0.8, duration: 0.6 }}
+                        />
+                    </motion.span>
+                </motion.h1>
+
+                <motion.p
+                    className="text-text-body text-lg md:text-xl max-w-2xl mx-auto leading-relaxed"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                >
+                    Transform your digital presence with our full suite of marketing services designed to drive growth and maximize ROI.
+                </motion.p>
+
+                {/* Decorative elements */}
+                <motion.div
+                    className="absolute -top-10 left-1/4 w-20 h-20 bg-gradient-to-r from-primary-teal/20 to-blue-500/20 rounded-full blur-2xl"
+                    variants={floatingVariants}
+                    animate="animate"
+                />
+                <motion.div
+                    className="absolute -bottom-5 right-1/4 w-16 h-16 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full blur-2xl"
+                    variants={floatingVariants}
+                    animate="animate"
+                    style={{ animationDelay: '2s' }}
+                />
             </motion.div>
 
             {/* Services Grid */}
             <motion.div
-                className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
                 variants={staggerContainer}
+                initial="hidden"
+                animate="visible"
             >
-                {allServices.map((service, index) => (
-                    <ServiceCard
-                        key={service.id}
-                        service={service}
-                        index={index}
-                        onClick={handleServiceClick}
-                        isActive={false}
-                    />
-                ))}
+                {servicesList.map((service, index) => {
+                    const serviceId = getServiceIdFromName(service.name);
+                    const categoryData = serviceCategories[serviceId];
+                    const IconComponent = service.icon;
+
+                    return (
+                        <motion.div
+                            key={service.name}
+                            custom={index}
+                            variants={cardVariants}
+                            className="perspective-1000"
+                        >
+                            <Card3D
+                                onClick={() => onServiceClick(serviceId)}
+                                className="group h-full"
+                            >
+                                <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-7 shadow-xl border border-white/50 hover:shadow-2xl hover:shadow-primary-teal/10 transition-all duration-500 overflow-hidden h-full flex flex-col transform-gpu">
+                                    {/* Animated gradient background */}
+                                    <motion.div
+                                        className={`absolute inset-0 bg-gradient-to-br ${categoryData?.bgGradient || 'from-gray-50 to-white'} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
+                                    />
+
+                                    {/* Shine effect */}
+                                    <motion.div
+                                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"
+                                    />
+
+                                    {/* Glow effect on hover */}
+                                    <div className="absolute -inset-1 bg-gradient-to-r from-primary-teal/0 via-primary-teal/20 to-blue-500/0 rounded-3xl opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500" />
+
+                                    {/* Content */}
+                                    <div className="relative z-10">
+                                        {/* Icon with animated ring */}
+                                        <div className="relative mb-5">
+                                            <motion.div
+                                                className={`w-16 h-16 rounded-2xl ${service.bg} flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-500`}
+                                                whileHover={{ scale: 1.15, rotate: 10 }}
+                                                transition={{ type: "spring", stiffness: 300 }}
+                                            >
+                                                <IconComponent className={`w-8 h-8 ${service.iconColor}`} />
+                                            </motion.div>
+                                            {/* Animated ring */}
+                                            <motion.div
+                                                className="absolute inset-0 rounded-2xl border-2 border-primary-teal/30"
+                                                initial={{ scale: 1, opacity: 0 }}
+                                                whileHover={{ scale: 1.4, opacity: 0 }}
+                                                transition={{ duration: 0.6, repeat: Infinity }}
+                                            />
+                                        </div>
+
+                                        {/* Title & Description */}
+                                        <h3 className="font-heading font-bold text-xl text-text-heading mb-3 group-hover:text-primary-teal transition-colors duration-300">
+                                            {service.name}
+                                        </h3>
+                                        <p className="text-text-body text-sm mb-5 flex-grow leading-relaxed">
+                                            {service.desc}
+                                        </p>
+
+                                        {/* Sub-services count with animation */}
+                                        {service.subServices && service.subServices.length > 0 && (
+                                            <motion.div
+                                                className="text-xs text-text-body/70 flex items-center gap-2 mb-4"
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 1 }}
+                                                transition={{ delay: 0.3 + index * 0.1 }}
+                                            >
+                                                <span className="relative flex h-2.5 w-2.5">
+                                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-teal opacity-75"></span>
+                                                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary-teal"></span>
+                                                </span>
+                                                {service.subServices.length} specialized services
+                                            </motion.div>
+                                        )}
+
+                                        {/* Animated CTA */}
+                                        <motion.div
+                                            className="flex items-center text-primary-teal font-semibold text-sm gap-2 group-hover:gap-3 transition-all duration-300"
+                                            whileHover={{ x: 5 }}
+                                        >
+                                            Explore
+                                            <motion.span
+                                                animate={{ x: [0, 5, 0] }}
+                                                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                                            >
+                                                <HiArrowRight className="w-5 h-5" />
+                                            </motion.span>
+                                        </motion.div>
+                                    </div>
+                                </div>
+                            </Card3D>
+                        </motion.div>
+                    );
+                })}
             </motion.div>
         </motion.div>
     );
+};
 
-    // Render service detail view
-    const renderServiceDetail = () => {
-        if (!content) return null;
-        const parentService = type === 'sub-service' ? getServiceById(content.category) : content;
-        const color = type === 'service' ? content?.primaryColor : content?.color || '#14B8A6';
+// ============================================
+// SERVICE DETAIL VIEW COMPONENT
+// ============================================
+const ServiceDetailView = ({ serviceId, onBack, onSubServiceClick }) => {
+    const service = getServiceById(serviceId);
+    const subServices = getSubServicesByCategory(serviceId);
+    const serviceFromList = servicesList.find(s => getServiceIdFromName(s.name) === serviceId);
+    const containerRef = useRef(null);
+    const { scrollYProgress } = useScroll({
+        target: containerRef,
+        offset: ["start start", "end start"]
+    });
+    const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
+    const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0.3]);
 
+    if (!service) {
         return (
             <motion.div
+                className="text-center py-20"
                 variants={pageVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
+                initial="initial"
+                animate="enter"
             >
-                {/* Hero Section */}
-                <HeroSection
-                    content={content}
-                    type={type}
-                    onBack={handleBack}
-                    backLabel={backLabel}
-                />
-
-
-                {/* Static Wave Divider for sub-services */}
-                {type === 'sub-service' && (
-                    <div className="relative h-24 overflow-hidden">
-                        <svg
-                            viewBox="0 0 1200 120"
-                            preserveAspectRatio="none"
-                            className="absolute bottom-0 w-full h-full"
-                            style={{ color: `${color}10` }}
-                        >
-                            <path
-                                d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z"
-                                fill="currentColor"
-                            />
-                        </svg>
-                    </div>
-                )}
-
-                {/* Stats Section */}
-                <section className="py-16 bg-bg-soft">
-                    <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
-                        <motion.div
-                            className="grid grid-cols-2 lg:grid-cols-3 gap-6"
-                            variants={staggerContainer}
-                            initial="hidden"
-                            whileInView="visible"
-                            viewport={{ once: true, margin: "-100px" }}
-                        >
-                            {(type === 'service' ? content?.stats : parentService?.stats || []).map((stat, index) => (
-                                <StatCard key={index} stat={stat} index={index} color={color} />
-                            ))}
-                        </motion.div>
-                    </div>
-                </section>
-
-                {/* Features Section */}
-                <section className="py-20">
-                    <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
-                        <motion.div
-                            className="text-center mb-12"
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                        >
-                            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-text-heading mb-4">
-                                What's Included
-                            </h2>
-                            <p className="text-text-body max-w-2xl mx-auto">
-                                Our comprehensive {content.title.toLowerCase()} solutions include everything you need to succeed. We handle the complexity so you can focus on growing your business.
-                            </p>
-                        </motion.div>
-
-                        {/* Enhanced animated grid for sub-services */}
-                        <motion.div
-                            className={`grid gap-6 ${type === 'sub-service' ? 'sm:grid-cols-2 lg:grid-cols-3' : 'sm:grid-cols-2 lg:grid-cols-3'}`}
-                            variants={staggerContainer}
-                            initial="hidden"
-                            whileInView="visible"
-                            viewport={{ once: true, margin: "-50px" }}
-                        >
-                            {(type === 'service' ? content?.features : content?.features || []).map((feature, index) => (
-                                <motion.div
-                                    key={index}
-                                    variants={cardVariants}
-                                    custom={index}
-                                    whileHover={{
-                                        scale: 1.03,
-                                        y: -5,
-                                        boxShadow: `0 20px 40px ${color}15`
-                                    }}
-                                    className={`group relative p-6 rounded-2xl border transition-all duration-300 ${type === 'sub-service'
-                                        ? 'bg-gradient-to-br from-white to-gray-50 border-gray-100'
-                                        : 'bg-gray-50 border-transparent'
-                                        }`}
-                                >
-                                    {/* Animated background for sub-services */}
-                                    {type === 'sub-service' && (
-                                        <motion.div
-                                            className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                                            style={{
-                                                background: `linear-gradient(135deg, ${color}08, transparent)`,
-                                            }}
-                                        />
-                                    )}
-
-                                    <div className="relative flex items-start gap-4">
-                                        <motion.div
-                                            className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                                            style={{ backgroundColor: `${color}15` }}
-                                            whileHover={{ rotate: 10, scale: 1.1 }}
-                                            animate={type === 'sub-service' ? {
-                                                boxShadow: [`0 0 0 ${color}00`, `0 0 20px ${color}30`, `0 0 0 ${color}00`]
-                                            } : {}}
-                                            transition={{ duration: 2, repeat: Infinity }}
-                                        >
-                                            <HiCheck className="w-6 h-6" style={{ color }} />
-                                        </motion.div>
-                                        <div>
-                                            <h4 className="font-heading font-semibold text-text-heading mb-1 group-hover:text-primary-teal transition-colors">
-                                                {feature}
-                                            </h4>
-                                            {type === 'sub-service' && (
-                                                <motion.p
-                                                    className="text-sm text-text-body/70"
-                                                    initial={{ opacity: 0, height: 0 }}
-                                                    whileHover={{ opacity: 1, height: 'auto' }}
-                                                >
-                                                    Professional {feature.toLowerCase()} tailored for your success
-                                                </motion.p>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    {/* Animated corner accent for sub-services */}
-                                    {type === 'sub-service' && (
-                                        <motion.div
-                                            className="absolute top-0 right-0 w-16 h-16 opacity-0 group-hover:opacity-100 transition-opacity"
-                                            style={{
-                                                background: `linear-gradient(135deg, transparent 50%, ${color}10 50%)`,
-                                                borderTopRightRadius: '1rem'
-                                            }}
-                                        />
-                                    )}
-                                </motion.div>
-                            ))}
-                        </motion.div>
-                    </div>
-                </section>
-
-                {/* Benefits Section - For sub-services */}
-                {type === 'sub-service' && content?.benefits && (
-                    <section className="py-20 bg-bg-soft">
-                        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
-                            <motion.div
-                                className="text-center mb-12"
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                            >
-                                <h2 className="font-heading text-3xl sm:text-4xl font-bold text-text-heading mb-4">
-                                    Key Benefits
-                                </h2>
-                                <p className="text-text-body max-w-2xl mx-auto">
-                                    Discover why businesses choose our {content.title} services to achieve their goals
-                                </p>
-                            </motion.div>
-
-                            <motion.div
-                                className="grid sm:grid-cols-2 gap-4 max-w-3xl mx-auto"
-                                variants={staggerContainer}
-                                initial="hidden"
-                                whileInView="visible"
-                                viewport={{ once: true }}
-                            >
-                                {content.benefits.map((benefit, index) => (
-                                    <BenefitCard
-                                        key={index}
-                                        benefit={benefit}
-                                        index={index}
-                                        color={content.color}
-                                    />
-                                ))}
-                            </motion.div>
-                        </div>
-                    </section>
-                )}
-
-                {/* Process Section - For sub-services */}
-                {type === 'sub-service' && content?.process && (
-                    <section className="py-20">
-                        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
-                            <motion.div
-                                className="text-center mb-12"
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                            >
-                                <h2 className="font-heading text-3xl sm:text-4xl font-bold text-text-heading mb-4">
-                                    Our Process
-                                </h2>
-                                <p className="text-text-body max-w-2xl mx-auto">
-                                    A proven, systematic approach that delivers consistent results for your business
-                                </p>
-                            </motion.div>
-
-                            <motion.div
-                                className="max-w-2xl mx-auto"
-                                variants={staggerContainer}
-                                initial="hidden"
-                                whileInView="visible"
-                                viewport={{ once: true }}
-                            >
-                                {content.process.map((step, index) => (
-                                    <ProcessStep key={index} step={step} index={index} color={content.color} />
-                                ))}
-                            </motion.div>
-                        </div>
-                    </section>
-                )}
-
-                {/* Sub-services Grid - For main services */}
-                {type === 'service' && subServices.length > 0 && (
-                    <section className="py-20 bg-bg-soft">
-                        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
-                            <motion.div
-                                className="text-center mb-12"
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                            >
-                                <h2 className="font-heading text-3xl sm:text-4xl font-bold text-text-heading mb-4">
-                                    Specialized Solutions
-                                </h2>
-                                <p className="text-text-body max-w-2xl mx-auto">
-                                    Explore our {content.title.toLowerCase()} sub-services designed to address specific needs and maximize your results
-                                </p>
-                            </motion.div>
-
-                            <motion.div
-                                className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
-                                variants={staggerContainer}
-                                initial="hidden"
-                                whileInView="visible"
-                                viewport={{ once: true, margin: "-100px" }}
-                            >
-                                {subServices.map((subService, index) => (
-                                    <motion.div
-                                        key={subService.id}
-                                        variants={prefersReducedMotion ? {} : cardVariants}
-                                        custom={index}
-                                        whileHover={{ y: -6 }}
-                                        onClick={() => handleServiceClick(subService.id)}
-                                        className="group cursor-pointer"
-                                    >
-                                        <SubServiceCard
-                                            subService={subService}
-                                            index={index}
-                                        />
-                                    </motion.div>
-                                ))}
-                            </motion.div>
-                        </div>
-                    </section>
-                )}
-
-                {/* CTA Section */}
-                <section className="py-20">
-                    <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
-                        <motion.div
-                            className="relative rounded-3xl overflow-hidden"
-                            initial={{ opacity: 0, y: 40 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                        >
-                            {/* Background */}
-                            <div className="absolute inset-0 bg-gradient-to-br from-primary-teal to-primary-dark" />
-
-                            {/* Decorative elements */}
-                            <div className="absolute inset-0 overflow-hidden">
-                                <motion.div
-                                    className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-white/10"
-                                    animate={prefersReducedMotion ? {} : {
-                                        scale: [1, 1.2, 1],
-                                        rotate: [0, 90, 0]
-                                    }}
-                                    transition={{ duration: 20, repeat: Infinity }}
-                                />
-                                <motion.div
-                                    className="absolute -bottom-20 -left-20 w-40 h-40 rounded-full bg-white/10"
-                                    animate={prefersReducedMotion ? {} : {
-                                        scale: [1, 1.3, 1],
-                                    }}
-                                    transition={{ duration: 15, repeat: Infinity }}
-                                />
-                            </div>
-
-                            {/* Content */}
-                            <div className="relative py-16 px-8 text-center">
-                                <motion.h2
-                                    className="font-heading text-3xl sm:text-4xl font-bold text-white mb-4"
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true }}
-                                >
-                                    Ready to Get Started?
-                                </motion.h2>
-                                <motion.p
-                                    className="text-white/80 text-lg mb-8 max-w-xl mx-auto"
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ delay: 0.1 }}
-                                >
-                                    Let's discuss how our {content.title} services can help transform your business and drive real results
-                                </motion.p>
-                                <motion.div
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ delay: 0.2 }}
-                                >
-                                    <motion.button
-                                        onClick={handleConsultation}
-                                        className="inline-flex items-center gap-2 px-8 py-4 bg-white text-primary-teal rounded-xl font-bold text-lg hover:shadow-xl transition-shadow"
-                                        whileHover={{ scale: 1.05, boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}
-                                        whileTap={{ scale: 0.95 }}
-                                    >
-                                        Book a Free Consultation
-                                        <motion.div
-                                            animate={{ x: [0, 5, 0] }}
-                                            transition={{ duration: 1.5, repeat: Infinity }}
-                                        >
-                                            <BsArrowRight className="w-5 h-5" />
-                                        </motion.div>
-                                    </motion.button>
-                                </motion.div>
-                            </div>
-                        </motion.div>
-                    </div>
-                </section>
+                <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 200 }}
+                    className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center"
+                >
+                    <HiSparkles className="w-10 h-10 text-gray-400" />
+                </motion.div>
+                <h2 className="text-2xl font-heading font-bold text-text-heading mb-4">Service Not Found</h2>
+                <p className="text-text-body mb-6">The requested service could not be found.</p>
+                <BackButton onClick={onBack} label="Back to Services" />
             </motion.div>
-        );
-    };
-
-    // Show loading state briefly during transitions
-    if (isLoading) {
-        return (
-            <div className="min-h-screen bg-white flex items-center justify-center">
-                <div className="w-12 h-12 border-4 border-primary-teal/30 border-t-primary-teal rounded-full animate-spin" />
-            </div>
         );
     }
 
+    const IconComponent = service.icon;
+
     return (
-        <div className="min-h-screen bg-white">
-            {type === 'all' ? renderAllServices() : renderServiceDetail()}
-        </div>
+        <motion.div
+            ref={containerRef}
+            key={`service-${serviceId}`}
+            variants={pageVariants}
+            initial="initial"
+            animate="enter"
+            exit="exit"
+            className="relative"
+        >
+            <FloatingParticles />
+
+            {/* Back Navigation */}
+            <motion.div
+                className="mb-8"
+                initial={{ opacity: 0, x: -30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.1 }}
+            >
+                <BackButton onClick={onBack} label="All Services" />
+            </motion.div>
+
+            {/* Service Header with Parallax */}
+            <motion.div
+                className={`relative rounded-[2rem] p-8 md:p-12 mb-16 overflow-hidden bg-gradient-to-br ${service.bgGradient} shadow-2xl`}
+                style={{ y: backgroundY, opacity }}
+            >
+                {/* Animated Background Pattern */}
+                <motion.div
+                    className="absolute inset-0"
+                    animate={{
+                        backgroundPosition: ['0% 0%', '100% 100%'],
+                    }}
+                    transition={{ duration: 20, repeat: Infinity, repeatType: 'reverse' }}
+                    style={{
+                        backgroundImage: `radial-gradient(circle at 20% 30%, ${service.primaryColor}30 0%, transparent 50%),
+                                          radial-gradient(circle at 80% 70%, ${service.primaryColor}25 0%, transparent 50%),
+                                          radial-gradient(circle at 50% 50%, ${service.primaryColor}15 0%, transparent 70%)`
+                    }}
+                />
+
+                {/* Animated mesh gradient overlay */}
+                <div className="absolute inset-0 opacity-30">
+                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/20 via-transparent to-transparent" />
+                </div>
+
+                <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center gap-8">
+                    {/* Animated Icon */}
+                    <motion.div
+                        className={`relative w-24 h-24 rounded-3xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-2xl`}
+                        initial={{ scale: 0, rotate: -180 }}
+                        animate={{ scale: 1, rotate: 0 }}
+                        transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
+                        whileHover={{ scale: 1.1, rotate: 10 }}
+                    >
+                        <IconComponent className="w-12 h-12 text-white" />
+                        {/* Glow effect */}
+                        <motion.div
+                            className="absolute inset-0 rounded-3xl bg-white/30"
+                            animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0, 0.5] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                        />
+                    </motion.div>
+
+                    {/* Title & Description with stagger */}
+                    <div className="flex-1">
+                        <motion.h1
+                            className="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-text-heading mb-3"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3 }}
+                        >
+                            {service.title}
+                        </motion.h1>
+                        <motion.p
+                            className="text-lg md:text-xl text-text-body"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.4 }}
+                        >
+                            {service.tagline}
+                        </motion.p>
+                    </div>
+                </div>
+
+                {/* Animated Stats */}
+                <motion.div
+                    className="relative z-10 grid grid-cols-3 gap-6 mt-10 pt-10 border-t border-white/20"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5 }}
+                >
+                    {service.stats.map((stat, index) => (
+                        <motion.div
+                            key={index}
+                            className="text-center group"
+                            initial={{ opacity: 0, y: 30, scale: 0.8 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            transition={{ delay: 0.5 + index * 0.15, type: "spring", stiffness: 150 }}
+                            whileHover={{ scale: 1.05, y: -5 }}
+                        >
+                            <motion.div
+                                className="text-3xl md:text-4xl font-bold text-text-heading mb-1"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.7 + index * 0.1 }}
+                            >
+                                {stat.value}
+                            </motion.div>
+                            <div className="text-sm text-text-body font-medium">{stat.label}</div>
+                        </motion.div>
+                    ))}
+                </motion.div>
+            </motion.div>
+
+            {/* Description with animated border */}
+            <AnimatedSection delay={0.1} className="mb-16">
+                <div className="relative p-8 bg-white/60 backdrop-blur-sm rounded-3xl border border-white/50 shadow-xl overflow-hidden">
+                    <motion.div
+                        className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-teal via-blue-500 to-purple-500"
+                        initial={{ scaleX: 0 }}
+                        whileInView={{ scaleX: 1 }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
+                    />
+                    <h2 className="text-2xl md:text-3xl font-heading font-bold text-text-heading mb-5 flex items-center gap-3">
+                        <HiLightningBolt className="w-7 h-7 text-primary-teal" />
+                        About This Service
+                    </h2>
+                    <p className="text-text-body text-lg leading-relaxed">{service.description}</p>
+                </div>
+            </AnimatedSection>
+
+            {/* Features with stagger animation */}
+            <AnimatedSection delay={0.2} className="mb-16">
+                <h2 className="text-2xl md:text-3xl font-heading font-bold text-text-heading mb-8 flex items-center gap-3">
+                    <motion.span
+                        className="inline-block w-10 h-10 rounded-xl bg-gradient-to-br from-primary-teal to-blue-500 flex items-center justify-center"
+                        whileHover={{ rotate: 360 }}
+                        transition={{ duration: 0.6 }}
+                    >
+                        <HiOutlineCheckCircle className="w-5 h-5 text-white" />
+                    </motion.span>
+                    Key Features
+                </h2>
+                <motion.div
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+                    variants={staggerContainer}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                >
+                    {service.features.map((feature, index) => (
+                        <motion.div
+                            key={index}
+                            className="group flex items-center gap-4 p-5 bg-white/80 backdrop-blur-sm rounded-2xl border border-white/50 shadow-lg hover:shadow-xl transition-all duration-500 cursor-default"
+                            variants={cardVariants}
+                            custom={index}
+                            whileHover={{ scale: 1.03, y: -5 }}
+                        >
+                            <motion.div
+                                className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                                style={{ backgroundColor: `${service.primaryColor}15` }}
+                                whileHover={{ rotate: 360 }}
+                                transition={{ duration: 0.5 }}
+                            >
+                                <HiOutlineCheckCircle
+                                    className="w-5 h-5"
+                                    style={{ color: service.primaryColor }}
+                                />
+                            </motion.div>
+                            <span className="text-text-heading font-medium group-hover:text-primary-teal transition-colors">{feature}</span>
+                        </motion.div>
+                    ))}
+                </motion.div>
+            </AnimatedSection>
+
+            {/* Sub-Services with advanced cards */}
+            {subServices.length > 0 && (
+                <AnimatedSection delay={0.3} className="mb-16">
+                    <h2 className="text-2xl md:text-3xl font-heading font-bold text-text-heading mb-8 flex items-center gap-3">
+                        <motion.span
+                            className="inline-block w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center"
+                            animate={{ rotate: [0, 10, -10, 0] }}
+                            transition={{ duration: 4, repeat: Infinity }}
+                        >
+                            <HiSparkles className="w-5 h-5 text-white" />
+                        </motion.span>
+                        Specialized Services
+                    </h2>
+                    <motion.div
+                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                        variants={staggerContainer}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                    >
+                        {subServices.map((subService, index) => {
+                            const SubIcon = subService.icon;
+                            return (
+                                <motion.div
+                                    key={subService.id}
+                                    className="perspective-1000"
+                                    variants={cardVariants}
+                                    custom={index}
+                                >
+                                    <Card3D
+                                        onClick={() => onSubServiceClick(subService.id)}
+                                        className="group h-full"
+                                    >
+                                        <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-7 shadow-xl border border-white/50 hover:shadow-2xl transition-all duration-500 h-full overflow-hidden">
+                                            {/* Animated gradient border */}
+                                            <motion.div
+                                                className="absolute inset-0 rounded-3xl border-2 border-transparent"
+                                                style={{
+                                                    background: `linear-gradient(white, white) padding-box, linear-gradient(135deg, ${subService.color}40, transparent, ${subService.color}40) border-box`
+                                                }}
+                                                whileHover={{
+                                                    background: `linear-gradient(white, white) padding-box, linear-gradient(135deg, ${subService.color}, ${subService.color}80, ${subService.color}) border-box`
+                                                }}
+                                            />
+
+                                            {/* Icon with glow */}
+                                            <motion.div
+                                                className="relative z-10 w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
+                                                style={{ backgroundColor: `${subService.color}20` }}
+                                                whileHover={{ scale: 1.15, rotate: 10 }}
+                                                transition={{ type: "spring", stiffness: 300 }}
+                                            >
+                                                <SubIcon
+                                                    className="w-7 h-7"
+                                                    style={{ color: subService.color }}
+                                                />
+                                                <motion.div
+                                                    className="absolute inset-0 rounded-2xl"
+                                                    style={{ backgroundColor: subService.color }}
+                                                    initial={{ opacity: 0, scale: 0.8 }}
+                                                    whileHover={{ opacity: 0.2, scale: 1.3 }}
+                                                    transition={{ duration: 0.3 }}
+                                                />
+                                            </motion.div>
+
+                                            {/* Content */}
+                                            <div className="relative z-10">
+                                                <h3 className="font-heading font-bold text-lg text-text-heading mb-3 group-hover:text-primary-teal transition-colors duration-300">
+                                                    {subService.title}
+                                                </h3>
+                                                <p className="text-text-body text-sm line-clamp-2 leading-relaxed mb-5">
+                                                    {subService.description}
+                                                </p>
+
+                                                {/* Animated CTA */}
+                                                <motion.div
+                                                    className="flex items-center text-primary-teal font-semibold text-sm gap-2"
+                                                    whileHover={{ x: 5 }}
+                                                >
+                                                    View Details
+                                                    <motion.span
+                                                        animate={{ x: [0, 5, 0] }}
+                                                        transition={{ duration: 1.5, repeat: Infinity }}
+                                                    >
+                                                        <HiOutlineChevronRight className="w-5 h-5" />
+                                                    </motion.span>
+                                                </motion.div>
+                                            </div>
+                                        </div>
+                                    </Card3D>
+                                </motion.div>
+                            );
+                        })}
+                    </motion.div>
+                </AnimatedSection>
+            )}
+
+            {/* Services from constant list that don't have sub-services in categories */}
+            {serviceFromList?.subServices && subServices.length === 0 && (
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6 }}
+                >
+                    <h2 className="text-2xl font-heading font-bold text-text-heading mb-6">
+                        What We Offer
+                    </h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {serviceFromList.subServices.map((subName, index) => (
+                            <motion.div
+                                key={index}
+                                className="flex items-center gap-3 p-4 bg-white rounded-xl border border-border-light shadow-sm"
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.6 + index * 0.05 }}
+                            >
+                                <div
+                                    className="w-2 h-2 rounded-full flex-shrink-0"
+                                    style={{ backgroundColor: service.primaryColor }}
+                                />
+                                <span className="text-text-heading font-medium">{subName}</span>
+                            </motion.div>
+                        ))}
+                    </div>
+                </motion.div>
+            )}
+
+            {/* CTA Section with enhanced animation */}
+            <AnimatedSection delay={0.4} className="mt-20">
+                <motion.div
+                    className={`relative rounded-[2.5rem] p-10 md:p-16 bg-gradient-to-br ${service.gradient} overflow-hidden shadow-2xl`}
+                    whileHover={{ scale: 1.01 }}
+                    transition={{ duration: 0.3 }}
+                >
+                    {/* Animated background effects */}
+                    <motion.div
+                        className="absolute inset-0"
+                        animate={{
+                            backgroundPosition: ['0% 0%', '100% 100%'],
+                        }}
+                        transition={{ duration: 15, repeat: Infinity, repeatType: 'reverse' }}
+                        style={{
+                            backgroundImage: `radial-gradient(circle at 30% 40%, rgba(255,255,255,0.3) 0%, transparent 50%),
+                                              radial-gradient(circle at 70% 60%, rgba(255,255,255,0.2) 0%, transparent 50%)`
+                        }}
+                    />
+
+                    {/* Floating particles */}
+                    {[...Array(5)].map((_, i) => (
+                        <motion.div
+                            key={i}
+                            className="absolute w-4 h-4 rounded-full bg-white/20"
+                            style={{
+                                left: `${20 + i * 15}%`,
+                                top: `${20 + i * 10}%`,
+                            }}
+                            animate={{
+                                y: [0, -30, 0],
+                                opacity: [0.3, 0.8, 0.3],
+                            }}
+                            transition={{
+                                duration: 3 + i,
+                                repeat: Infinity,
+                                delay: i * 0.5,
+                            }}
+                        />
+                    ))}
+
+                    <div className="relative z-10 text-center">
+                        <motion.div
+                            initial={{ scale: 0 }}
+                            whileInView={{ scale: 1 }}
+                            transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
+                            className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm mb-8"
+                        >
+                            <HiSparkles className="w-10 h-10 text-white" />
+                        </motion.div>
+
+                        <motion.h2
+                            className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-white mb-6"
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3 }}
+                        >
+                            Ready to Get Started?
+                        </motion.h2>
+                        <motion.p
+                            className="text-white/90 text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed"
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.4 }}
+                        >
+                            Let's discuss how we can help transform your digital presence with our {service.title} solutions.
+                        </motion.p>
+                        <motion.a
+                            href="#contact"
+                            className="group relative inline-flex items-center gap-3 px-10 py-5 bg-white text-text-heading font-bold text-lg rounded-full shadow-2xl overflow-hidden"
+                            whileHover={{ scale: 1.08, y: -3 }}
+                            whileTap={{ scale: 0.95 }}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.5 }}
+                        >
+                            <motion.span
+                                className="absolute inset-0 bg-gradient-to-r from-primary-teal to-blue-500"
+                                initial={{ x: '-100%' }}
+                                whileHover={{ x: '0%' }}
+                                transition={{ duration: 0.4 }}
+                            />
+                            <span className="relative z-10 group-hover:text-white transition-colors duration-300">Get a Free Consultation</span>
+                            <motion.span
+                                className="relative z-10"
+                                animate={{ x: [0, 5, 0] }}
+                                transition={{ duration: 1.5, repeat: Infinity }}
+                            >
+                                <HiArrowRight className="w-6 h-6 group-hover:text-white transition-colors duration-300" />
+                            </motion.span>
+                        </motion.a>
+                    </div>
+                </motion.div>
+            </AnimatedSection>
+        </motion.div>
+    );
+};
+
+// ============================================
+// SUB-SERVICE DETAIL VIEW COMPONENT
+// ============================================
+const SubServiceDetailView = ({ subServiceId, onBackToService, onBackToAllServices }) => {
+    const subService = getSubServiceById(subServiceId);
+    const parentService = subService ? getServiceById(subService.category) : null;
+    const containerRef = useRef(null);
+
+    if (!subService) {
+        return (
+            <motion.div
+                className="text-center py-20"
+                variants={pageVariants}
+                initial="initial"
+                animate="enter"
+            >
+                <motion.div
+                    initial={{ scale: 0, rotate: -180 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ type: "spring", stiffness: 200 }}
+                    className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center shadow-xl"
+                >
+                    <HiSparkles className="w-10 h-10 text-gray-400" />
+                </motion.div>
+                <h2 className="text-2xl font-heading font-bold text-text-heading mb-4">Service Not Found</h2>
+                <p className="text-text-body mb-6">The requested service could not be found.</p>
+                <BackButton onClick={onBackToAllServices} label="Back to Services" />
+            </motion.div>
+        );
+    }
+
+    const IconComponent = subService.icon;
+
+    return (
+        <motion.div
+            ref={containerRef}
+            key={`sub-service-${subServiceId}`}
+            variants={pageVariants}
+            initial="initial"
+            animate="enter"
+            exit="exit"
+            className="relative"
+        >
+            <FloatingParticles />
+
+            {/* Breadcrumb Navigation */}
+            <motion.div
+                className="mb-10 flex flex-wrap items-center gap-4"
+                initial={{ opacity: 0, x: -30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.1 }}
+            >
+                <BackButton onClick={onBackToService} label={parentService?.title || 'Back'} />
+                <motion.span
+                    className="text-text-body/30 text-2xl"
+                    animate={{ opacity: [0.3, 0.7, 0.3] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                >
+                    /
+                </motion.span>
+                <BackButton onClick={onBackToAllServices} label="All Services" />
+            </motion.div>
+
+            {/* Sub-Service Header with enhanced styling */}
+            <motion.div
+                className="relative rounded-[2rem] p-8 md:p-12 mb-16 overflow-hidden bg-gradient-to-br from-white via-white to-bg-soft border border-white/50 shadow-2xl"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 100 }}
+            >
+                {/* Animated Background Accents */}
+                <motion.div
+                    className="absolute top-0 right-0 w-80 h-80 rounded-full blur-[100px] opacity-30"
+                    style={{ backgroundColor: subService.color }}
+                    animate={{
+                        scale: [1, 1.3, 1],
+                        opacity: [0.2, 0.4, 0.2],
+                    }}
+                    transition={{ duration: 6, repeat: Infinity }}
+                />
+                <motion.div
+                    className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full blur-[80px] opacity-20"
+                    style={{ backgroundColor: subService.color }}
+                    animate={{
+                        scale: [1, 1.2, 1],
+                        opacity: [0.15, 0.3, 0.15],
+                    }}
+                    transition={{ duration: 8, repeat: Infinity, delay: 1 }}
+                />
+
+                <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center gap-8">
+                    {/* Animated Icon with glow */}
+                    <motion.div
+                        className="relative w-24 h-24 rounded-3xl flex items-center justify-center shadow-2xl"
+                        style={{ backgroundColor: subService.color }}
+                        initial={{ scale: 0, rotate: -180 }}
+                        animate={{ scale: 1, rotate: 0 }}
+                        transition={{ type: "spring", stiffness: 200, delay: 0.3 }}
+                        whileHover={{ scale: 1.1, rotate: 10 }}
+                    >
+                        <IconComponent className="w-12 h-12 text-white" />
+                        {/* Animated glow ring */}
+                        <motion.div
+                            className="absolute inset-0 rounded-3xl"
+                            style={{ border: `3px solid ${subService.color}` }}
+                            animate={{ scale: [1, 1.3, 1], opacity: [0.8, 0, 0.8] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                        />
+                    </motion.div>
+
+                    {/* Title & Category */}
+                    <div className="flex-1">
+                        <motion.div
+                            className="flex items-center gap-3 mb-3"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.4 }}
+                        >
+                            <motion.span
+                                className="px-4 py-1.5 text-sm font-semibold rounded-full shadow-lg"
+                                style={{
+                                    backgroundColor: `${subService.color}20`,
+                                    color: subService.color
+                                }}
+                                whileHover={{ scale: 1.05 }}
+                            >
+                                {parentService?.title}
+                            </motion.span>
+                        </motion.div>
+                        <motion.h1
+                            className="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-text-heading"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.5 }}
+                        >
+                            {subService.title}
+                        </motion.h1>
+                    </div>
+                </div>
+            </motion.div>
+
+            {/* Description with glass effect */}
+            <AnimatedSection delay={0.1} className="mb-16">
+                <div className="relative p-8 md:p-10 bg-white/70 backdrop-blur-md rounded-3xl border border-white/50 shadow-xl overflow-hidden">
+                    {/* Animated accent line */}
+                    <motion.div
+                        className="absolute top-0 left-0 w-full h-1.5 rounded-full"
+                        style={{ background: `linear-gradient(90deg, ${subService.color}, ${subService.color}80, ${subService.color})` }}
+                        initial={{ scaleX: 0 }}
+                        whileInView={{ scaleX: 1 }}
+                        transition={{ duration: 1, delay: 0.2 }}
+                    />
+                    <h2 className="text-2xl md:text-3xl font-heading font-bold text-text-heading mb-5 flex items-center gap-3">
+                        <motion.span
+                            className="inline-flex w-10 h-10 rounded-xl items-center justify-center"
+                            style={{ backgroundColor: `${subService.color}20` }}
+                            whileHover={{ rotate: 360 }}
+                            transition={{ duration: 0.6 }}
+                        >
+                            <HiLightningBolt className="w-5 h-5" style={{ color: subService.color }} />
+                        </motion.span>
+                        Overview
+                    </h2>
+                    <p className="text-text-body text-lg leading-relaxed">{subService.description}</p>
+                </div>
+            </AnimatedSection>
+
+            {/* Two Column Layout with enhanced cards */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+                {/* Features Card */}
+                <AnimatedSection delay={0.15}>
+                    <motion.div
+                        className="h-full bg-white/80 backdrop-blur-sm rounded-3xl p-7 md:p-9 shadow-xl border border-white/50 overflow-hidden relative group"
+                        whileHover={{ y: -5, scale: 1.01 }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        {/* Hover glow effect */}
+                        <div
+                            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                            style={{ background: `radial-gradient(circle at 50% 50%, ${subService.color}10, transparent 70%)` }}
+                        />
+
+                        <h3 className="text-xl md:text-2xl font-heading font-bold text-text-heading mb-8 flex items-center gap-3">
+                            <motion.span
+                                className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg"
+                                style={{ backgroundColor: `${subService.color}20` }}
+                                whileHover={{ scale: 1.1, rotate: 10 }}
+                            >
+                                <HiOutlineCheckCircle className="w-5 h-5" style={{ color: subService.color }} />
+                            </motion.span>
+                            What's Included
+                        </h3>
+                        <ul className="space-y-4">
+                            {subService.features.map((feature, index) => (
+                                <motion.li
+                                    key={index}
+                                    className="flex items-start gap-4 group/item"
+                                    initial={{ opacity: 0, x: -20 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.1 + index * 0.08 }}
+                                    viewport={{ once: true }}
+                                >
+                                    <motion.div
+                                        className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 shadow-md"
+                                        style={{ backgroundColor: `${subService.color}25` }}
+                                        whileHover={{ scale: 1.3 }}
+                                    >
+                                        <motion.div
+                                            className="w-2.5 h-2.5 rounded-full"
+                                            style={{ backgroundColor: subService.color }}
+                                            animate={{ scale: [1, 1.2, 1] }}
+                                            transition={{ duration: 2, repeat: Infinity, delay: index * 0.2 }}
+                                        />
+                                    </motion.div>
+                                    <span className="text-text-body group-hover/item:text-text-heading transition-colors">{feature}</span>
+                                </motion.li>
+                            ))}
+                        </ul>
+                    </motion.div>
+                </AnimatedSection>
+
+                {/* Benefits Card */}
+                <AnimatedSection delay={0.2}>
+                    <motion.div
+                        className="h-full bg-white/80 backdrop-blur-sm rounded-3xl p-7 md:p-9 shadow-xl border border-white/50 overflow-hidden relative group"
+                        whileHover={{ y: -5, scale: 1.01 }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        {/* Hover glow effect */}
+                        <div
+                            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                            style={{ background: `radial-gradient(circle at 50% 50%, ${subService.color}10, transparent 70%)` }}
+                        />
+
+                        <h3 className="text-xl md:text-2xl font-heading font-bold text-text-heading mb-8 flex items-center gap-3">
+                            <motion.span
+                                className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg"
+                                style={{ backgroundColor: `${subService.color}20` }}
+                                whileHover={{ scale: 1.1, rotate: -10 }}
+                            >
+                                <HiArrowRight className="w-5 h-5" style={{ color: subService.color }} />
+                            </motion.span>
+                            Benefits
+                        </h3>
+                        <ul className="space-y-4">
+                            {subService.benefits.map((benefit, index) => (
+                                <motion.li
+                                    key={index}
+                                    className="flex items-start gap-4 group/item"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.1 + index * 0.08 }}
+                                    viewport={{ once: true }}
+                                >
+                                    <motion.div
+                                        className="flex-shrink-0 mt-0.5"
+                                        whileHover={{ scale: 1.3, rotate: 360 }}
+                                        transition={{ duration: 0.4 }}
+                                    >
+                                        <HiOutlineCheckCircle
+                                            className="w-6 h-6"
+                                            style={{ color: subService.color }}
+                                        />
+                                    </motion.div>
+                                    <span className="text-text-body group-hover/item:text-text-heading transition-colors">{benefit}</span>
+                                </motion.li>
+                            ))}
+                        </ul>
+                    </motion.div>
+                </AnimatedSection>
+            </div>
+
+            {/* Process - Modern Timeline Design */}
+            <AnimatedSection delay={0.25} className="mb-16">
+                <div className="text-center mb-12">
+                    <motion.div
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-4"
+                        style={{ backgroundColor: `${subService.color}15` }}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                    >
+                        <HiSparkles className="w-4 h-4" style={{ color: subService.color }} />
+                        <span className="text-sm font-medium" style={{ color: subService.color }}>How We Work</span>
+                    </motion.div>
+                    <h2 className="text-3xl md:text-4xl font-heading font-bold text-text-heading">
+                        Our Process
+                    </h2>
+                </div>
+
+                {/* Desktop Timeline */}
+                <div className="hidden lg:block relative">
+                    {/* Progress Track Background */}
+                    <div className="absolute top-[60px] left-[12.5%] right-[12.5%] h-1.5 bg-gray-100 rounded-full overflow-hidden" />
+
+                    {/* Animated Progress Segments - Loading bar effect */}
+                    {subService.process.map((_, index) => (
+                        index < subService.process.length - 1 && (
+                            <motion.div
+                                key={`progress-${index}`}
+                                className="absolute top-[60px] h-1.5 rounded-full origin-left"
+                                style={{
+                                    backgroundColor: subService.color,
+                                    left: `calc(12.5% + ${index * 25}%)`,
+                                    width: '25%',
+                                }}
+                                initial={{ scaleX: 0 }}
+                                whileInView={{ scaleX: 1 }}
+                                viewport={{ once: true }}
+                                transition={{
+                                    duration: 1.2,
+                                    delay: 0.8 + index * 1.0,
+                                    ease: [0.25, 0.1, 0.25, 1]
+                                }}
+                            />
+                        )
+                    ))}
+
+                    <div className="grid grid-cols-4 gap-6 relative">
+                        {subService.process.map((step, index) => (
+                            <motion.div
+                                key={index}
+                                className="relative pt-28"
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: 0.8 + index * 1.0, duration: 0.6 }}
+                            >
+                                {/* Step Circle on Timeline */}
+                                <motion.div
+                                    className="absolute top-[52px] left-1/2 -translate-x-1/2 z-10"
+                                    initial={{ scale: 0 }}
+                                    whileInView={{ scale: 1 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: 0.8 + index * 1.0, type: "spring", stiffness: 200 }}
+                                >
+                                    {/* Pulse ring animation */}
+                                    <motion.div
+                                        className="absolute inset-0 rounded-full"
+                                        style={{ backgroundColor: subService.color }}
+                                        initial={{ scale: 1, opacity: 0.5 }}
+                                        animate={{ scale: [1, 1.8, 1], opacity: [0.5, 0, 0.5] }}
+                                        transition={{
+                                            duration: 2,
+                                            repeat: Infinity,
+                                            delay: index * 0.4,
+                                            ease: "easeInOut"
+                                        }}
+                                    />
+                                    <div
+                                        className="relative w-8 h-8 rounded-full border-4 border-white shadow-lg flex items-center justify-center text-white text-xs font-bold"
+                                        style={{ backgroundColor: subService.color }}
+                                    >
+                                        {step.step}
+                                    </div>
+                                </motion.div>
+
+                                {/* Content Card */}
+                                <motion.div
+                                    className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 group cursor-pointer"
+                                    whileHover={{ y: -8, borderColor: subService.color }}
+                                >
+                                    <h4 className="font-heading font-bold text-lg text-text-heading mb-2 group-hover:text-primary-teal transition-colors">
+                                        {step.title}
+                                    </h4>
+                                    <p className="text-text-body text-sm leading-relaxed">
+                                        {step.desc}
+                                    </p>
+                                </motion.div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Mobile/Tablet Vertical Timeline */}
+                <div className="lg:hidden relative pl-10">
+                    {/* Vertical Line Background */}
+                    <div className="absolute left-4 top-0 bottom-0 w-1 bg-gray-100 rounded-full" />
+
+                    {/* Segmented Progress - Loading bar effect for mobile */}
+                    {subService.process.map((_, index) => (
+                        <motion.div
+                            key={`mobile-progress-${index}`}
+                            className="absolute left-4 w-1 rounded-full origin-top"
+                            style={{
+                                backgroundColor: subService.color,
+                                top: `${index * 25}%`,
+                                height: '25%',
+                            }}
+                            initial={{ scaleY: 0 }}
+                            whileInView={{ scaleY: 1 }}
+                            viewport={{ once: true }}
+                            transition={{
+                                duration: 1.0,
+                                delay: 0.5 + index * 0.8,
+                                ease: [0.25, 0.1, 0.25, 1]
+                            }}
+                        />
+                    ))}
+
+                    <div className="space-y-6">
+                        {subService.process.map((step, index) => (
+                            <motion.div
+                                key={index}
+                                className="relative"
+                                initial={{ opacity: 0, x: -20 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: 0.5 + index * 0.8, duration: 0.5 }}
+                            >
+                                {/* Timeline Circle with Number */}
+                                <motion.div
+                                    className="absolute -left-6 top-5 z-10"
+                                    initial={{ scale: 0 }}
+                                    whileInView={{ scale: 1 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: 0.5 + index * 0.8, type: "spring" }}
+                                >
+                                    <div
+                                        className="w-6 h-6 rounded-full border-3 border-white shadow-lg flex items-center justify-center text-white text-xs font-bold"
+                                        style={{ backgroundColor: subService.color }}
+                                    >
+                                        {step.step}
+                                    </div>
+                                </motion.div>
+
+                                {/* Content */}
+                                <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+                                    <h4 className="font-heading font-bold text-text-heading mb-2">
+                                        {step.title}
+                                    </h4>
+                                    <p className="text-text-body text-sm leading-relaxed">
+                                        {step.desc}
+                                    </p>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+            </AnimatedSection>
+
+            {/* Enhanced CTA Section */}
+            <AnimatedSection delay={0.3} className="mt-20">
+                <motion.div
+                    className="relative rounded-[2.5rem] p-10 md:p-16 overflow-hidden shadow-2xl"
+                    style={{
+                        background: `linear-gradient(135deg, ${subService.color} 0%, ${subService.color}cc 50%, ${subService.color}ee 100%)`
+                    }}
+                    whileHover={{ scale: 1.01 }}
+                    transition={{ duration: 0.3 }}
+                >
+                    {/* Animated mesh background */}
+                    <motion.div
+                        className="absolute inset-0"
+                        animate={{
+                            backgroundPosition: ['0% 0%', '100% 100%'],
+                        }}
+                        transition={{ duration: 15, repeat: Infinity, repeatType: 'reverse' }}
+                        style={{
+                            backgroundImage: `radial-gradient(circle at 30% 40%, rgba(255,255,255,0.35) 0%, transparent 50%),
+                                              radial-gradient(circle at 70% 60%, rgba(255,255,255,0.25) 0%, transparent 50%),
+                                              radial-gradient(circle at 50% 80%, rgba(255,255,255,0.15) 0%, transparent 40%)`
+                        }}
+                    />
+
+                    {/* Floating particles */}
+                    {[...Array(8)].map((_, i) => (
+                        <motion.div
+                            key={i}
+                            className="absolute rounded-full bg-white/20"
+                            style={{
+                                width: Math.random() * 20 + 10,
+                                height: Math.random() * 20 + 10,
+                                left: `${10 + i * 12}%`,
+                                top: `${15 + (i % 3) * 25}%`,
+                            }}
+                            animate={{
+                                y: [0, -40, 0],
+                                x: [0, Math.random() * 20 - 10, 0],
+                                opacity: [0.2, 0.8, 0.2],
+                                scale: [1, 1.3, 1],
+                            }}
+                            transition={{
+                                duration: 4 + i * 0.5,
+                                repeat: Infinity,
+                                delay: i * 0.4,
+                            }}
+                        />
+                    ))}
+
+                    <div className="relative z-10 text-center">
+                        {/* Animated icon */}
+                        <motion.div
+                            initial={{ scale: 0, rotate: -180 }}
+                            whileInView={{ scale: 1, rotate: 0 }}
+                            transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
+                            viewport={{ once: true }}
+                            className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/25 backdrop-blur-sm mb-8 shadow-xl"
+                        >
+                            <motion.div
+                                animate={{ rotate: [0, 360] }}
+                                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                            >
+                                <HiSparkles className="w-10 h-10 text-white" />
+                            </motion.div>
+                        </motion.div>
+
+                        <motion.h2
+                            className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-white mb-6"
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.3 }}
+                        >
+                            Ready for {subService.title}?
+                        </motion.h2>
+                        <motion.p
+                            className="text-white/95 text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed"
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.4 }}
+                        >
+                            Let our experts help you achieve your goals with our specialized {subService.title} services.
+                        </motion.p>
+                        <motion.a
+                            href="#contact"
+                            className="group relative inline-flex items-center gap-3 px-10 py-5 bg-white text-text-heading font-bold text-lg rounded-full shadow-2xl overflow-hidden"
+                            whileHover={{ scale: 1.08, y: -3 }}
+                            whileTap={{ scale: 0.95 }}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.5 }}
+                        >
+                            {/* Hover gradient overlay */}
+                            <motion.span
+                                className="absolute inset-0"
+                                style={{ background: `linear-gradient(90deg, ${subService.color}, ${subService.color}dd)` }}
+                                initial={{ x: '-100%' }}
+                                whileHover={{ x: '0%' }}
+                                transition={{ duration: 0.4 }}
+                            />
+                            <span className="relative z-10 group-hover:text-white transition-colors duration-300">Start Your Project</span>
+                            <motion.span
+                                className="relative z-10"
+                                animate={{ x: [0, 5, 0] }}
+                                transition={{ duration: 1.5, repeat: Infinity }}
+                            >
+                                <HiArrowRight className="w-6 h-6 group-hover:text-white transition-colors duration-300" />
+                            </motion.span>
+                        </motion.a>
+                    </div>
+                </motion.div>
+            </AnimatedSection>
+        </motion.div>
+    );
+};
+
+// ============================================
+// MAIN SERVICES DETAIL COMPONENT
+// ============================================
+const ServicesDetail = () => {
+    const { serviceId } = useParams();
+    const navigate = useNavigate();
+    const [currentView, setCurrentView] = useState(VIEW_TYPES.ALL_SERVICES);
+    const [activeServiceId, setActiveServiceId] = useState(null);
+    const [activeSubServiceId, setActiveSubServiceId] = useState(null);
+
+    // Parse the URL parameter to determine view type
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        if (!serviceId) {
+            setCurrentView(VIEW_TYPES.ALL_SERVICES);
+            setActiveServiceId(null);
+            setActiveSubServiceId(null);
+            return;
+        }
+
+        // Check if it's a main service or sub-service
+        const content = getContentById(serviceId);
+
+        if (content) {
+            if (content.type === 'service') {
+                setCurrentView(VIEW_TYPES.SERVICE_DETAIL);
+                setActiveServiceId(serviceId);
+                setActiveSubServiceId(null);
+            } else if (content.type === 'sub-service') {
+                setCurrentView(VIEW_TYPES.SUB_SERVICE_DETAIL);
+                setActiveSubServiceId(serviceId);
+                setActiveServiceId(content.data.category);
+            }
+        } else {
+            // Fallback: try to match with service list
+            const matchedService = servicesList.find(s => getServiceIdFromName(s.name) === serviceId);
+            if (matchedService) {
+                setCurrentView(VIEW_TYPES.SERVICE_DETAIL);
+                setActiveServiceId(serviceId);
+                setActiveSubServiceId(null);
+            } else {
+                // Invalid ID - redirect to all services
+                navigate('/services', { replace: true });
+            }
+        }
+    }, [serviceId, navigate]);
+
+    // Navigation handlers
+    const handleServiceClick = (id) => {
+        navigate(`/services/${id}`);
+    };
+
+    const handleSubServiceClick = (id) => {
+        navigate(`/services/${id}`);
+    };
+
+    const handleBackToAllServices = () => {
+        navigate('/services');
+    };
+
+    const handleBackToService = () => {
+        if (activeServiceId) {
+            navigate(`/services/${activeServiceId}`);
+        } else {
+            navigate('/services');
+        }
+    };
+
+    return (
+        <section className="relative min-h-screen py-20 pt-28 bg-gradient-to-br from-bg-soft via-white to-bg-soft overflow-hidden">
+            {/* Enhanced Background Elements */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                {/* Animated Gradient Mesh */}
+                <motion.div
+                    className="absolute inset-0 opacity-40"
+                    animate={{
+                        background: [
+                            'radial-gradient(ellipse at 0% 0%, rgba(0, 128, 128, 0.1) 0%, transparent 50%)',
+                            'radial-gradient(ellipse at 100% 100%, rgba(0, 128, 128, 0.1) 0%, transparent 50%)',
+                            'radial-gradient(ellipse at 100% 0%, rgba(0, 128, 128, 0.1) 0%, transparent 50%)',
+                            'radial-gradient(ellipse at 0% 100%, rgba(0, 128, 128, 0.1) 0%, transparent 50%)',
+                            'radial-gradient(ellipse at 0% 0%, rgba(0, 128, 128, 0.1) 0%, transparent 50%)',
+                        ]
+                    }}
+                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                />
+
+                {/* Animated Pixel Grid */}
+                <motion.div
+                    className="w-full h-full opacity-30"
+                    style={{
+                        backgroundImage: `
+                            linear-gradient(rgba(0, 128, 128, 0.05) 1px, transparent 1px),
+                            linear-gradient(90deg, rgba(0, 128, 128, 0.05) 1px, transparent 1px)
+                        `,
+                        backgroundSize: '60px 60px'
+                    }}
+                    animate={{ backgroundPosition: ['0px 0px', '60px 60px'] }}
+                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                />
+
+                {/* Enhanced Floating Orbs */}
+                <motion.div
+                    className="absolute top-20 left-10 w-40 h-40 bg-gradient-to-r from-primary-teal/15 to-blue-500/15 rounded-full blur-3xl hidden lg:block"
+                    animate={{
+                        x: [0, 50, 0],
+                        y: [0, 30, 0],
+                        scale: [1, 1.2, 1],
+                    }}
+                    transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+                />
+                <motion.div
+                    className="absolute bottom-20 right-10 w-52 h-52 bg-gradient-to-r from-pink-500/15 to-purple-500/15 rounded-full blur-3xl hidden lg:block"
+                    animate={{
+                        x: [0, -40, 0],
+                        y: [0, -50, 0],
+                        scale: [1, 1.3, 1],
+                    }}
+                    transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+                />
+                <motion.div
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-cyan-500/10 to-teal-500/10 rounded-full blur-3xl hidden lg:block"
+                    animate={{
+                        scale: [1, 1.5, 1],
+                        opacity: [0.3, 0.6, 0.3],
+                    }}
+                    transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                />
+            </div>
+
+            <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <AnimatePresence mode="wait">
+                    {currentView === VIEW_TYPES.ALL_SERVICES && (
+                        <AllServicesView onServiceClick={handleServiceClick} />
+                    )}
+                    {currentView === VIEW_TYPES.SERVICE_DETAIL && (
+                        <ServiceDetailView
+                            serviceId={activeServiceId}
+                            onBack={handleBackToAllServices}
+                            onSubServiceClick={handleSubServiceClick}
+                        />
+                    )}
+                    {currentView === VIEW_TYPES.SUB_SERVICE_DETAIL && (
+                        <SubServiceDetailView
+                            subServiceId={activeSubServiceId}
+                            onBackToService={handleBackToService}
+                            onBackToAllServices={handleBackToAllServices}
+                        />
+                    )}
+                </AnimatePresence>
+            </div>
+        </section>
     );
 };
 

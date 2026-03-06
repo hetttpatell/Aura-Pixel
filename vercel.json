@@ -2,5 +2,11 @@
     "buildCommand": "npm run build",
     "outputDirectory": "dist",
     "devCommand": "vite --port 3000",
-    "framework": "vite"
+    "framework": "vite",
+    "rewrites": [
+        {
+            "source": "/(.*)",
+            "destination": "/index.html"
+        }
+    ]
 }

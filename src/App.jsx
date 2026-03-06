@@ -1,5 +1,5 @@
 import { useEffect, lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, useLocation, useParams } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useParams } from 'react-router-dom';
 
 // Layout Components
 import { Navbar, Footer } from './components/layout';
@@ -40,14 +40,17 @@ const ScrollToHash = () => {
 
   useEffect(() => {
     if (hash) {
-      // Wait longer for lazy-loaded components to render
-      setTimeout(() => {
+      // Wait for lazy-loaded components to render before scrolling to hash target
+      const timer = setTimeout(() => {
         const element = document.querySelector(hash);
         if (element) {
           element.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       }, 300);
-    } else {
+      return () => clearTimeout(timer);
+    }
+    // Only scroll to top for non-service routes (ServicesDetail handles its own scroll)
+    if (!pathname.startsWith('/services')) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [pathname, hash]);
@@ -166,6 +169,7 @@ function App() {
           <Route path="/blog" element={<BlogSEOWrapper />} />
           <Route path="/services" element={<ServicesSEOWrapper />} />
           <Route path="/services/:serviceId" element={<ServicesSEOWrapper />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         <Suspense fallback={<div className="h-64 bg-bg-soft" />}>
           <Footer />
