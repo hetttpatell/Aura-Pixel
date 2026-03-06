@@ -16,6 +16,7 @@
   ],
   "scripts": {
     "dev": "vite",
+    "dev:full": "vercel dev",
     "build": "vite build",
     "build:analyze": "vite build --mode analyze",
     "preview": "vite preview",
@@ -26,7 +27,6 @@
     "deploy": "npm run build && echo 'Ready for deployment'"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.78.0",
     "@emailjs/browser": "^4.4.1",
     "framer-motion": "^12.34.3",
     "react": "^19.2.0",
