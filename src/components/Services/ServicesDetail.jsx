@@ -395,7 +395,7 @@ const BenefitCard = ({ benefit, index, color }) => {
 };
 
 // Hero Section Component
-const HeroSection = ({ content, type, onBack }) => {
+const HeroSection = ({ content, type, onBack, backLabel }) => {
     const prefersReducedMotion = useReducedMotion();
     const { scrollY } = useScroll();
     const y = useTransform(scrollY, [0, 500], [0, 150]);
@@ -507,7 +507,7 @@ const HeroSection = ({ content, type, onBack }) => {
                     >
                         <HiArrowLeft className="w-5 h-5" />
                     </motion.div>
-                    <span className="font-medium">Back to Services</span>
+                    <span className="font-medium">{backLabel}</span>
                 </motion.button>
 
                 <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -700,20 +700,31 @@ const ServicesDetail = () => {
     // Get all services for "all" view
     const allServices = useMemo(() => Object.values(serviceCategories), []);
 
-    // Handle back button - simple and direct navigation
-    const handleBack = useCallback(() => {
-        if (type === 'sub-service' && content?.category) {
-            // From sub-service (e.g., Instagram) → go to parent service (e.g., Social Media Marketing)
-            navigate(`/services/${content.category}`);
-        } else if (type === 'service' && content?.id) {
-            // From service (e.g., Social Media Marketing) → go to all services page
-            navigate('/services');
-        } else {
-            // Default fallback
-            navigate('/services');
+    // Pre-compute back navigation target and label
+    const backUrl = useMemo(() => {
+        if (type === 'sub-service') {
+            const parentCategory = content?.category;
+            if (parentCategory && serviceCategories[parentCategory]) {
+                return `/services/${parentCategory}`;
+            }
+            return '/services';
         }
+        return '/services';
+    }, [type, content]);
+
+    const backLabel = useMemo(() => {
+        if (type === 'sub-service' && content?.category && serviceCategories[content.category]) {
+            return `Back to ${serviceCategories[content.category].title}`;
+        }
+        if (type === 'service') return 'Back to All Services';
+        return 'Back to Services';
+    }, [type, content]);
+
+    // Handle back button - uses pre-computed backUrl for reliability
+    const handleBack = useCallback(() => {
+        navigate(backUrl);
         window.scrollTo({ top: 0, behavior: 'auto' });
-    }, [navigate, type, content]);
+    }, [navigate, backUrl]);
 
     // Handle service card click - simple navigation
     const handleServiceClick = useCallback((id) => {
@@ -797,6 +808,7 @@ const ServicesDetail = () => {
                     content={content}
                     type={type}
                     onBack={handleBack}
+                    backLabel={backLabel}
                 />
 
 
