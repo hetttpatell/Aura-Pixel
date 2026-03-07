@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import {
     HiOutlineSearch,
     HiOutlineChartBar,
@@ -207,11 +208,11 @@ const Services = () => {
                 </motion.div>
 
                 {/* Enhanced Services Grid - 2 columns on mobile for better visibility */}
-                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 pt-3 sm:pt-4">
                     {services.map((service, index) => (
                         <motion.div
                             key={service.title}
-                            className="group relative overflow-hidden"
+                            className="group relative"
                             initial="hidden"
                             whileInView="visible"
                             viewport={{ once: true, amount: 0.1, margin: "-50px" }}
@@ -308,7 +309,7 @@ const Services = () => {
                                     </motion.p>
 
                                     {/* Learn More Button - Mobile Optimized */}
-                                    <motion.div
+                                    {/* <motion.div
                                         className="flex items-center text-xs sm:text-sm font-semibold cursor-pointer mt-auto pt-2"
                                         style={{ color: service.color }}
                                         variants={contentVariants}
@@ -328,7 +329,7 @@ const Services = () => {
                                         >
                                             <path d="M5 12h14M12 5l7 7-7 7" />
                                         </motion.svg>
-                                    </motion.div>
+                                    </motion.div> */}
                                 </div>
 
                                 {/* Loading Line Animation at Top */}
@@ -349,9 +350,9 @@ const Services = () => {
                                 </div>
                             </div>
 
-                            {/* Floating Number Badge - Smaller on mobile, constrained to prevent overflow */}
+                            {/* Floating Number Badge - Positioned inside card boundary */}
                             <motion.div
-                                className="absolute -top-1 right-2 sm:-top-2 sm:right-2 md:right-0 w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 bg-gradient-to-r from-primary-teal to-blue-500 text-white text-[10px] sm:text-xs md:text-sm font-bold rounded-full flex items-center justify-center shadow-md z-20"
+                                className="absolute -top-3 right-2 sm:-top-3 sm:right-3 md:-top-4 md:right-4 w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 bg-gradient-to-br from-primary-teal via-teal-500 to-blue-500 text-white text-[10px] sm:text-xs md:text-sm font-bold rounded-lg flex items-center justify-center shadow-[0_4px_12px_rgba(0,128,128,0.4)] ring-2 ring-white z-20"
                                 initial="hidden"
                                 whileInView="visible"
                                 viewport={{ once: true }}
@@ -383,30 +384,31 @@ const Services = () => {
                     viewport={{ once: true, amount: 0.3 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
                 >
-                    <motion.button
-                        className="inline-flex items-center gap-2 sm:gap-3 px-6 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-primary-teal to-blue-600 text-white font-heading font-semibold rounded-xl shadow-lg group text-sm sm:text-base"
-                        whileHover={{
-                            scale: 1.05,
-                            boxShadow: "0 20px 40px rgba(0, 128, 128, 0.3)"
-                        }}
-                        whileTap={{ scale: 0.98 }}
-                    >
-                        <span>Explore All Services</span>
-                        <motion.svg
-                            width="18"
-                            height="18"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            whileHover={{ x: 5 }}
-                            transition={{ duration: 0.3 }}
+                    <Link to="/services">
+                        <motion.button
+                            className="inline-flex items-center gap-2 sm:gap-3 px-6 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-primary-teal to-blue-600 text-white font-heading font-semibold rounded-xl shadow-lg group text-sm sm:text-base"
+                            whileHover={{
+                                scale: 1.05,
+                                boxShadow: "0 20px 40px rgba(0, 128, 128, 0.3)"
+                            }}
+                            whileTap={{ scale: 0.98 }}
                         >
-                            <path d="M5 12h14M12 5l7 7-7 7" />
-                        </motion.svg>
-                    </motion.button>
+                            <span>Explore All Services</span>
+                            <motion.svg
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="group-hover:translate-x-1 transition-transform duration-300"
+                            >
+                                <path d="M5 12h14M12 5l7 7-7 7" />
+                            </motion.svg>
+                        </motion.button>
+                    </Link>
                 </motion.div>
             </div>
         </section>

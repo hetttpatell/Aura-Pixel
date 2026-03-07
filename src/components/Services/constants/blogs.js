@@ -871,7 +871,7 @@ Animation principles apply regardless of tools. Timing, spacing, anticipation, a
 Templates accelerate production. Pre-built motion graphics templates customize with your content. Marketplaces like Motion Array and Envato Elements offer extensive libraries.
 
 Rendering and delivery require planning. Motion graphics increase file sizes and rendering times. Allow adequate time in production schedules and optimize settings for final delivery.`,
-        image: 'https://images.unsplash.com/photo-1536240478700-b869070f9279?w=1200&h=600&fit=crop',
+        image: 'https://images.unsplash.com/photo-1626785774625-ddcddc3445e9?w=1200&h=600&fit=crop',
         category: 'Video & Photo Editing',
         date: 'Mar 28, 2024',
         readTime: '6 min read',

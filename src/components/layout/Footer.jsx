@@ -71,7 +71,7 @@ const Footer = () => {
                     {/* Company Info */}
                     <div className="lg:col-span-1">
                         <a href="/#home" className="inline-block mb-6" onClick={(e) => { e.preventDefault(); handleNavClick('/#home'); }}>
-                            <img src="/AURA-PIXEL.PNG" alt="Aura Pixel" className="h-12 brightness-0 invert" />
+                            <span className="text-2xl font-heading font-bold text-white">Aura Pixel</span>
                         </a>
                         <p className="text-gray-400 mb-6 leading-relaxed">
                             Transforming businesses through intelligent digital marketing strategies.
@@ -85,12 +85,12 @@ const Footer = () => {
                             </a>
                             <a href="tel:+1234567890" className="flex items-center gap-3 text-gray-400 hover:text-primary-teal transition-colors duration-300">
                                 <HiOutlinePhone size={20} />
-                                <span>+1 (234) 567-890</span>
+                                <span>+91 9409404332</span>
                             </a>
-                            <div className="flex items-start gap-3 text-gray-400">
+                            {/* <div className="flex items-start gap-3 text-gray-400">
                                 <HiOutlineLocationMarker size={20} className="flex-shrink-0 mt-1" />
-                                <span>123 Marketing Street, Digital City, DC 10001</span>
-                            </div>
+                                <span></span>
+                            </div> */}
                         </div>
                     </div>
 
@@ -132,31 +132,13 @@ const Footer = () => {
                         </ul>
                     </div>
 
-                    {/* Newsletter */}
+                    {/* Social Links */}
                     <div>
-                        <h4 className="text-white font-heading font-semibold text-lg mb-6">Stay Updated</h4>
-                        <p className="text-gray-400 mb-4">
-                            Subscribe to our newsletter for the latest marketing insights.
-                        </p>
-                        <form className="space-y-3">
-                            <input
-                                type="email"
-                                placeholder="Enter your email"
-                                className="w-full px-4 py-3 bg-white/5 border border-gray-700 rounded-btn text-white placeholder:text-gray-500 focus:outline-none focus:border-primary-teal transition-colors duration-300"
-                            />
-                            <motion.button
-                                type="submit"
-                                className="w-full btn btn-primary"
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                            >
-                                Subscribe
-                            </motion.button>
-                        </form>
+                        <h4 className="text-white font-heading font-semibold text-lg mb-6">Follow Us</h4>
 
                         {/* Social Links */}
-                        <div className="mt-6">
-                            <p className="text-gray-400 text-sm mb-3">Follow us:</p>
+                        <div>
+                            <p className="text-gray-400 text-sm mb-3">Connect with us:</p>
                             <div className="flex gap-3">
                                 {socialLinks.map((social) => (
                                     <motion.a

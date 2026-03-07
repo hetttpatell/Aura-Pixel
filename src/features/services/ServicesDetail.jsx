@@ -478,6 +478,7 @@ const AllServicesView = ({ onServiceClick }) => {
 // SERVICE DETAIL VIEW COMPONENT
 // ============================================
 const ServiceDetailView = ({ serviceId, onBack, onSubServiceClick }) => {
+    const navigate = useNavigate();
     const service = getServiceById(serviceId);
     const subServices = getSubServicesByCategory(serviceId);
     const serviceFromList = servicesList.find(s => getServiceIdFromName(s.name) === serviceId);
@@ -880,8 +881,7 @@ const ServiceDetailView = ({ serviceId, onBack, onSubServiceClick }) => {
                             className="flex-shrink-0 inline-flex items-center gap-2 relative group cursor-pointer"
                             onClick={(e) => {
                                 e.preventDefault();
-                                // Use direct location change for reliable navigation with hash
-                                window.location.href = '/#contact';
+                                navigate('/#contact');
                             }}
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
@@ -910,6 +910,7 @@ const ServiceDetailView = ({ serviceId, onBack, onSubServiceClick }) => {
 // SUB-SERVICE DETAIL VIEW COMPONENT
 // ============================================
 const SubServiceDetailView = ({ subServiceId, onBackToService, onBackToAllServices }) => {
+    const navigate = useNavigate();
     const subService = getSubServiceById(subServiceId);
     const parentService = subService ? getServiceById(subService.category) : null;
     const containerRef = useRef(null);
@@ -1364,106 +1365,46 @@ const SubServiceDetailView = ({ subServiceId, onBackToService, onBackToAllServic
                 </div>
             </AnimatedSection>
 
-            {/* Enhanced CTA Section */}
+            {/* CTA Section - Matching theme */}
             <AnimatedSection delay={0.3} className="mt-20">
                 <motion.div
-                    className="relative rounded-[2.5rem] p-10 md:p-16 overflow-hidden shadow-2xl"
-                    style={{
-                        background: `linear-gradient(135deg, ${subService.color} 0%, ${subService.color}cc 50%, ${subService.color}ee 100%)`
-                    }}
-                    whileHover={{ scale: 1.01 }}
-                    transition={{ duration: 0.3 }}
+                    className="relative rounded-2xl p-8 md:p-12 bg-gradient-to-r from-primary-teal to-primary-dark overflow-hidden"
                 >
-                    {/* Animated mesh background */}
-                    <motion.div
-                        className="absolute inset-0"
-                        animate={{
-                            backgroundPosition: ['0% 0%', '100% 100%'],
-                        }}
-                        transition={{ duration: 15, repeat: Infinity, repeatType: 'reverse' }}
-                        style={{
-                            backgroundImage: `radial-gradient(circle at 30% 40%, rgba(255,255,255,0.35) 0%, transparent 50%),
-                                              radial-gradient(circle at 70% 60%, rgba(255,255,255,0.25) 0%, transparent 50%),
-                                              radial-gradient(circle at 50% 80%, rgba(255,255,255,0.15) 0%, transparent 40%)`
-                        }}
-                    />
+                    {/* Subtle gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent" />
 
-                    {/* Floating particles */}
-                    {[...Array(8)].map((_, i) => (
-                        <motion.div
-                            key={i}
-                            className="absolute rounded-full bg-white/20"
-                            style={{
-                                width: Math.random() * 20 + 10,
-                                height: Math.random() * 20 + 10,
-                                left: `${10 + i * 12}%`,
-                                top: `${15 + (i % 3) * 25}%`,
+                    <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div className="text-center md:text-left">
+                            <h2 className="text-2xl md:text-3xl font-heading font-bold text-white mb-2">
+                                Ready to Get Started?
+                            </h2>
+                            <p className="text-white/80 text-base md:text-lg max-w-lg">
+                                Let's discuss how we can help you achieve your goals with our {subService.title} solutions.
+                            </p>
+                        </div>
+                        <motion.a
+                            href="/#contact"
+                            className="flex-shrink-0 inline-flex items-center gap-2 relative group cursor-pointer"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                navigate('/#contact');
                             }}
-                            animate={{
-                                y: [0, -40, 0],
-                                x: [0, Math.random() * 20 - 10, 0],
-                                opacity: [0.2, 0.8, 0.2],
-                                scale: [1, 1.3, 1],
-                            }}
-                            transition={{
-                                duration: 4 + i * 0.5,
-                                repeat: Infinity,
-                                delay: i * 0.4,
-                            }}
-                        />
-                    ))}
-
-                    <div className="relative z-10 text-center">
-                        {/* Animated icon */}
-                        <motion.div
-                            initial={{ scale: 0, rotate: -180 }}
-                            whileInView={{ scale: 1, rotate: 0 }}
-                            transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-                            viewport={{ once: true }}
-                            className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/25 backdrop-blur-sm mb-8 shadow-xl"
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
                         >
-                            <motion.div
-                                animate={{ rotate: [0, 360] }}
-                                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                            >
-                                <HiSparkles className="w-10 h-10 text-white" />
-                            </motion.div>
-                        </motion.div>
-
-                        <motion.h2
-                            className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-white mb-6"
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 0.3 }}
-                        >
-                            Ready for {subService.title}?
-                        </motion.h2>
-                        <motion.p
-                            className="text-white/95 text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed"
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 0.4 }}
-                        >
-                            Let our experts help you achieve your goals with our specialized {subService.title} services.
-                        </motion.p>
-                        <Link
-                            to="/#contact"
-                            className="group relative inline-flex items-center gap-3 px-10 py-5 bg-white text-text-heading font-bold text-lg rounded-full shadow-2xl overflow-hidden hover:scale-105 hover:-translate-y-1 transition-transform duration-300"
-                        >
-                            {/* Hover gradient overlay */}
-                            <span
-                                className="absolute inset-0 -translate-x-full group-hover:translate-x-0 transition-transform duration-400"
-                                style={{ background: `linear-gradient(90deg, ${subService.color}, ${subService.color}dd)` }}
-                            />
-                            <span className="relative z-10 group-hover:text-white transition-colors duration-300">Start Your Project</span>
-                            <span
-                                className="relative z-10"
-                            >
-                                <HiArrowRight className="w-6 h-6 group-hover:text-white transition-colors duration-300" />
-                            </span>
-                        </Link>
+                            <motion.div className="absolute -inset-1 bg-white/30 rounded-xl blur-md opacity-0 group-hover:opacity-60 transition-opacity duration-500" />
+                            <div className="relative flex items-center gap-2 bg-white text-primary-dark font-heading font-semibold text-sm py-3 px-6 rounded-xl overflow-hidden">
+                                <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary-teal/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                                <BsLightningChargeFill className="text-yellow-500" />
+                                <span>Get Free Strategy Call</span>
+                                <motion.div
+                                    animate={{ x: [0, 4, 0] }}
+                                    transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                                >
+                                    <BsArrowRight className="text-lg" />
+                                </motion.div>
+                            </div>
+                        </motion.a>
                     </div>
                 </motion.div>
             </AnimatedSection>

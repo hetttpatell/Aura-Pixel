@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import {
     HiOutlineCalendar,
     HiOutlineClock,
@@ -445,6 +445,7 @@ const BlogPostDetail = ({ post, onClose }) => {
 
 // Main BlogPage Component
 const BlogPage = () => {
+    const location = useLocation();
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
     const [sortBy, setSortBy] = useState('latest');
@@ -454,6 +455,15 @@ const BlogPage = () => {
     const [showSortDropdown, setShowSortDropdown] = useState(false);
     const sortDropdownRef = useRef(null);
     const shouldReduceMotion = useReducedMotion();
+
+    // Check if a search query was passed via navigation state (from homepage blog section)
+    useEffect(() => {
+        if (location.state?.searchQuery) {
+            setSearchQuery(location.state.searchQuery);
+            // Clear the state so refreshing doesn't keep the search
+            window.history.replaceState({}, document.title);
+        }
+    }, [location.state]);
 
     // Scroll to top on mount
     useEffect(() => {

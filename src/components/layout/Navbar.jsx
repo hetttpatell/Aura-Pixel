@@ -231,15 +231,16 @@ const Navbar = () => {
                             whileHover={{ opacity: 1 }}
                             transition={{ duration: 0.4 }}
                         />
-                        <motion.img
-                            src="/AURA-PIXEL.PNG"
-                            alt="Aura Pixel"
+                        <motion.div
+                            className="relative flex items-baseline"
                             animate={{
-                                height: isScrolled ? (window.innerWidth >= 1024 ? 70 : 60) : (window.innerWidth >= 1024 ? 80 : 65)
+                                fontSize: isScrolled ? (window.innerWidth >= 1024 ? '1.625rem' : '1.375rem') : (window.innerWidth >= 1024 ? '1.875rem' : '1.5rem')
                             }}
-                            className="relative w-auto h-auto"
                             transition={{ duration: 0.4 }}
-                        />
+                        >
+                            <span className="font-['Plus_Jakarta_Sans'] font-medium tracking-wide text-slate-800">Aura</span>
+                            <span className="font-['Plus_Jakarta_Sans'] font-bold tracking-wide text-[#01686C]">Pixel</span>
+                        </motion.div>
                     </motion.a>
 
                     {/* ── Desktop Nav ── */}

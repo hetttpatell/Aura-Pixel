@@ -1,47 +1,13 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { HiOutlineCalendar, HiOutlineArrowRight } from 'react-icons/hi';
+import { HiOutlineCalendar, HiOutlineClock, HiOutlineFire } from 'react-icons/hi';
+import { BsArrowUpRight } from 'react-icons/bs';
 import { useReducedMotion } from '../../hooks';
+import { blogPosts as allBlogPosts } from '../Services/constants/blogs';
 
-const blogPosts = [
-    {
-        id: 1,
-        title: '10 Digital Marketing Trends to Watch in 2024',
-        excerpt: 'Stay ahead of the curve with these emerging trends that are reshaping the digital marketing landscape.',
-        image: 'https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?w=600&h=400&fit=crop',
-        category: 'Marketing',
-        date: 'Feb 15, 2024',
-        readTime: '5 min read',
-    },
-    {
-        id: 2,
-        title: 'How to Maximize Your ROI with Google Ads',
-        excerpt: 'Learn the strategies that top marketers use to get the most out of their Google Ads campaigns.',
-        image: 'https://images.unsplash.com/photo-1553835973-dec43bfddbeb?w=600&h=400&fit=crop',
-        category: 'PPC',
-        date: 'Feb 10, 2024',
-        readTime: '7 min read',
-    },
-    {
-        id: 3,
-        title: 'The Ultimate Guide to Social Media Marketing',
-        excerpt: 'Master the art of social media marketing with our comprehensive guide covering all major platforms.',
-        image: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=600&h=400&fit=crop',
-        category: 'Social Media',
-        date: 'Feb 5, 2024',
-        readTime: '10 min read',
-    },
-    {
-        id: 4,
-        title: 'AI in Marketing: Future or Present?',
-        excerpt: 'Explore how Artificial Intelligence is revolutionizing customer engagement and data analysis.',
-        image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=400&fit=crop',
-        category: 'Technology',
-        date: 'Feb 20, 2024',
-        readTime: '6 min read',
-    },
-];
+// Get featured/recent posts - show 4 on mobile, 3 on desktop (CSS handles visibility)
+const blogPosts = allBlogPosts.slice(0, 4);
 
 const Blog = () => {
     const [hoveredPost, setHoveredPost] = useState(null);
@@ -81,91 +47,110 @@ const Blog = () => {
                     </p>
                 </motion.div>
 
-                {/* Blog Grid - 2 Column Mobile */}
-                <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8">
+                {/* Blog Grid - Show 4 on mobile (2x2), 3 on desktop */}
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                     {blogPosts.map((post, index) => (
-                        <motion.article
+                        <Link
+                            to="/blog"
+                            state={{ searchQuery: post.title }}
                             key={post.id}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, amount: 0.1 }}
-                            transition={{ duration: 0.5, delay: index * 0.1 }}
-                            onHoverStart={() => setHoveredPost(post.id)}
-                            onHoverEnd={() => setHoveredPost(null)}
-                            className="group relative bg-white rounded-xl md:rounded-3xl overflow-hidden border border-border-light/50 flex flex-col h-full will-change-transform"
-                            whileHover={{
-                                y: -4,
-                                boxShadow: '0 20px 50px rgba(0,0,0,0.1)'
-                            }}
-                            style={{ transform: 'translateZ(0)' }}
+                            className={`${index === 3 ? 'lg:hidden' : ''}`}
                         >
-                            {/* Card Glow Effect */}
-                            <motion.div
-                                className="absolute inset-0 bg-gradient-to-br from-primary-teal to-cyan-500"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: hoveredPost === post.id ? 0.03 : 0 }}
-                                transition={{ duration: 0.4 }}
-                            />
-
-                            {/* Image Container */}
-                            <div className="relative h-32 sm:h-48 md:h-64 overflow-hidden">
-                                <motion.img
-                                    src={post.image}
-                                    alt={post.title}
-                                    className="w-full h-full object-cover"
-                                    animate={{
-                                        scale: hoveredPost === post.id ? 1.1 : 1
-                                    }}
-                                    transition={{ duration: 0.6, ease: [0.33, 1, 0.68, 1] }}
-                                    loading="lazy"
-                                />
-
-                                {/* Gradient Overlay */}
+                            <motion.article
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true, amount: 0.1 }}
+                                transition={{ duration: 0.5, delay: index * 0.1 }}
+                                onHoverStart={() => setHoveredPost(post.id)}
+                                onHoverEnd={() => setHoveredPost(null)}
+                                className="group relative bg-white rounded-2xl overflow-hidden border border-border-light/50 flex flex-col h-full cursor-pointer"
+                                whileHover={{
+                                    y: -8,
+                                    boxShadow: '0 25px 60px rgba(0,0,0,0.12)'
+                                }}
+                            >
+                                {/* Hover Glow Effect */}
                                 <motion.div
-                                    className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent"
-                                    initial={{ opacity: 0.3 }}
-                                    animate={{ opacity: hoveredPost === post.id ? 0.9 : 0.6 }}
-                                    transition={{ duration: 0.4 }}
+                                    className="absolute inset-0 bg-gradient-to-br from-primary-teal/5 to-cyan-500/5 pointer-events-none"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: hoveredPost === post.id ? 1 : 0 }}
+                                    transition={{ duration: 0.3 }}
                                 />
 
-                                {/* Category Badge */}
-                                <div className="absolute top-2 md:top-4 left-2 md:left-4 z-10">
-                                    <span className="px-2 md:px-3 py-1 bg-primary-teal text-white text-[10px] md:text-xs font-bold rounded-full shadow-sm">
-                                        {post.category}
-                                    </span>
+                                {/* Image Container */}
+                                <div className="relative h-36 sm:h-44 md:h-56 overflow-hidden">
+                                    <motion.img
+                                        src={post.image}
+                                        alt={post.title}
+                                        className="w-full h-full object-cover"
+                                        animate={{
+                                            scale: hoveredPost === post.id ? 1.1 : 1
+                                        }}
+                                        transition={{ duration: 0.6 }}
+                                        loading="lazy"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent" />
+
+                                    {/* Category Badge */}
+                                    <div className="absolute top-3 left-3 z-10">
+                                        <span className="px-2.5 py-1 bg-white/90 backdrop-blur-sm text-primary-teal text-[10px] md:text-xs font-bold rounded-full shadow-lg">
+                                            {post.category}
+                                        </span>
+                                    </div>
+
+                                    {/* Trending Badge */}
+                                    {post.trending && (
+                                        <div className="absolute top-3 right-3 z-10">
+                                            <span className="px-2 py-1 bg-gradient-to-r from-orange-500 to-red-500 text-white text-[10px] md:text-xs font-bold rounded-full shadow-lg flex items-center gap-1">
+                                                <HiOutlineFire size={12} className="animate-pulse" />
+                                                <span className="hidden sm:inline">Trending</span>
+                                            </span>
+                                        </div>
+                                    )}
+
+                                    {/* Read Time */}
+                                    <div className="absolute bottom-3 left-3 z-10 flex items-center gap-1.5 text-white/90 text-[10px] md:text-sm font-medium">
+                                        <HiOutlineClock className="text-primary-teal" size={14} />
+                                        {post.readTime}
+                                    </div>
                                 </div>
 
-                                {/* Date Overlay (Bottom Left) */}
-                                <div className="absolute bottom-2 md:bottom-4 left-2 md:left-4 z-10 flex items-center gap-1 md:gap-2 text-white/90 text-[10px] md:text-sm font-medium">
-                                    <HiOutlineCalendar className="text-sm md:text-base text-primary-teal" />
-                                    {post.date}
-                                </div>
-                            </div>
+                                {/* Content */}
+                                <div className="p-4 md:p-5 flex flex-col flex-grow">
+                                    <div className="flex items-center gap-1.5 text-[10px] md:text-xs text-text-muted mb-2">
+                                        <HiOutlineCalendar size={12} />
+                                        {post.date}
+                                    </div>
 
-                            {/* Content */}
-                            <div className="p-3 md:p-6 flex flex-col flex-grow relative">
-                                <div className="text-[10px] md:text-xs font-bold text-primary-teal uppercase tracking-widest mb-1 md:mb-2">
-                                    {post.readTime}
-                                </div>
-                                <h3 className="text-sm md:text-xl font-heading font-bold text-text-heading group-hover:text-primary-teal transition-colors duration-300 line-clamp-2 mb-2">
-                                    {post.title}
-                                </h3>
-                                <p className="hidden md:block text-text-body text-sm leading-relaxed line-clamp-2 mb-4">
-                                    {post.excerpt}
-                                </p>
+                                    <h3 className="text-sm md:text-lg font-heading font-bold text-text-heading group-hover:text-primary-teal transition-colors duration-300 mb-2 line-clamp-2">
+                                        {post.title}
+                                    </h3>
 
-                                {/* Bottom Link Indicator */}
-                                <div className="mt-auto pt-2 border-t border-border-light flex items-center gap-2">
-                                    <span className="text-primary-teal font-bold text-[9px] md:text-xs uppercase tracking-wider">Read Full</span>
-                                    <motion.span
-                                        animate={{ x: hoveredPost === post.id ? 3 : 0 }}
-                                        className="text-primary-teal text-xs"
-                                    >
-                                        →
-                                    </motion.span>
+                                    <p className="hidden md:block text-sm text-text-body line-clamp-2 mb-4 flex-grow">
+                                        {post.excerpt}
+                                    </p>
+
+                                    {/* Author & CTA */}
+                                    <div className="flex items-center justify-between pt-3 md:pt-4 border-t border-border-light/50 mt-auto">
+                                        <div className="flex items-center gap-2">
+                                            <img
+                                                src={post.authorImage}
+                                                alt={post.author}
+                                                className="w-6 h-6 md:w-8 md:h-8 rounded-full object-cover ring-2 ring-white shadow-md"
+                                            />
+                                            <span className="text-[10px] md:text-xs font-semibold text-text-heading hidden sm:block">{post.author}</span>
+                                        </div>
+                                        <motion.span
+                                            className="text-primary-teal font-bold text-[10px] md:text-sm flex items-center gap-1"
+                                            animate={{ x: hoveredPost === post.id ? 4 : 0 }}
+                                        >
+                                            Read
+                                            <BsArrowUpRight size={14} />
+                                        </motion.span>
+                                    </div>
                                 </div>
-                            </div>
-                        </motion.article>
+                            </motion.article>
+                        </Link>
                     ))}
                 </div>
 
