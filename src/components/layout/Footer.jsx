@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import {
     HiOutlineMail,
     HiOutlinePhone,
@@ -166,15 +166,15 @@ const Footer = () => {
                             © {currentYear} Aura Pixel. All rights reserved.
                         </p>
                         <div className="flex gap-6 text-sm">
-                            <a href="#" className="text-gray-500 hover:text-primary-teal transition-colors duration-300">
+                            <Link to="/privacy-policy" className="text-gray-500 hover:text-primary-teal transition-colors duration-300">
                                 Privacy Policy
-                            </a>
-                            <a href="#" className="text-gray-500 hover:text-primary-teal transition-colors duration-300">
+                            </Link>
+                            <Link to="/terms-of-service" className="text-gray-500 hover:text-primary-teal transition-colors duration-300">
                                 Terms of Service
-                            </a>
-                            <a href="#" className="text-gray-500 hover:text-primary-teal transition-colors duration-300">
+                            </Link>
+                            <Link to="/cookie-policy" className="text-gray-500 hover:text-primary-teal transition-colors duration-300">
                                 Cookie Policy
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </div>

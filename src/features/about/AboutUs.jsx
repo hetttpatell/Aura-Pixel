@@ -512,7 +512,7 @@ const AboutUs = () => {
                                                     {faq.question}
                                                 </h4>
                                                 <div className={`flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-colors ${isOpen ? 'bg-primary-teal text-white' : 'bg-bg-soft text-text-body'}`}>
-                                                    {isOpen ? <BsChevronUp size={14} sm:size={16} /> : <BsChevronDown size={14} sm:size={16} />}
+                                                    {isOpen ? <BsChevronUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <BsChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
                                                 </div>
                                             </div>
                                             <AnimatePresence>

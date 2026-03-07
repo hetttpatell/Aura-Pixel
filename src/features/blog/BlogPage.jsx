@@ -87,10 +87,12 @@ const BlogCard = ({ post, index, onClick, viewMode }) => {
                 variants={itemVariants}
                 layoutId={`blog-card-${post.id}`}
                 onClick={() => onClick(post)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(post); } }}
+                tabIndex={0}
                 onHoverStart={() => setIsHovered(true)}
                 onHoverEnd={() => setIsHovered(false)}
                 className="group relative bg-white rounded-2xl overflow-hidden border border-border-light/50 cursor-pointer"
-                whileHover={{ y: -4, boxShadow: '0 20px 50px rgba(0,0,0,0.1)' }}
+                whileHover={shouldReduceMotion ? {} : { y: -4, boxShadow: '0 20px 50px rgba(0,0,0,0.1)' }}
                 transition={{ duration: 0.3 }}
             >
                 <div className="flex flex-col sm:flex-row">
@@ -157,10 +159,12 @@ const BlogCard = ({ post, index, onClick, viewMode }) => {
             variants={itemVariants}
             layoutId={`blog-card-${post.id}`}
             onClick={() => onClick(post)}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(post); } }}
+            tabIndex={0}
             onHoverStart={() => setIsHovered(true)}
             onHoverEnd={() => setIsHovered(false)}
             className="group relative bg-white rounded-2xl overflow-hidden border border-border-light/50 cursor-pointer flex flex-col h-full"
-            whileHover={{ y: -8, boxShadow: '0 25px 60px rgba(0,0,0,0.12)' }}
+            whileHover={shouldReduceMotion ? {} : { y: -8, boxShadow: '0 25px 60px rgba(0,0,0,0.12)' }}
             transition={{ duration: 0.3 }}
         >
             {/* Image Container */}
@@ -256,22 +260,35 @@ const BlogCard = ({ post, index, onClick, viewMode }) => {
 
 // BlogPostDetail Component
 const BlogPostDetail = ({ post, onClose }) => {
-    const { scrollYProgress } = useScroll();
+    const containerRef = useRef(null);
+    const { scrollYProgress } = useScroll({ container: containerRef });
     const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
     const shouldReduceMotion = useReducedMotion();
 
     useEffect(() => {
-        window.scrollTo({ top: 0, behavior: 'instant' });
         document.body.style.overflow = 'hidden';
-        return () => { document.body.style.overflow = ''; };
-    }, []);
+
+        const handleEscape = (e) => {
+            if (e.key === 'Escape') onClose();
+        };
+        window.addEventListener('keydown', handleEscape);
+
+        return () => {
+            document.body.style.overflow = '';
+            window.removeEventListener('keydown', handleEscape);
+        };
+    }, [onClose]);
 
     return (
         <motion.div
+            ref={containerRef}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[300] bg-bg-main overflow-y-auto"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Blog post: ${post.title}`}
         >
             {/* Reading Progress Bar */}
             <motion.div

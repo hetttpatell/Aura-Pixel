@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
 import { HiOutlineExternalLink, HiOutlineEye, HiOutlineX, HiOutlineChevronLeft, HiOutlineCheckCircle } from 'react-icons/hi';
 import { useReducedMotion } from '../../hooks';
@@ -122,21 +122,34 @@ const itemVariants = {
 
 // Portfolio Detail Modal Component
 const PortfolioDetail = ({ project, onClose }) => {
-    const { scrollYProgress } = useScroll();
+    const containerRef = useRef(null);
+    const { scrollYProgress } = useScroll({ container: containerRef });
     const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
 
     useEffect(() => {
-        window.scrollTo({ top: 0, behavior: 'instant' });
         document.body.style.overflow = 'hidden';
-        return () => { document.body.style.overflow = ''; };
-    }, []);
+
+        const handleEscape = (e) => {
+            if (e.key === 'Escape') onClose();
+        };
+        window.addEventListener('keydown', handleEscape);
+
+        return () => {
+            document.body.style.overflow = '';
+            window.removeEventListener('keydown', handleEscape);
+        };
+    }, [onClose]);
 
     return (
         <motion.div
+            ref={containerRef}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[300] bg-bg-main overflow-y-auto"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Project details: ${project.title}`}
         >
             {/* Reading Progress Bar */}
             <motion.div
@@ -464,6 +477,10 @@ const Portfolio = () => {
                                 onHoverStart={() => setHoveredProject(project.id)}
                                 onHoverEnd={() => setHoveredProject(null)}
                                 onClick={() => setSelectedProject(project)}
+                                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedProject(project); } }}
+                                tabIndex={0}
+                                role="article"
+                                aria-label={`View ${project.title} project details`}
                                 className="group relative bg-white rounded-xl md:rounded-3xl overflow-hidden border border-border-light/50 will-change-transform cursor-pointer"
                                 whileHover={{
                                     y: -4,

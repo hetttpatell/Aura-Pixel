@@ -110,6 +110,7 @@ const Navbar = () => {
     const [isMobileServicesOpen, setIsMobileServicesOpen] = useState(false);
     const [hoveredService, setHoveredService] = useState(null);
     const [expandedMobileService, setExpandedMobileService] = useState(null);
+    const [isLargeScreen, setIsLargeScreen] = useState(typeof window !== 'undefined' ? window.innerWidth >= 1024 : true);
     const navRef = useRef(null);
     const servicesTimeout = useRef(null);
 
@@ -118,6 +119,13 @@ const Navbar = () => {
 
     const { scrollYProgress } = useScroll();
     const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
+
+    // Track window width for responsive logo sizing
+    useEffect(() => {
+        const handleResize = () => setIsLargeScreen(window.innerWidth >= 1024);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -234,7 +242,7 @@ const Navbar = () => {
                         <motion.div
                             className="relative flex items-baseline"
                             animate={{
-                                fontSize: isScrolled ? (window.innerWidth >= 1024 ? '1.625rem' : '1.375rem') : (window.innerWidth >= 1024 ? '1.875rem' : '1.5rem')
+                                fontSize: isScrolled ? (isLargeScreen ? '1.625rem' : '1.375rem') : (isLargeScreen ? '1.875rem' : '1.5rem')
                             }}
                             transition={{ duration: 0.4 }}
                         >
