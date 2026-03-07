@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence, useScroll, useTransform, useInView } from 'framer-motion';
 import { HiArrowLeft, HiArrowRight, HiOutlineCheckCircle, HiOutlineChevronRight, HiSparkles, HiLightningBolt } from 'react-icons/hi';
+import { BsLightningChargeFill, BsArrowRight } from 'react-icons/bs';
 import {
     serviceCategories,
     subServicesContent,
@@ -137,34 +138,49 @@ const getSubServiceIdFromName = (name) => slugify(name);
 // ============================================
 // ANIMATED BACKGROUND PARTICLES
 // ============================================
-const FloatingParticles = () => (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(6)].map((_, i) => (
-            <motion.div
-                key={i}
-                className="absolute rounded-full bg-gradient-to-r from-primary-teal/20 to-blue-500/20 blur-xl"
-                style={{
-                    width: Math.random() * 100 + 50,
-                    height: Math.random() * 100 + 50,
-                    left: `${Math.random() * 100}%`,
-                    top: `${Math.random() * 100}%`,
-                }}
-                animate={{
-                    x: [0, Math.random() * 100 - 50, 0],
-                    y: [0, Math.random() * 100 - 50, 0],
-                    scale: [1, 1.2, 1],
-                    opacity: [0.3, 0.6, 0.3],
-                }}
-                transition={{
-                    duration: Math.random() * 10 + 10,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: i * 0.5,
-                }}
-            />
-        ))}
-    </div>
-);
+const FloatingParticles = () => {
+    const particleProps = useMemo(() => {
+        return [...Array(6)].map((_, i) => ({
+            width: Math.random() * 100 + 50,
+            height: Math.random() * 100 + 50,
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+            animateX: Math.random() * 100 - 50,
+            animateY: Math.random() * 100 - 50,
+            duration: Math.random() * 10 + 10,
+            delay: i * 0.5,
+        }));
+    }, []);
+
+    return (
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {particleProps.map((props, i) => (
+                <motion.div
+                    key={i}
+                    className="absolute rounded-full bg-gradient-to-r from-primary-teal/20 to-blue-500/20 blur-xl"
+                    style={{
+                        width: props.width,
+                        height: props.height,
+                        left: props.left,
+                        top: props.top,
+                    }}
+                    animate={{
+                        x: [0, props.animateX, 0],
+                        y: [0, props.animateY, 0],
+                        scale: [1, 1.2, 1],
+                        opacity: [0.3, 0.6, 0.3],
+                    }}
+                    transition={{
+                        duration: props.duration,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: props.delay,
+                    }}
+                />
+            ))}
+        </div>
+    );
+};
 
 // ============================================
 // BACK BUTTON COMPONENT
@@ -229,6 +245,13 @@ const Card3D = ({ children, className = '', onClick }) => {
         setRotateY(0);
     };
 
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onClick?.();
+        }
+    };
+
     return (
         <motion.div
             ref={cardRef}
@@ -236,6 +259,9 @@ const Card3D = ({ children, className = '', onClick }) => {
             onClick={onClick}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
+            onKeyDown={handleKeyDown}
+            tabIndex={0}
+            role="button"
             style={{
                 transformStyle: 'preserve-3d',
                 perspective: 1000,
@@ -620,47 +646,88 @@ const ServiceDetailView = ({ serviceId, onBack, onSubServiceClick }) => {
                 </div>
             </AnimatedSection>
 
-            {/* Features with stagger animation */}
+            {/* Features with optimized smooth animations */}
             <AnimatedSection delay={0.2} className="mb-16">
-                <h2 className="text-2xl md:text-3xl font-heading font-bold text-text-heading mb-8 flex items-center gap-3">
-                    <motion.span
-                        className="inline-block w-10 h-10 rounded-xl bg-gradient-to-br from-primary-teal to-blue-500 flex items-center justify-center"
-                        whileHover={{ rotate: 360 }}
-                        transition={{ duration: 0.6 }}
-                    >
-                        <HiOutlineCheckCircle className="w-5 h-5 text-white" />
-                    </motion.span>
-                    Key Features
-                </h2>
+                {/* Section Container with elegant glassmorphism */}
                 <motion.div
-                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
-                    variants={staggerContainer}
-                    initial="hidden"
-                    whileInView="visible"
+                    className="relative p-6 md:p-10 rounded-3xl bg-gradient-to-br from-white/95 via-white/80 to-primary-light/20 border border-white/60 shadow-xl overflow-hidden transform-gpu"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
                 >
-                    {service.features.map((feature, index) => (
-                        <motion.div
-                            key={index}
-                            className="group flex items-center gap-4 p-5 bg-white/80 backdrop-blur-sm rounded-2xl border border-white/50 shadow-lg hover:shadow-xl transition-all duration-500 cursor-default"
-                            variants={cardVariants}
-                            custom={index}
-                            whileHover={{ scale: 1.03, y: -5 }}
-                        >
+                    {/* Static background gradient orbs - no animation for performance */}
+                    <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-gradient-to-br from-primary-teal/15 to-blue-400/15 blur-3xl pointer-events-none" />
+                    <div className="absolute -bottom-16 -left-16 w-48 h-48 rounded-full bg-gradient-to-tr from-purple-400/10 to-pink-400/10 blur-3xl pointer-events-none" />
+
+                    {/* Header with icon */}
+                    <div className="relative z-10 flex items-center gap-4 mb-8">
+                        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary-teal to-teal-500 flex items-center justify-center shadow-md transform-gpu">
+                            <HiOutlineCheckCircle className="w-5 h-5 text-white" />
+                        </div>
+                        <h2 className="text-2xl md:text-3xl font-heading font-bold text-text-heading">
+                            Key Features
+                        </h2>
+                    </div>
+
+                    {/* Features Grid with staggered fade-in */}
+                    <motion.div
+                        className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, margin: "-30px" }}
+                        variants={{
+                            hidden: { opacity: 0 },
+                            visible: {
+                                opacity: 1,
+                                transition: { staggerChildren: 0.06, delayChildren: 0.1 }
+                            }
+                        }}
+                    >
+                        {service.features.map((feature, index) => (
                             <motion.div
-                                className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                                style={{ backgroundColor: `${service.primaryColor}15` }}
-                                whileHover={{ rotate: 360 }}
-                                transition={{ duration: 0.5 }}
+                                key={index}
+                                className="group transform-gpu"
+                                variants={{
+                                    hidden: { opacity: 0, y: 16 },
+                                    visible: {
+                                        opacity: 1,
+                                        y: 0,
+                                        transition: { duration: 0.35, ease: "easeOut" }
+                                    }
+                                }}
                             >
-                                <HiOutlineCheckCircle
-                                    className="w-5 h-5"
-                                    style={{ color: service.primaryColor }}
-                                />
+                                {/* Card with CSS hover effects for better mobile performance */}
+                                <div className="relative flex items-center gap-4 p-4 md:p-5 bg-white/95 rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 ease-out cursor-default transform-gpu">
+                                    {/* Checkmark icon */}
+                                    <div
+                                        className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-105"
+                                        style={{ backgroundColor: `${service.primaryColor}12` }}
+                                    >
+                                        <HiOutlineCheckCircle
+                                            className="w-5 h-5 transition-colors duration-300"
+                                            style={{ color: service.primaryColor }}
+                                        />
+                                    </div>
+
+                                    {/* Feature text */}
+                                    <span className="text-text-heading font-medium text-sm md:text-[15px] leading-snug group-hover:text-primary-teal transition-colors duration-300">
+                                        {feature}
+                                    </span>
+                                </div>
                             </motion.div>
-                            <span className="text-text-heading font-medium group-hover:text-primary-teal transition-colors">{feature}</span>
-                        </motion.div>
-                    ))}
+                        ))}
+                    </motion.div>
+
+                    {/* Subtle bottom accent line */}
+                    <div className="absolute bottom-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-primary-teal/20 to-transparent" />
+                    <motion.div
+                        className="absolute bottom-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-primary-teal/30 to-transparent"
+                        initial={{ scaleX: 0, opacity: 0 }}
+                        whileInView={{ scaleX: 1, opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 1, delay: 0.5 }}
+                    />
                 </motion.div>
             </AnimatedSection>
 
@@ -791,96 +858,46 @@ const ServiceDetailView = ({ serviceId, onBack, onSubServiceClick }) => {
                 </motion.div>
             )}
 
-            {/* CTA Section with enhanced animation */}
+            {/* CTA Section - Clean and minimal */}
             <AnimatedSection delay={0.4} className="mt-20">
                 <motion.div
-                    className={`relative rounded-[2.5rem] p-10 md:p-16 bg-gradient-to-br ${service.gradient} overflow-hidden shadow-2xl`}
-                    whileHover={{ scale: 1.01 }}
-                    transition={{ duration: 0.3 }}
+                    className="relative rounded-2xl p-8 md:p-12 bg-gradient-to-r from-primary-teal to-primary-dark overflow-hidden"
                 >
-                    {/* Animated background effects */}
-                    <motion.div
-                        className="absolute inset-0"
-                        animate={{
-                            backgroundPosition: ['0% 0%', '100% 100%'],
-                        }}
-                        transition={{ duration: 15, repeat: Infinity, repeatType: 'reverse' }}
-                        style={{
-                            backgroundImage: `radial-gradient(circle at 30% 40%, rgba(255,255,255,0.3) 0%, transparent 50%),
-                                              radial-gradient(circle at 70% 60%, rgba(255,255,255,0.2) 0%, transparent 50%)`
-                        }}
-                    />
+                    {/* Subtle gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent" />
 
-                    {/* Floating particles */}
-                    {[...Array(5)].map((_, i) => (
-                        <motion.div
-                            key={i}
-                            className="absolute w-4 h-4 rounded-full bg-white/20"
-                            style={{
-                                left: `${20 + i * 15}%`,
-                                top: `${20 + i * 10}%`,
-                            }}
-                            animate={{
-                                y: [0, -30, 0],
-                                opacity: [0.3, 0.8, 0.3],
-                            }}
-                            transition={{
-                                duration: 3 + i,
-                                repeat: Infinity,
-                                delay: i * 0.5,
-                            }}
-                        />
-                    ))}
-
-                    <div className="relative z-10 text-center">
-                        <motion.div
-                            initial={{ scale: 0 }}
-                            whileInView={{ scale: 1 }}
-                            transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-                            className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm mb-8"
-                        >
-                            <HiSparkles className="w-10 h-10 text-white" />
-                        </motion.div>
-
-                        <motion.h2
-                            className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-white mb-6"
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.3 }}
-                        >
-                            Ready to Get Started?
-                        </motion.h2>
-                        <motion.p
-                            className="text-white/90 text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed"
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.4 }}
-                        >
-                            Let's discuss how we can help transform your digital presence with our {service.title} solutions.
-                        </motion.p>
+                    <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div className="text-center md:text-left">
+                            <h2 className="text-2xl md:text-3xl font-heading font-bold text-white mb-2">
+                                Ready to Get Started?
+                            </h2>
+                            <p className="text-white/80 text-base md:text-lg max-w-lg">
+                                Let's discuss how we can transform your digital presence with our {service.title} solutions.
+                            </p>
+                        </div>
                         <motion.a
-                            href="#contact"
-                            className="group relative inline-flex items-center gap-3 px-10 py-5 bg-white text-text-heading font-bold text-lg rounded-full shadow-2xl overflow-hidden"
-                            whileHover={{ scale: 1.08, y: -3 }}
-                            whileTap={{ scale: 0.95 }}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.5 }}
+                            href="/#contact"
+                            className="flex-shrink-0 inline-flex items-center gap-2 relative group cursor-pointer"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                // Use direct location change for reliable navigation with hash
+                                window.location.href = '/#contact';
+                            }}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
                         >
-                            <motion.span
-                                className="absolute inset-0 bg-gradient-to-r from-primary-teal to-blue-500"
-                                initial={{ x: '-100%' }}
-                                whileHover={{ x: '0%' }}
-                                transition={{ duration: 0.4 }}
-                            />
-                            <span className="relative z-10 group-hover:text-white transition-colors duration-300">Get a Free Consultation</span>
-                            <motion.span
-                                className="relative z-10"
-                                animate={{ x: [0, 5, 0] }}
-                                transition={{ duration: 1.5, repeat: Infinity }}
-                            >
-                                <HiArrowRight className="w-6 h-6 group-hover:text-white transition-colors duration-300" />
-                            </motion.span>
+                            <motion.div className="absolute -inset-1 bg-white/30 rounded-xl blur-md opacity-0 group-hover:opacity-60 transition-opacity duration-500" />
+                            <div className="relative flex items-center gap-2 bg-white text-primary-dark font-heading font-semibold text-sm py-3 px-6 rounded-xl overflow-hidden">
+                                <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary-teal/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                                <BsLightningChargeFill className="text-yellow-500" />
+                                <span>Get Free Strategy Call</span>
+                                <motion.div
+                                    animate={{ x: [0, 4, 0] }}
+                                    transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                                >
+                                    <BsArrowRight className="text-lg" />
+                                </motion.div>
+                            </div>
                         </motion.a>
                     </div>
                 </motion.div>
@@ -1181,65 +1198,151 @@ const SubServiceDetailView = ({ subServiceId, onBackToService, onBackToAllServic
 
                 {/* Desktop Timeline */}
                 <div className="hidden lg:block relative">
-                    {/* Progress Track Background */}
-                    <div className="absolute top-[60px] left-[12.5%] right-[12.5%] h-1.5 bg-gray-100 rounded-full overflow-hidden" />
+                    {(() => {
+                        const stepCount = subService.process.length;
+                        const widthPercent = 100 / stepCount;
+                        const halfStep = widthPercent / 2;
 
-                    {/* Animated Progress Segments - Loading bar effect */}
-                    {subService.process.map((_, index) => (
-                        index < subService.process.length - 1 && (
-                            <motion.div
-                                key={`progress-${index}`}
-                                className="absolute top-[60px] h-1.5 rounded-full origin-left"
-                                style={{
-                                    backgroundColor: subService.color,
-                                    left: `calc(12.5% + ${index * 25}%)`,
-                                    width: '25%',
-                                }}
-                                initial={{ scaleX: 0 }}
-                                whileInView={{ scaleX: 1 }}
-                                viewport={{ once: true }}
-                                transition={{
-                                    duration: 1.2,
-                                    delay: 0.8 + index * 1.0,
-                                    ease: [0.25, 0.1, 0.25, 1]
-                                }}
-                            />
-                        )
-                    ))}
+                        return (
+                            <>
+                                {/* Progress Track Background */}
+                                <div
+                                    className="absolute top-[57px] h-1.5 bg-gray-100 rounded-full overflow-hidden"
+                                    style={{ left: `${halfStep}%`, right: `${halfStep}%` }}
+                                />
 
-                    <div className="grid grid-cols-4 gap-6 relative">
+                                {/* Animated Progress Segments - Loading bar effect */}
+                                {subService.process.map((_, index) => (
+                                    index < stepCount - 1 && (
+                                        <motion.div
+                                            key={`progress-${index}`}
+                                            className="absolute top-[57px] h-1.5 rounded-full origin-left"
+                                            style={{
+                                                backgroundColor: subService.color,
+                                                left: `calc(${halfStep}% + ${index * widthPercent}%)`,
+                                                width: `${widthPercent}%`,
+                                            }}
+                                            initial={{ scaleX: 0 }}
+                                            whileInView={{ scaleX: 1 }}
+                                            viewport={{ once: true }}
+                                            transition={{
+                                                duration: 1.2,
+                                                delay: 0.8 + index * 1.0,
+                                                ease: [0.25, 0.1, 0.25, 1]
+                                            }}
+                                        />
+                                    )
+                                ))}
+
+                                <div
+                                    className="grid gap-6 relative"
+                                    style={{ gridTemplateColumns: `repeat(${stepCount}, 1fr)` }}
+                                >
+                                    {subService.process.map((step, index) => (
+                                        <motion.div
+                                            key={index}
+                                            className="relative pt-28 flex flex-col items-center"
+                                            initial={{ opacity: 0, y: 30 }}
+                                            whileInView={{ opacity: 1, y: 0 }}
+                                            viewport={{ once: true }}
+                                            transition={{ delay: 0.8 + index * 1.0, duration: 0.6 }}
+                                        >
+                                            {/* Step Circle on Timeline */}
+                                            <motion.div
+                                                className="absolute top-[44px] left-0 right-0 flex justify-center z-10"
+                                                initial={{ scale: 0 }}
+                                                whileInView={{ scale: 1 }}
+                                                viewport={{ once: true }}
+                                                transition={{ delay: 0.8 + index * 1.0, type: "spring", stiffness: 200 }}
+                                            >
+                                                {/* Pulse ring animation */}
+                                                <motion.div
+                                                    className="absolute w-8 h-8 rounded-full"
+                                                    style={{ backgroundColor: subService.color }}
+                                                    initial={{ scale: 1, opacity: 0.5 }}
+                                                    animate={{ scale: [1, 1.8, 1], opacity: [0.5, 0, 0.5] }}
+                                                    transition={{
+                                                        duration: 2,
+                                                        repeat: Infinity,
+                                                        delay: index * 0.4,
+                                                        ease: "easeInOut"
+                                                    }}
+                                                />
+                                                <div
+                                                    className="relative w-8 h-8 rounded-full border-4 border-white shadow-lg flex items-center justify-center text-white text-xs font-bold"
+                                                    style={{ backgroundColor: subService.color }}
+                                                >
+                                                    {step.step}
+                                                </div>
+                                            </motion.div>
+
+                                            {/* Content Card */}
+                                            <motion.div
+                                                className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 group cursor-pointer"
+                                                whileHover={{ y: -8, borderColor: subService.color }}
+                                            >
+                                                <h4 className="font-heading font-bold text-lg text-text-heading mb-2 group-hover:text-primary-teal transition-colors">
+                                                    {step.title}
+                                                </h4>
+                                                <p className="text-text-body text-sm leading-relaxed">
+                                                    {step.desc}
+                                                </p>
+                                            </motion.div>
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            </>
+                        );
+                    })()}
+                </div>
+
+                {/* Mobile/Tablet Vertical Timeline - Redesigned */}
+                <div className="lg:hidden relative pl-14 sm:pl-16">
+                    {/* Vertical Line Background Track */}
+                    <div className="absolute left-5 sm:left-6 top-0 bottom-0 w-0.5 bg-gray-200 rounded-full" />
+
+                    {/* Animated Progress Line - Single slow loading bar */}
+                    <motion.div
+                        className="absolute left-5 sm:left-6 top-0 w-0.5 rounded-full origin-top"
+                        style={{ backgroundColor: subService.color }}
+                        initial={{ height: 0 }}
+                        whileInView={{ height: '100%' }}
+                        viewport={{ once: true, margin: "-100px" }}
+                        transition={{
+                            duration: 2.5,
+                            delay: 0.3,
+                            ease: [0.4, 0, 0.2, 1]
+                        }}
+                    />
+
+                    <div className="space-y-5 sm:space-y-6">
                         {subService.process.map((step, index) => (
                             <motion.div
                                 key={index}
-                                className="relative pt-28"
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: 0.8 + index * 1.0, duration: 0.6 }}
+                                className="relative"
+                                initial={{ opacity: 0, x: -16 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true, margin: "-50px" }}
+                                transition={{
+                                    delay: 0.4 + index * 0.3,
+                                    duration: 0.4,
+                                    ease: "easeOut"
+                                }}
                             >
-                                {/* Step Circle on Timeline */}
+                                {/* Step Number Circle */}
                                 <motion.div
-                                    className="absolute top-[52px] left-1/2 -translate-x-1/2 z-10"
-                                    initial={{ scale: 0 }}
-                                    whileInView={{ scale: 1 }}
+                                    className="absolute -left-9 sm:-left-10 top-4 z-10"
+                                    initial={{ scale: 0, opacity: 0 }}
+                                    whileInView={{ scale: 1, opacity: 1 }}
                                     viewport={{ once: true }}
-                                    transition={{ delay: 0.8 + index * 1.0, type: "spring", stiffness: 200 }}
+                                    transition={{
+                                        delay: 0.5 + index * 0.3,
+                                        duration: 0.35,
+                                        ease: "easeOut"
+                                    }}
                                 >
-                                    {/* Pulse ring animation */}
-                                    <motion.div
-                                        className="absolute inset-0 rounded-full"
-                                        style={{ backgroundColor: subService.color }}
-                                        initial={{ scale: 1, opacity: 0.5 }}
-                                        animate={{ scale: [1, 1.8, 1], opacity: [0.5, 0, 0.5] }}
-                                        transition={{
-                                            duration: 2,
-                                            repeat: Infinity,
-                                            delay: index * 0.4,
-                                            ease: "easeInOut"
-                                        }}
-                                    />
                                     <div
-                                        className="relative w-8 h-8 rounded-full border-4 border-white shadow-lg flex items-center justify-center text-white text-xs font-bold"
+                                        className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-lg ring-4 ring-white"
                                         style={{ backgroundColor: subService.color }}
                                     >
                                         {step.step}
@@ -1247,77 +1350,8 @@ const SubServiceDetailView = ({ subServiceId, onBackToService, onBackToAllServic
                                 </motion.div>
 
                                 {/* Content Card */}
-                                <motion.div
-                                    className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 group cursor-pointer"
-                                    whileHover={{ y: -8, borderColor: subService.color }}
-                                >
-                                    <h4 className="font-heading font-bold text-lg text-text-heading mb-2 group-hover:text-primary-teal transition-colors">
-                                        {step.title}
-                                    </h4>
-                                    <p className="text-text-body text-sm leading-relaxed">
-                                        {step.desc}
-                                    </p>
-                                </motion.div>
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Mobile/Tablet Vertical Timeline */}
-                <div className="lg:hidden relative pl-10">
-                    {/* Vertical Line Background */}
-                    <div className="absolute left-4 top-0 bottom-0 w-1 bg-gray-100 rounded-full" />
-
-                    {/* Segmented Progress - Loading bar effect for mobile */}
-                    {subService.process.map((_, index) => (
-                        <motion.div
-                            key={`mobile-progress-${index}`}
-                            className="absolute left-4 w-1 rounded-full origin-top"
-                            style={{
-                                backgroundColor: subService.color,
-                                top: `${index * 25}%`,
-                                height: '25%',
-                            }}
-                            initial={{ scaleY: 0 }}
-                            whileInView={{ scaleY: 1 }}
-                            viewport={{ once: true }}
-                            transition={{
-                                duration: 1.0,
-                                delay: 0.5 + index * 0.8,
-                                ease: [0.25, 0.1, 0.25, 1]
-                            }}
-                        />
-                    ))}
-
-                    <div className="space-y-6">
-                        {subService.process.map((step, index) => (
-                            <motion.div
-                                key={index}
-                                className="relative"
-                                initial={{ opacity: 0, x: -20 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: 0.5 + index * 0.8, duration: 0.5 }}
-                            >
-                                {/* Timeline Circle with Number */}
-                                <motion.div
-                                    className="absolute -left-6 top-5 z-10"
-                                    initial={{ scale: 0 }}
-                                    whileInView={{ scale: 1 }}
-                                    viewport={{ once: true }}
-                                    transition={{ delay: 0.5 + index * 0.8, type: "spring" }}
-                                >
-                                    <div
-                                        className="w-6 h-6 rounded-full border-3 border-white shadow-lg flex items-center justify-center text-white text-xs font-bold"
-                                        style={{ backgroundColor: subService.color }}
-                                    >
-                                        {step.step}
-                                    </div>
-                                </motion.div>
-
-                                {/* Content */}
-                                <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-                                    <h4 className="font-heading font-bold text-text-heading mb-2">
+                                <div className="bg-white rounded-2xl p-5 sm:p-6 shadow-md border border-gray-100/80 hover:shadow-lg transition-shadow duration-300">
+                                    <h4 className="font-heading font-bold text-text-heading text-base sm:text-lg mb-1.5">
                                         {step.title}
                                     </h4>
                                     <p className="text-text-body text-sm leading-relaxed">
@@ -1414,33 +1448,22 @@ const SubServiceDetailView = ({ subServiceId, onBackToService, onBackToAllServic
                         >
                             Let our experts help you achieve your goals with our specialized {subService.title} services.
                         </motion.p>
-                        <motion.a
-                            href="#contact"
-                            className="group relative inline-flex items-center gap-3 px-10 py-5 bg-white text-text-heading font-bold text-lg rounded-full shadow-2xl overflow-hidden"
-                            whileHover={{ scale: 1.08, y: -3 }}
-                            whileTap={{ scale: 0.95 }}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 0.5 }}
+                        <Link
+                            to="/#contact"
+                            className="group relative inline-flex items-center gap-3 px-10 py-5 bg-white text-text-heading font-bold text-lg rounded-full shadow-2xl overflow-hidden hover:scale-105 hover:-translate-y-1 transition-transform duration-300"
                         >
                             {/* Hover gradient overlay */}
-                            <motion.span
-                                className="absolute inset-0"
+                            <span
+                                className="absolute inset-0 -translate-x-full group-hover:translate-x-0 transition-transform duration-400"
                                 style={{ background: `linear-gradient(90deg, ${subService.color}, ${subService.color}dd)` }}
-                                initial={{ x: '-100%' }}
-                                whileHover={{ x: '0%' }}
-                                transition={{ duration: 0.4 }}
                             />
                             <span className="relative z-10 group-hover:text-white transition-colors duration-300">Start Your Project</span>
-                            <motion.span
+                            <span
                                 className="relative z-10"
-                                animate={{ x: [0, 5, 0] }}
-                                transition={{ duration: 1.5, repeat: Infinity }}
                             >
                                 <HiArrowRight className="w-6 h-6 group-hover:text-white transition-colors duration-300" />
-                            </motion.span>
-                        </motion.a>
+                            </span>
+                        </Link>
                     </div>
                 </motion.div>
             </AnimatedSection>
@@ -1460,7 +1483,7 @@ const ServicesDetail = () => {
 
     // Parse the URL parameter to determine view type
     useEffect(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: 'instant' });
 
         if (!serviceId) {
             setCurrentView(VIEW_TYPES.ALL_SERVICES);

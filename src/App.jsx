@@ -41,17 +41,29 @@ const ScrollToHash = () => {
   useEffect(() => {
     if (hash) {
       // Wait for lazy-loaded components to render before scrolling to hash target
-      const timer = setTimeout(() => {
+      // Use multiple attempts for lazy-loaded sections
+      let attempts = 0;
+      const maxAttempts = 5;
+
+      const scrollToElement = () => {
         const element = document.querySelector(hash);
         if (element) {
           element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else if (attempts < maxAttempts) {
+          attempts++;
+          setTimeout(scrollToElement, 200);
         }
-      }, 300);
+      };
+
+      const timer = setTimeout(scrollToElement, 100);
       return () => clearTimeout(timer);
-    }
-    // Only scroll to top for non-service routes (ServicesDetail handles its own scroll)
-    if (!pathname.startsWith('/services')) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      // For page navigation without hash, scroll to top instantly first
+      // then apply a subtle entrance transition
+      // Only scroll to top for non-service routes (ServicesDetail handles its own scroll)
+      if (!pathname.startsWith('/services')) {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      }
     }
   }, [pathname, hash]);
 

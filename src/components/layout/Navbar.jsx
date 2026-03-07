@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useSpring, LayoutGroup } from 'framer-motion';
 import { HiMenuAlt3, HiX, HiChevronDown } from 'react-icons/hi';
 import { BsArrowRight, BsLightningChargeFill } from 'react-icons/bs';
 
@@ -243,17 +243,155 @@ const Navbar = () => {
                     </motion.a>
 
                     {/* ── Desktop Nav ── */}
-                    <div className="hidden lg:flex items-center gap-1">
-                        {navLinks.map((link, index) =>
-                            link.hasDropdown ? (
-                                <div
-                                    key={link.name}
-                                    className="relative"
-                                    onMouseEnter={openServices}
-                                    onMouseLeave={closeServices}
-                                >
-                                    <motion.button
-                                        className="relative font-heading text-[0.95rem] font-medium text-text-heading py-2 px-4 hover:text-primary-teal group flex items-center gap-1 cursor-pointer"
+                    <LayoutGroup>
+                        <div className="hidden lg:flex items-center gap-1">
+                            {navLinks.map((link, index) =>
+                                link.hasDropdown ? (
+                                    <div
+                                        key={link.name}
+                                        className="relative"
+                                        onMouseEnter={openServices}
+                                        onMouseLeave={closeServices}
+                                    >
+                                        <motion.button
+                                            className="relative font-heading text-[0.95rem] font-medium text-text-heading py-2 px-4 hover:text-primary-teal group flex items-center gap-1 cursor-pointer"
+                                            variants={linkVariants}
+                                            custom={index}
+                                            onMouseEnter={() => setIsHovered(link.name)}
+                                            onMouseLeave={() => setIsHovered(null)}
+                                            whileHover={{ y: -2 }}
+                                            transition={{ duration: 0.18 }}
+                                        >
+                                            <span className="relative z-10">{link.name}</span>
+                                            <motion.span
+                                                className="relative z-10"
+                                                animate={{ rotate: isServicesOpen ? 180 : 0 }}
+                                                transition={{ duration: 0.3, ease: EASE }}
+                                            >
+                                                <HiChevronDown size={16} />
+                                            </motion.span>
+
+                                            {activeSection === 'services' && (
+                                                <motion.div
+                                                    className="absolute inset-0 bg-primary-light rounded-lg"
+                                                    layoutId="activeNav"
+                                                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                                                />
+                                            )}
+
+                                            <motion.div
+                                                className="absolute inset-0 bg-primary-light/50 rounded-lg"
+                                                animate={{ opacity: isHovered === link.name ? 1 : 0, scale: isHovered === link.name ? 1 : 0.85 }}
+                                                transition={{ duration: 0.2 }}
+                                            />
+
+                                            <motion.span
+                                                className="absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 bg-gradient-to-r from-primary-teal to-primary-dark rounded-full"
+                                                animate={{ width: activeSection === 'services' ? '60%' : 0 }}
+                                                whileHover={{ width: '60%' }}
+                                                transition={{ duration: 0.3 }}
+                                            />
+                                        </motion.button>
+
+                                        {/* ── Mega dropdown ── */}
+                                        <AnimatePresence>
+                                            {isServicesOpen && (
+                                                <motion.div
+                                                    className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-[620px] bg-white rounded-2xl shadow-[0_24px_64px_rgba(0,128,128,0.14)] border border-primary-teal/10 overflow-hidden"
+                                                    variants={dropdownVariants}
+                                                    initial="hidden"
+                                                    animate="visible"
+                                                    exit="hidden"
+                                                    onMouseEnter={openServices}
+                                                    onMouseLeave={closeServices}
+                                                >
+                                                    <div className="h-[3px] bg-gradient-to-r from-primary-teal via-teal-400 to-primary-dark" />
+                                                    <div className="px-6 pt-4 pb-3 border-b border-gray-100">
+                                                        <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary-teal">What We Offer</p>
+                                                        <p className="text-[13px] text-text-body mt-0.5">Full-spectrum digital marketing solutions</p>
+                                                    </div>
+                                                    <motion.div
+                                                        layout
+                                                        className="p-3 grid grid-cols-2 gap-1"
+                                                        variants={{ visible: { transition: { staggerChildren: 0.04 } } }}
+                                                    >
+                                                        {services.map((service) => {
+                                                            const Icon = service.icon;
+                                                            const isHoveredService = hoveredService === service.name;
+                                                            return (
+                                                                <div
+                                                                    key={service.name}
+                                                                    onMouseEnter={() => setHoveredService(service.name)}
+                                                                    onMouseLeave={() => setHoveredService(null)}
+                                                                    className="flex flex-col px-3 py-2.5 rounded-xl hover:bg-primary-light/60 group/item cursor-pointer overflow-hidden transform-gpu"
+                                                                >
+                                                                    <a
+                                                                        href={`/services/${getServiceId(service.name)}`}
+                                                                        onClick={(e) => {
+                                                                            e.preventDefault();
+                                                                            handleNavClick(`/services/${getServiceId(service.name)}`);
+                                                                        }}
+                                                                        className="flex items-center gap-3"
+                                                                    >
+                                                                        <div className={`w-9 h-9 rounded-xl ${service.bg} flex items-center justify-center flex-shrink-0 group-hover/item:scale-110 group-hover/item:shadow-sm transition-transform duration-200`}>
+                                                                            <Icon size={18} className={service.iconColor} />
+                                                                        </div>
+                                                                        <div className="flex-1 min-w-0">
+                                                                            <p className="text-[13px] font-semibold text-text-heading leading-tight group-hover/item:text-primary-teal">{service.name}</p>
+                                                                            <p className="text-[11px] text-text-body mt-0.5 leading-tight truncate">{service.desc}</p>
+                                                                        </div>
+                                                                        <BsArrowRight size={13} className="text-primary-teal flex-shrink-0 opacity-0 group-hover/item:opacity-100 transition-opacity" />
+                                                                    </a>
+
+                                                                    {service.subServices && (
+                                                                        <AnimatePresence>
+                                                                            {isHoveredService && (
+                                                                                <motion.div
+                                                                                    initial={{ height: 0, opacity: 0 }}
+                                                                                    animate={{ height: 'auto', opacity: 1 }}
+                                                                                    exit={{ height: 0, opacity: 0 }}
+                                                                                    transition={{ duration: 0.2, ease: "easeOut" }}
+                                                                                    className="flex flex-wrap gap-1.5 pl-[48px] overflow-hidden transform-gpu pt-3"
+                                                                                >
+                                                                                    {service.subServices.map((sub, i) => (
+                                                                                        <motion.a
+                                                                                            key={i}
+                                                                                            href={`/services/${getSubServiceId(sub)}`}
+                                                                                            onClick={(e) => {
+                                                                                                e.preventDefault();
+                                                                                                handleNavClick(`/services/${getSubServiceId(sub)}`);
+                                                                                            }}
+                                                                                            initial={{ opacity: 0, y: 5 }}
+                                                                                            animate={{ opacity: 1, y: 0 }}
+                                                                                            transition={{ delay: i * 0.02, duration: 0.15 }}
+                                                                                            className="group/sub relative overflow-hidden flex items-center justify-between text-[11px] font-semibold px-3 py-1.5 rounded-lg bg-gray-50/50 border border-gray-100/50 text-text-body hover:border-primary-teal/30 hover:shadow-[0_4px_16px_rgba(0,128,128,0.06)] hover:text-primary-teal transition-colors duration-200 cursor-pointer will-change-[opacity,transform]"
+                                                                                        >
+                                                                                            <span className="relative z-10 flex items-center gap-1.5">
+                                                                                                <div className={`w-1.5 h-1.5 rounded-full bg-gray-300 group-hover/sub:bg-primary-teal transition-colors duration-200`} />
+                                                                                                {sub}
+                                                                                            </span>
+                                                                                            <BsArrowRight className="relative z-10 ml-2 text-[10px] opacity-0 -translate-x-2 group-hover/sub:opacity-100 group-hover/sub:translate-x-0 transition-all duration-200" />
+                                                                                        </motion.a>
+                                                                                    ))}
+                                                                                </motion.div>
+                                                                            )}
+                                                                        </AnimatePresence>
+                                                                    )}
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </motion.div>
+                                                    <div className="h-2" />
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
+                                ) : (
+                                    <motion.a
+                                        key={link.name}
+                                        href={link.href}
+                                        className="relative font-heading text-[0.95rem] font-medium text-text-heading py-2 px-4 hover:text-primary-teal group transition-colors duration-200"
+                                        onClick={(e) => { e.preventDefault(); handleNavClick(link.href); }}
                                         variants={linkVariants}
                                         custom={index}
                                         onMouseEnter={() => setIsHovered(link.name)}
@@ -262,165 +400,29 @@ const Navbar = () => {
                                         transition={{ duration: 0.18 }}
                                     >
                                         <span className="relative z-10">{link.name}</span>
-                                        <motion.span
-                                            className="relative z-10"
-                                            animate={{ rotate: isServicesOpen ? 180 : 0 }}
-                                            transition={{ duration: 0.3, ease: EASE }}
-                                        >
-                                            <HiChevronDown size={16} />
-                                        </motion.span>
-
-                                        {activeSection === 'services' && (
+                                        {activeSection === (link.href === '/about' ? 'about' : link.href === '/blog' ? 'blog' : link.href.substring(2)) && (
                                             <motion.div
                                                 className="absolute inset-0 bg-primary-light rounded-lg"
                                                 layoutId="activeNav"
                                                 transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                                             />
                                         )}
-
                                         <motion.div
                                             className="absolute inset-0 bg-primary-light/50 rounded-lg"
                                             animate={{ opacity: isHovered === link.name ? 1 : 0, scale: isHovered === link.name ? 1 : 0.85 }}
                                             transition={{ duration: 0.2 }}
                                         />
-
                                         <motion.span
                                             className="absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 bg-gradient-to-r from-primary-teal to-primary-dark rounded-full"
-                                            animate={{ width: activeSection === 'services' ? '60%' : 0 }}
+                                            animate={{ width: activeSection === (link.href === '/about' ? 'about' : link.href === '/blog' ? 'blog' : link.href.substring(2)) ? '60%' : 0 }}
                                             whileHover={{ width: '60%' }}
                                             transition={{ duration: 0.3 }}
                                         />
-                                    </motion.button>
-
-                                    {/* ── Mega dropdown ── */}
-                                    <AnimatePresence>
-                                        {isServicesOpen && (
-                                            <motion.div
-                                                className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-[620px] bg-white rounded-2xl shadow-[0_24px_64px_rgba(0,128,128,0.14)] border border-primary-teal/10 overflow-hidden"
-                                                variants={dropdownVariants}
-                                                initial="hidden"
-                                                animate="visible"
-                                                exit="hidden"
-                                                onMouseEnter={openServices}
-                                                onMouseLeave={closeServices}
-                                            >
-                                                <div className="h-[3px] bg-gradient-to-r from-primary-teal via-teal-400 to-primary-dark" />
-                                                <div className="px-6 pt-4 pb-3 border-b border-gray-100">
-                                                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary-teal">What We Offer</p>
-                                                    <p className="text-[13px] text-text-body mt-0.5">Full-spectrum digital marketing solutions</p>
-                                                </div>
-                                                <motion.div
-                                                    layout
-                                                    className="p-3 grid grid-cols-2 gap-1"
-                                                    variants={{ visible: { transition: { staggerChildren: 0.04 } } }}
-                                                >
-                                                    {services.map((service) => {
-                                                        const Icon = service.icon;
-                                                        const isHoveredService = hoveredService === service.name;
-                                                        return (
-                                                            <div
-                                                                key={service.name}
-                                                                onMouseEnter={() => setHoveredService(service.name)}
-                                                                onMouseLeave={() => setHoveredService(null)}
-                                                                className="flex flex-col px-3 py-2.5 rounded-xl hover:bg-primary-light/60 group/item cursor-pointer overflow-hidden transform-gpu"
-                                                            >
-                                                                <a
-                                                                    href={`/services/${getServiceId(service.name)}`}
-                                                                    onClick={(e) => {
-                                                                        e.preventDefault();
-                                                                        handleNavClick(`/services/${getServiceId(service.name)}`);
-                                                                    }}
-                                                                    className="flex items-center gap-3"
-                                                                >
-                                                                    <div className={`w-9 h-9 rounded-xl ${service.bg} flex items-center justify-center flex-shrink-0 group-hover/item:scale-110 group-hover/item:shadow-sm transition-transform duration-200`}>
-                                                                        <Icon size={18} className={service.iconColor} />
-                                                                    </div>
-                                                                    <div className="flex-1 min-w-0">
-                                                                        <p className="text-[13px] font-semibold text-text-heading leading-tight group-hover/item:text-primary-teal">{service.name}</p>
-                                                                        <p className="text-[11px] text-text-body mt-0.5 leading-tight truncate">{service.desc}</p>
-                                                                    </div>
-                                                                    <BsArrowRight size={13} className="text-primary-teal flex-shrink-0 opacity-0 group-hover/item:opacity-100 transition-opacity" />
-                                                                </a>
-
-                                                                {service.subServices && (
-                                                                    <AnimatePresence>
-                                                                        {isHoveredService && (
-                                                                            <motion.div
-                                                                                initial={{ height: 0, opacity: 0 }}
-                                                                                animate={{ height: 'auto', opacity: 1 }}
-                                                                                exit={{ height: 0, opacity: 0 }}
-                                                                                transition={{ duration: 0.2, ease: "easeOut" }}
-                                                                                className="flex flex-wrap gap-1.5 pl-[48px] overflow-hidden transform-gpu pt-3"
-                                                                            >
-                                                                                {service.subServices.map((sub, i) => (
-                                                                                    <motion.a
-                                                                                        key={i}
-                                                                                        href={`/services/${getSubServiceId(sub)}`}
-                                                                                        onClick={(e) => {
-                                                                                            e.preventDefault();
-                                                                                            handleNavClick(`/services/${getSubServiceId(sub)}`);
-                                                                                        }}
-                                                                                        initial={{ opacity: 0, y: 5 }}
-                                                                                        animate={{ opacity: 1, y: 0 }}
-                                                                                        transition={{ delay: i * 0.02, duration: 0.15 }}
-                                                                                        className="group/sub relative overflow-hidden flex items-center justify-between text-[11px] font-semibold px-3 py-1.5 rounded-lg bg-gray-50/50 border border-gray-100/50 text-text-body hover:border-primary-teal/30 hover:shadow-[0_4px_16px_rgba(0,128,128,0.06)] hover:text-primary-teal transition-colors duration-200 cursor-pointer will-change-[opacity,transform]"
-                                                                                    >
-                                                                                        <span className="relative z-10 flex items-center gap-1.5">
-                                                                                            <div className={`w-1.5 h-1.5 rounded-full bg-gray-300 group-hover/sub:bg-primary-teal transition-colors duration-200`} />
-                                                                                            {sub}
-                                                                                        </span>
-                                                                                        <BsArrowRight className="relative z-10 ml-2 text-[10px] opacity-0 -translate-x-2 group-hover/sub:opacity-100 group-hover/sub:translate-x-0 transition-all duration-200" />
-                                                                                    </motion.a>
-                                                                                ))}
-                                                                            </motion.div>
-                                                                        )}
-                                                                    </AnimatePresence>
-                                                                )}
-                                                            </div>
-                                                        );
-                                                    })}
-                                                </motion.div>
-                                                <div className="h-2" />
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
-                                </div>
-                            ) : (
-                                <motion.a
-                                    key={link.name}
-                                    href={link.href}
-                                    className="relative font-heading text-[0.95rem] font-medium text-text-heading py-2 px-4 hover:text-primary-teal group transition-colors duration-200"
-                                    onClick={(e) => { e.preventDefault(); handleNavClick(link.href); }}
-                                    variants={linkVariants}
-                                    custom={index}
-                                    onMouseEnter={() => setIsHovered(link.name)}
-                                    onMouseLeave={() => setIsHovered(null)}
-                                    whileHover={{ y: -2 }}
-                                    transition={{ duration: 0.18 }}
-                                >
-                                    <span className="relative z-10">{link.name}</span>
-                                    {activeSection === (link.href === '/about' ? 'about' : link.href === '/blog' ? 'blog' : link.href.substring(2)) && (
-                                        <motion.div
-                                            className="absolute inset-0 bg-primary-light rounded-lg"
-                                            layoutId="activeNav"
-                                            transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                                        />
-                                    )}
-                                    <motion.div
-                                        className="absolute inset-0 bg-primary-light/50 rounded-lg"
-                                        animate={{ opacity: isHovered === link.name ? 1 : 0, scale: isHovered === link.name ? 1 : 0.85 }}
-                                        transition={{ duration: 0.2 }}
-                                    />
-                                    <motion.span
-                                        className="absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 bg-gradient-to-r from-primary-teal to-primary-dark rounded-full"
-                                        animate={{ width: activeSection === (link.href === '/about' ? 'about' : link.href === '/blog' ? 'blog' : link.href.substring(2)) ? '60%' : 0 }}
-                                        whileHover={{ width: '60%' }}
-                                        transition={{ duration: 0.3 }}
-                                    />
-                                </motion.a>
-                            )
-                        )}
-                    </div>
+                                    </motion.a>
+                                )
+                            )}
+                        </div>
+                    </LayoutGroup>
 
                     {/* ── CTA Button (Desktop) ── */}
                     <motion.a
