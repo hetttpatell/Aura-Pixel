@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 import {
@@ -11,6 +11,13 @@ import {
     SiMailchimp
 } from 'react-icons/si';
 import { HiArrowRight, HiOutlineSearch } from 'react-icons/hi';
+
+// Optimized spring config for smoother animations
+const smoothSpring = { damping: 25, stiffness: 100, mass: 0.5 };
+const fastSpring = { damping: 20, stiffness: 200, mass: 0.3 };
+
+// Optimized easing for silky smooth animations
+const smoothEase = [0.4, 0, 0.2, 1];
 
 const floatingIcons = [
     { icon: SiGoogleads, name: 'Google Ads', color: '#4285F4', link: 'https://ads.google.com', delay: 0 },
@@ -67,9 +74,9 @@ const Hero = () => {
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
 
-    const springConfig = { damping: 30, stiffness: 120 };
-    const x = useSpring(mouseX, springConfig);
-    const y = useSpring(mouseY, springConfig);
+    // Optimized spring config for buttery smooth parallax
+    const x = useSpring(mouseX, smoothSpring);
+    const y = useSpring(mouseY, smoothSpring);
 
     useEffect(() => {
         if (isMobile) return; // No parallax on mobile
@@ -77,20 +84,22 @@ const Hero = () => {
             const { clientX, clientY } = e;
             const centerX = window.innerWidth / 2;
             const centerY = window.innerHeight / 2;
-            mouseX.set((clientX - centerX) / 60);
-            mouseY.set((clientY - centerY) / 60);
+            // Reduced movement for subtler, smoother effect
+            mouseX.set((clientX - centerX) / 80);
+            mouseY.set((clientY - centerY) / 80);
         };
         window.addEventListener('mousemove', handleMouseMove, { passive: true });
         return () => window.removeEventListener('mousemove', handleMouseMove);
     }, [mouseX, mouseY, isMobile]);
 
-    const handleIconClick = (link) => {
+    // Memoize click handler
+    const handleIconClick = useCallback((link) => {
         if (link.startsWith('/#') || link.startsWith('#')) {
             navigate(link.startsWith('#') ? `/${link}` : link);
         } else {
             window.open(link, '_blank', 'noopener,noreferrer');
         }
-    };
+    }, [navigate]);
 
     return (
         <section
@@ -260,39 +269,40 @@ const Hero = () => {
                                     height="600"
                                 />
 
-                                {/* Floating icons around image - visible immediately on all screens */}
+                                {/* Floating icons around image - optimized animations */}
                                 {floatingIcons.map((item, index) => {
                                     const pos = isMobile ? mobilePositions[index] : desktopPositions[index];
                                     const bubbleSize = isMobile ? 'w-10 h-10' : 'w-12 h-12';
                                     const iconSize = isMobile ? 18 : 22;
                                     const fontSize = isMobile ? 'text-[9px]' : 'text-[10px]';
+                                    // Simplified animation with longer duration for smoother motion
+                                    const floatDuration = 5 + index * 0.5;
                                     return (
                                         <motion.div
                                             key={item.name}
-                                            className="absolute flex flex-col items-center cursor-pointer z-40"
+                                            className="absolute flex flex-col items-center cursor-pointer z-40 will-change-transform"
                                             style={pos}
                                             animate={{
-                                                x: [0, 6, -4, 5, 0],
-                                                y: [0, -10, -4, -12, 0],
-                                                rotate: [0, 4, -2, 3, 0],
+                                                y: [0, -8, 0],
                                             }}
                                             transition={{
-                                                x: { delay: 0.6 + item.delay, duration: 7 + index * 0.5, repeat: Infinity, ease: 'easeInOut' },
-                                                y: { delay: 0.6 + item.delay, duration: 6 + index * 0.3, repeat: Infinity, ease: 'easeInOut' },
-                                                rotate: { delay: 0.6 + item.delay, duration: 8 + index * 0.4, repeat: Infinity, ease: 'easeInOut' },
+                                                y: {
+                                                    delay: 0.8 + item.delay,
+                                                    duration: floatDuration,
+                                                    repeat: Infinity,
+                                                    ease: 'easeInOut'
+                                                },
                                             }}
-                                            whileHover={{ scale: 1.12 }}
-                                            whileTap={{ scale: 0.95 }}
+                                            whileHover={{ scale: 1.08, transition: fastSpring }}
+                                            whileTap={{ scale: 0.96 }}
                                             onClick={() => handleIconClick(item.link)}
                                         >
-                                            <motion.div
-                                                className={`${bubbleSize} rounded-full bg-white/90 backdrop-blur-xl border-2 flex items-center justify-center shadow-lg`}
-                                                whileHover={{ boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}
-                                                transition={{ duration: 0.3 }}
+                                            <div
+                                                className={`${bubbleSize} rounded-full bg-white/90 backdrop-blur-xl border-2 flex items-center justify-center shadow-lg transition-shadow duration-300 hover:shadow-xl`}
                                                 style={{ borderColor: item.color }}
                                             >
                                                 <item.icon size={iconSize} style={{ color: item.color }} />
-                                            </motion.div>
+                                            </div>
                                             <span className={`mt-1 font-medium text-text-heading bg-white/90 backdrop-blur-sm px-2 py-0.5 rounded-md whitespace-nowrap ${fontSize}`}>
                                                 {item.name}
                                             </span>

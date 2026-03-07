@@ -1,3 +1,4 @@
+import { memo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import {
@@ -39,12 +40,12 @@ const socialLinks = [
     { icon: SiYoutube, href: 'https://youtube.com', label: 'YouTube' },
 ];
 
-const Footer = () => {
+const Footer = memo(() => {
     const currentYear = new Date().getFullYear();
 
     const navigate = useNavigate();
 
-    const handleNavClick = (href) => {
+    const handleNavClick = useCallback((href) => {
         // Check if navigating to a different page (not just a hash on the same page)
         const isFullPageNavigation = href.startsWith('/') && !href.startsWith('/#');
 
@@ -54,7 +55,7 @@ const Footer = () => {
         if (isFullPageNavigation) {
             window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
         }
-    };
+    }, [navigate]);
 
     return (
         <footer className="bg-text-heading relative overflow-hidden">
@@ -181,6 +182,8 @@ const Footer = () => {
             </div>
         </footer>
     );
-};
+});
+
+Footer.displayName = 'Footer';
 
 export default Footer;

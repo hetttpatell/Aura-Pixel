@@ -103,19 +103,19 @@ const containerVariants = {
     visible: {
         opacity: 1,
         transition: {
-            staggerChildren: 0.1,
+            staggerChildren: 0.06,
         },
     },
 };
 
 const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, y: 20 },
     visible: {
         opacity: 1,
         y: 0,
         transition: {
-            duration: 0.5,
-            ease: 'easeOut',
+            duration: 0.4,
+            ease: [0.4, 0, 0.2, 1],
         },
     },
 };

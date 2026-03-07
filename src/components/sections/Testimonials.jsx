@@ -54,32 +54,32 @@ const testimonials = [
     },
 ];
 
-// Staggered reveal animation
+// Staggered reveal animation - optimized
 const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
         opacity: 1,
         transition: {
-            staggerChildren: 0.12,
-            delayChildren: 0.15
+            staggerChildren: 0.08,
+            delayChildren: 0.1
         }
     }
 };
 
 const itemVariants = {
-    hidden: { opacity: 0, y: 15 },
+    hidden: { opacity: 0, y: 12 },
     visible: {
         opacity: 1,
         y: 0,
-        transition: { duration: 0.5, ease: "easeOut" }
+        transition: { duration: 0.4, ease: [0.4, 0, 0.2, 1] }
     }
 };
 
-// Gentle pulse for trust indicators
+// Gentle pulse for trust indicators - reduced intensity
 const pulseAnimation = {
     animate: {
-        scale: [1, 1.15, 1],
-        transition: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+        scale: [1, 1.08, 1],
+        transition: { duration: 2.5, repeat: Infinity, ease: "easeInOut" }
     }
 };
 

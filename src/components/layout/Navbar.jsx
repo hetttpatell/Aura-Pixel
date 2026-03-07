@@ -57,39 +57,41 @@ const getSubServiceId = (subServiceName) => {
     return nameToIdMap[subServiceName] || subServiceName.toLowerCase().replace(/\s+/g, '-');
 };
 
-const EASE = [0.25, 0.46, 0.45, 0.94];
+// Optimized smooth easing
+const EASE = [0.4, 0, 0.2, 1];
 
 const navVariants = {
-    hidden: { y: -80, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { duration: 0.55, ease: EASE, staggerChildren: 0.08 } },
+    hidden: { y: -60, opacity: 0 },
+    visible: { y: 0, opacity: 1, transition: { duration: 0.4, ease: EASE, staggerChildren: 0.06 } },
 };
 
 const linkVariants = {
-    hidden: { y: -16, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { duration: 0.45, ease: EASE } },
+    hidden: { y: -12, opacity: 0 },
+    visible: { y: 0, opacity: 1, transition: { duration: 0.35, ease: EASE } },
 };
 
 const mobileMenuVariants = {
     closed: { opacity: 0, height: 0, transition: { duration: 0.2, ease: EASE } },
-    open: { opacity: 1, height: 'auto', transition: { duration: 0.25, ease: EASE, staggerChildren: 0.025, delayChildren: 0.05 } },
+    open: { opacity: 1, height: 'auto', transition: { duration: 0.2, ease: EASE, staggerChildren: 0.02, delayChildren: 0.04 } },
 };
 
 const mobileItemVariants = {
-    closed: { x: -16, opacity: 0 },
-    open: { x: 0, opacity: 1, transition: { duration: 0.2, ease: EASE } },
+    closed: { x: -12, opacity: 0 },
+    open: { x: 0, opacity: 1, transition: { duration: 0.15, ease: EASE } },
 };
 
 const dropdownVariants = {
-    hidden: { y: -6, transition: { duration: 0.16, ease: 'easeIn' } },
+    hidden: { y: -4, opacity: 0, transition: { duration: 0.12, ease: EASE } },
     visible: {
         y: 0,
-        transition: { type: 'spring', stiffness: 280, damping: 26, staggerChildren: 0.035, delayChildren: 0.05 },
+        opacity: 1,
+        transition: { type: 'spring', stiffness: 200, damping: 22, staggerChildren: 0.025, delayChildren: 0.03 },
     },
 };
 
 const dropdownItemVariants = {
-    hidden: { x: -10, opacity: 0 },
-    visible: { x: 0, opacity: 1, transition: { duration: 0.2, ease: EASE } },
+    hidden: { x: -8, opacity: 0 },
+    visible: { x: 0, opacity: 1, transition: { duration: 0.15, ease: EASE } },
 };
 
 const navLinks = [

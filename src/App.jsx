@@ -1,19 +1,19 @@
-import { useEffect, lazy, Suspense } from 'react';
+import { useEffect, lazy, Suspense, memo } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation, useParams } from 'react-router-dom';
 
 // Layout Components
 import { Navbar, Footer } from './components/layout';
 
 // Common Components
-import { SkipToContent } from './components/common';
+import { SkipToContent, ErrorBoundary } from './components/common';
 
-// Section Components
+// Section Components - Import critical above-the-fold components eagerly
 import { Hero, Services, WhyChooseUs } from './components/sections';
 
-// Feature Components
-import AboutUs from './features/about/AboutUs';
-import ServicesDetail from './features/services/ServicesDetail';
-import BlogPage from './features/blog/BlogPage';
+// Lazy load feature pages for better code splitting
+const AboutUs = lazy(() => import('./features/about/AboutUs'));
+const ServicesDetail = lazy(() => import('./features/services/ServicesDetail'));
+const BlogPage = lazy(() => import('./features/blog/BlogPage'));
 
 // Hooks
 import { useSEO } from './hooks';
@@ -25,15 +25,24 @@ const Testimonials = lazy(() => import('./components/sections/Testimonials'));
 const Blog = lazy(() => import('./components/sections/Blog'));
 const LeadCapture = lazy(() => import('./components/sections/LeadCapture'));
 
-// Simple loader for lazy sections
-const SectionLoader = () => (
-  <div className="w-full h-64 flex items-center justify-center bg-bg-soft/30 rounded-3xl border-2 border-dashed border-primary-teal/20 animate-pulse">
+// Memoized loader component for better performance
+const SectionLoader = memo(() => (
+  <div className="w-full h-64 flex items-center justify-center bg-bg-soft/30 rounded-3xl border-2 border-dashed border-primary-teal/20">
     <div className="flex flex-col items-center gap-3">
       <div className="w-10 h-10 border-4 border-primary-teal/30 border-t-primary-teal rounded-full animate-spin" />
       <span className="text-sm font-medium text-primary-teal/60">Loading experience...</span>
     </div>
   </div>
-);
+));
+SectionLoader.displayName = 'SectionLoader';
+
+// Minimal fallback for page transitions
+const PageLoader = memo(() => (
+  <div className="min-h-[60vh] flex items-center justify-center">
+    <div className="w-12 h-12 border-4 border-primary-teal/30 border-t-primary-teal rounded-full animate-spin" />
+  </div>
+));
+PageLoader.displayName = 'PageLoader';
 
 const ScrollToHash = () => {
   const { pathname, hash } = useLocation();
@@ -92,7 +101,11 @@ const HomeSEO = () => {
 // SEO wrapper for About page
 const AboutSEO = () => {
   useSEO('about');
-  return <AboutUs />;
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <AboutUs />
+    </Suspense>
+  );
 };
 
 // SEO wrapper for Services page with dynamic service detection
@@ -115,14 +128,18 @@ const ServicesSEOWrapper = () => {
   const seoKey = serviceId && serviceSeoMap[serviceId] ? serviceSeoMap[serviceId] : 'services';
   useSEO(seoKey);
 
-  return <ServicesDetail />;
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <ServicesDetail />
+    </Suspense>
+  );
 };
 
 // SEO wrapper for Blog page
 const BlogSEOWrapper = () => {
   useSEO('blog');
   return (
-    <Suspense fallback={<SectionLoader />}>
+    <Suspense fallback={<PageLoader />}>
       <BlogPage />
     </Suspense>
   );
@@ -171,22 +188,24 @@ function App() {
 
   return (
     <BrowserRouter>
-      <SkipToContent />
-      <ScrollToHash />
-      <div className="min-h-[100dvh] bg-bg-main font-body text-text-body antialiased">
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<HomeSEO />} />
-          <Route path="/about" element={<AboutSEO />} />
-          <Route path="/blog" element={<BlogSEOWrapper />} />
-          <Route path="/services" element={<ServicesSEOWrapper />} />
-          <Route path="/services/:serviceId" element={<ServicesSEOWrapper />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-        <Suspense fallback={<div className="h-64 bg-bg-soft" />}>
-          <Footer />
-        </Suspense>
-      </div>
+      <ErrorBoundary>
+        <SkipToContent />
+        <ScrollToHash />
+        <div className="min-h-[100dvh] bg-bg-main font-body text-text-body antialiased">
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<HomeSEO />} />
+            <Route path="/about" element={<AboutSEO />} />
+            <Route path="/blog" element={<BlogSEOWrapper />} />
+            <Route path="/services" element={<ServicesSEOWrapper />} />
+            <Route path="/services/:serviceId" element={<ServicesSEOWrapper />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+          <Suspense fallback={<div className="h-64 bg-bg-soft" />}>
+            <Footer />
+          </Suspense>
+        </div>
+      </ErrorBoundary>
     </BrowserRouter>
   );
 }

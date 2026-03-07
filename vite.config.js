@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => ({
   // Build optimizations
   build: {
     // Target modern browsers for smaller bundles
-    target: 'es2020',
+    target: ['es2020', 'edge88', 'firefox78', 'chrome87', 'safari14'],
 
     // Output directory
     outDir: 'dist',
@@ -23,8 +23,8 @@ export default defineConfig(({ mode }) => ({
     // Enable source maps for debugging (disable in production for smaller builds)
     sourcemap: mode === 'production' ? false : true,
 
-    // Minification options (using default esbuild/oxc minifier)
-    minify: true,
+    // Use esbuild for minification (default, fast and efficient)
+    minify: 'esbuild',
 
     // Code splitting and chunking strategy
     rollupOptions: {
@@ -35,13 +35,17 @@ export default defineConfig(({ mode }) => ({
           if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
             return 'vendor-react';
           }
-          // Animation libraries
+          // Animation libraries - split framer-motion for better tree-shaking
           if (id.includes('node_modules/framer-motion/')) {
             return 'vendor-animation';
           }
           // Router
           if (id.includes('node_modules/react-router-dom/') || id.includes('node_modules/@remix-run/')) {
             return 'vendor-router';
+          }
+          // Icons library (can be large)
+          if (id.includes('node_modules/react-icons/')) {
+            return 'vendor-icons';
           }
           // Intersection Observer and utilities
           if (id.includes('node_modules/react-intersection-observer/')) {

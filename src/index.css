@@ -1,13 +1,27 @@
-/* Google Fonts Import */
+/* Google Fonts Import - Preconnect handled in index.html */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
 
+/* ========================================
+   PERFORMANCE OPTIMIZATIONS
+   GPU-accelerated animations for smooth 60fps
+   ======================================== */
 
-/* Smooth animations with GPU acceleration */
+/* GPU acceleration utility class - use sparingly */
 .gpu-accelerated {
   transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Optimized will-change - only apply during animation */
+.will-animate {
   will-change: transform, opacity;
-  -webkit-transform: translateZ(0);
-  -webkit-will-change: transform, opacity;
+}
+
+/* Content visibility for off-screen sections - improves initial render */
+.content-lazy {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
 }
 
 /* ========================================
@@ -1416,4 +1430,99 @@ a {
 
 .stagger-container>*:nth-child(6) {
   animation-delay: 500ms;
+}
+
+/* ========================================
+   PRODUCTION PERFORMANCE OPTIMIZATIONS
+   ======================================== */
+
+/* Hardware-accelerated animations - use translate3d for GPU */
+.hw-accelerated {
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimized transitions - use only transform and opacity for 60fps */
+.transition-optimized {
+  transition-property: transform, opacity;
+  transition-duration: 0.3s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Smoother hover transitions */
+.hover-smooth {
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.25s ease-out,
+    box-shadow 0.25s ease-out;
+}
+
+/* Content visibility optimization for off-screen content */
+.section-optimize {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 800px;
+}
+
+/* Prevent layout thrashing during animations */
+.contain-layout {
+  contain: layout style;
+}
+
+/* Improve paint performance */
+.contain-paint {
+  contain: paint;
+}
+
+/* Composite layer optimization - use sparingly */
+.force-gpu {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Remove will-change after animation */
+.animation-done {
+  will-change: auto;
+}
+
+/* Passive touch events for smooth scrolling */
+.touch-passive {
+  touch-action: pan-y;
+}
+
+/* Optimize text rendering */
+.text-optimize {
+  text-rendering: optimizeSpeed;
+}
+
+/* Image rendering optimization */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Prevent FOIT (Flash of Invisible Text) */
+.font-loaded {
+  font-display: swap;
+}
+
+/* Optimize animations for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+
+  .animate-fade-up,
+  .animate-scale-up,
+  .animate-slide-left,
+  .animate-slide-right,
+  .animate-float-smooth,
+  .animate-glow-pulse {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .stagger-container>* {
+    animation: none !important;
+    opacity: 1 !important;
+  }
 }

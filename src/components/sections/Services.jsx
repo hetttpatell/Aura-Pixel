@@ -54,23 +54,23 @@ const services = [
     },
 ];
 
-// Card animation variants - Reduced offset to prevent layout overflow
+// Card animation variants - Optimized for smooth 60fps
 const cardVariants = {
     hidden: {
         opacity: 0,
-        y: 20
+        y: 15
     },
     visible: {
         opacity: 1,
         y: 0,
         transition: {
-            duration: 0.5,
-            ease: [0.25, 0.46, 0.45, 0.94]
+            duration: 0.4,
+            ease: [0.4, 0, 0.2, 1]
         }
     }
 };
 
-// Loading line variants
+// Loading line variants - GPU-accelerated
 const lineVariants = {
     hidden: {
         scaleX: 0,
@@ -80,19 +80,19 @@ const lineVariants = {
         scaleX: 1,
         originX: 0,
         transition: {
-            delay: 0.2,
-            duration: 0.6,
-            ease: "easeInOut"
+            delay: 0.15,
+            duration: 0.5,
+            ease: [0.4, 0, 0.2, 1]
         }
     }
 };
 
-// Icon animation variants
+// Icon animation variants - Optimized spring
 const iconVariants = {
     hidden: {
         opacity: 0,
-        scale: 0,
-        rotate: -180
+        scale: 0.8,
+        rotate: -90
     },
     visible: {
         opacity: 1,
@@ -100,9 +100,9 @@ const iconVariants = {
         rotate: 0,
         transition: {
             type: "spring",
-            stiffness: 260,
-            damping: 20,
-            delay: 0.1
+            stiffness: 180,
+            damping: 18,
+            mass: 0.5
         }
     }
 };
