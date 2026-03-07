@@ -1,8 +1,8 @@
-import { useEffect, lazy, Suspense, memo } from 'react';
+import { useEffect, useState, lazy, Suspense, memo, useCallback } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation, useParams } from 'react-router-dom';
 
 // Layout Components
-import { Navbar, Footer } from './components/layout';
+import { Navbar, Footer, WelcomeScreen } from './components/layout';
 
 // Common Components
 import { SkipToContent, ErrorBoundary } from './components/common';
@@ -146,6 +146,19 @@ const BlogSEOWrapper = () => {
 };
 
 function App() {
+  // Welcome screen - shows only once per session
+  const [showWelcome, setShowWelcome] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return !sessionStorage.getItem('auraPixelWelcomed');
+    }
+    return false;
+  });
+
+  const handleWelcomeComplete = useCallback(() => {
+    sessionStorage.setItem('auraPixelWelcomed', 'true');
+    setShowWelcome(false);
+  }, []);
+
   useEffect(() => {
     // Meta Pixel Initialization
     const initMetaPixel = () => {
@@ -189,9 +202,12 @@ function App() {
   return (
     <BrowserRouter>
       <ErrorBoundary>
+        {/* Welcome Screen - First visit only */}
+        {showWelcome && <WelcomeScreen onComplete={handleWelcomeComplete} />}
+
         <SkipToContent />
         <ScrollToHash />
-        <div className="min-h-[100dvh] bg-bg-main font-body text-text-body antialiased">
+        <div className={`min-h-[100dvh] bg-bg-main font-body text-text-body antialiased transition-opacity duration-500 ${showWelcome ? 'opacity-0' : 'opacity-100'}`}>
           <Navbar />
           <Routes>
             <Route path="/" element={<HomeSEO />} />
