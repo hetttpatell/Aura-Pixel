@@ -103,7 +103,7 @@ const navLinks = [
     { name: 'Contact', href: '/#contact' },
 ];
 
-const Navbar = () => {
+const Navbar = ({ isLogoVisible = true }) => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [activeSection, setActiveSection] = useState('home');
@@ -242,11 +242,16 @@ const Navbar = () => {
                             transition={{ duration: 0.4 }}
                         />
                         <motion.div
+                            data-logo-target="true"
                             className="relative flex items-baseline"
                             animate={{
-                                fontSize: isScrolled ? (isLargeScreen ? '1.625rem' : '1.375rem') : (isLargeScreen ? '1.875rem' : '1.5rem')
+                                fontSize: isScrolled ? (isLargeScreen ? '1.625rem' : '1.375rem') : (isLargeScreen ? '1.875rem' : '1.5rem'),
+                                opacity: isLogoVisible ? 1 : 0,
                             }}
-                            transition={{ duration: 0.4 }}
+                            transition={{
+                                fontSize: { duration: 0.4 },
+                                opacity: { duration: 0.2 }
+                            }}
                         >
                             <span className="font-['Plus_Jakarta_Sans'] font-medium tracking-wide text-slate-800">Aura</span>
                             <span className="font-['Plus_Jakarta_Sans'] font-bold tracking-wide text-[#01686C]">Pixel</span>

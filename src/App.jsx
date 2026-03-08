@@ -154,9 +154,24 @@ function App() {
     return false;
   });
 
+  // Track docking phase for content fade-in (during final 20% of animation)
+  const [isDockingPhase, setIsDockingPhase] = useState(false);
+  // Track navbar logo visibility for seamless handoff from welcome screen
+  const [isNavLogoVisible, setIsNavLogoVisible] = useState(false);
+
   const handleWelcomeComplete = useCallback(() => {
     sessionStorage.setItem('auraPixelWelcomed', 'true');
     setShowWelcome(false);
+    setIsDockingPhase(false);
+    setIsNavLogoVisible(true); // Ensure logo visible after welcome complete
+  }, []);
+
+  const handleDockStart = useCallback(() => {
+    setIsDockingPhase(true);
+  }, []);
+
+  const handleNavLogoReveal = useCallback(() => {
+    setIsNavLogoVisible(true);
   }, []);
 
   useEffect(() => {
@@ -203,12 +218,20 @@ function App() {
     <BrowserRouter>
       <ErrorBoundary>
         {/* Welcome Screen - First visit only */}
-        {showWelcome && <WelcomeScreen onComplete={handleWelcomeComplete} />}
+        {showWelcome && <WelcomeScreen onComplete={handleWelcomeComplete} onDockStart={handleDockStart} onNavLogoReveal={handleNavLogoReveal} />}
 
         <SkipToContent />
         <ScrollToHash />
-        <div className={`min-h-[100dvh] bg-bg-main font-body text-text-body antialiased transition-opacity duration-500 ${showWelcome ? 'opacity-0' : 'opacity-100'}`}>
-          <Navbar />
+        {/* Navbar always visible for logo position calculation */}
+        <Navbar isLogoVisible={!showWelcome || isNavLogoVisible} />
+        <div
+          className={`min-h-[100dvh] bg-bg-main font-body text-text-body antialiased transition-opacity ${showWelcome && !isDockingPhase
+            ? 'opacity-0 duration-0'
+            : isDockingPhase
+              ? 'opacity-100 duration-1000'
+              : 'opacity-100 duration-500'
+            }`}
+        >
           <Routes>
             <Route path="/" element={<HomeSEO />} />
             <Route path="/about" element={<AboutSEO />} />
