@@ -362,38 +362,28 @@ const WelcomeScreen = ({ onComplete, onDockStart, onNavLogoReveal }) => {
                 {/* Brand Text with dock animation and entrance effects */}
                 <AnimatePresence>
                     {showText && (() => {
-                        // For docking: use fixed position to fly to exact navbar logo position
-                        // We measure the splash logo height and the navbar logo to align baselines perfectly
-
+                        // Responsive font sizing for mobile
+                        const splashFontSize = window.innerWidth >= 1024 ? 60
+                            : window.innerWidth >= 768 ? 48
+                                : window.innerWidth >= 640 ? 36
+                                    : 24;
                         // Starting position (center of screen)
                         const startLeft = window.innerWidth / 2;
                         const startTop = window.innerHeight / 2;
-
-                        // Calculate current splash font size based on current breakpoint
-                        const splashFontSize = window.innerWidth >= 1024 ? 60  // lg: text-6xl = 3.75rem = 60px
-                            : window.innerWidth >= 768 ? 48  // md: text-5xl = 3rem = 48px
-                                : window.innerWidth >= 640 ? 36  // sm: text-4xl = 2.25rem = 36px
-                                    : 30; // text-3xl = 1.875rem = 30px
-
                         // Target position - adjust top to align text baselines correctly
-                        // The navbar logo's top is the container top, but we need the text baseline to match
                         const endLeft = targetRect ? targetRect.left : (isMobile ? 16 : 24);
                         const navFontSize = targetRect ? targetRect.fontSize : (isMobile ? 24 : 30);
                         const endScale = navFontSize / splashFontSize;
-
-                        // When scaling down with transformOrigin 'left top', there's a slight vertical 
-                        // offset because the text's visual baseline doesn't sit at the top of the bounding box.
-                        // Add a small correction to push the logo down to match navbar position.
                         const verticalOffset = isMobile ? 5 : 6;
                         const endTop = targetRect ? (targetRect.top + verticalOffset) : (isMobile ? 17 : 24);
-
+                        // Calculate fade-out for docking
+                        const fadeOut = isDocking ? [1, 0.5, 0] : 1;
                         return (
                             <motion.div
                                 ref={splashLogoRef}
                                 className="flex items-baseline z-10"
                                 style={{
                                     position: 'fixed',
-                                    // Use top-left origin for precise positioning when docking
                                     transformOrigin: 'left top',
                                 }}
                                 initial={{
@@ -405,7 +395,7 @@ const WelcomeScreen = ({ onComplete, onDockStart, onNavLogoReveal }) => {
                                     y: '-50%',
                                 }}
                                 animate={isDocking ? {
-                                    opacity: 0,
+                                    opacity: fadeOut,
                                     scale: endScale,
                                     left: endLeft,
                                     top: endTop,
@@ -420,10 +410,10 @@ const WelcomeScreen = ({ onComplete, onDockStart, onNavLogoReveal }) => {
                                     y: '-50%',
                                 }}
                                 transition={{
-                                    duration: isDocking ? (isMobile ? 1.4 : 1.6) : 1.0, // Luxury timing
-                                    ease: ease.luxury, // Premium ease-out-expo feel
+                                    duration: isDocking ? (isMobile ? 1.4 : 1.6) : 1.0,
+                                    ease: ease.luxury,
                                     opacity: isDocking
-                                        ? { duration: 0, delay: isMobile ? 1.4 : 1.6 } // Instant hide at the end (no fade)
+                                        ? { duration: isMobile ? 1.4 : 1.6 }
                                         : { duration: 0.8 },
                                 }}
                             >
@@ -441,7 +431,6 @@ const WelcomeScreen = ({ onComplete, onDockStart, onNavLogoReveal }) => {
                                         }}
                                     />
                                 )}
-
                                 {/* Shimmer overlay */}
                                 {!isDocking && (
                                     <motion.div
@@ -462,7 +451,6 @@ const WelcomeScreen = ({ onComplete, onDockStart, onNavLogoReveal }) => {
                                         />
                                     </motion.div>
                                 )}
-
                                 <motion.span
                                     className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-wide font-['Plus_Jakarta_Sans'] font-medium text-slate-800"
                                     initial={{ opacity: 0, scale: 0.9 }}
