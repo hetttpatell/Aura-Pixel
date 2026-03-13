@@ -29,12 +29,12 @@ const SOCIAL_ICONS = [
     SiPinterest, SiSnapchat, SiThreads, SiWhatsapp, SiTelegram, SiFacebook,
 ];
 
-// Particle/sparkle positions for the reveal effect
-const PARTICLES = Array.from({ length: 12 }, (_, i) => ({
-    angle: (i / 12) * Math.PI * 2,
+// Particle/sparkle positions for the reveal effect (optimized count)
+const PARTICLES = Array.from({ length: 6 }, (_, i) => ({
+    angle: (i / 6) * Math.PI * 2,
     distance: 80 + Math.random() * 60,
     size: 4 + Math.random() * 6,
-    delay: i * 0.08,
+    delay: i * 0.12,
 }));
 
 // Floating decorative shapes
@@ -77,6 +77,7 @@ const WelcomeScreen = ({ onComplete, onDockStart, onNavLogoReveal }) => {
 
     // Refs for precise positioning
     const splashLogoRef = useRef(null);
+    const splashLogoStatsRef = useRef(null); // Keep exact initial dimensions to prevent animation feedback loop
     const targetRectRef = useRef(null); // Keep latest target rect in ref for accurate dock positioning
 
     // Function to calculate navbar logo position (extracted for reuse)
@@ -148,6 +149,9 @@ const WelcomeScreen = ({ onComplete, onDockStart, onNavLogoReveal }) => {
         const t3 = setTimeout(() => {
             // Recalculate target position right before docking for maximum accuracy
             calculateTarget();
+            if (splashLogoRef.current) {
+                splashLogoStatsRef.current = splashLogoRef.current.getBoundingClientRect();
+            }
             setIsDocking(true);
             // Trigger content fade-in during docking (final ~20% of animation)
             onDockStart?.();
@@ -252,6 +256,7 @@ const WelcomeScreen = ({ onComplete, onDockStart, onNavLogoReveal }) => {
                                         height: particle.size,
                                         background: 'linear-gradient(135deg, #01686C 0%, #00a8a8 100%)',
                                         boxShadow: '0 0 8px rgba(1, 104, 108, 0.5)',
+                                        willChange: 'transform, opacity',
                                     }}
                                     initial={{
                                         x: 0,
@@ -369,23 +374,30 @@ const WelcomeScreen = ({ onComplete, onDockStart, onNavLogoReveal }) => {
                         const startLeft = window.innerWidth / 2;
                         const startTop = window.innerHeight / 2;
 
-                        // Calculate current splash font size based on current breakpoint
-                        const splashFontSize = window.innerWidth >= 1024 ? 60  // lg: text-6xl = 3.75rem = 60px
-                            : window.innerWidth >= 768 ? 48  // md: text-5xl = 3rem = 48px
-                                : window.innerWidth >= 640 ? 36  // sm: text-4xl = 2.25rem = 36px
-                                    : 30; // text-3xl = 1.875rem = 30px
+                        let endScale = 1;
+                        let endLeft = 0;
+                        let endTop = 0;
 
-                        // Target position - adjust top to align text baselines correctly
-                        // The navbar logo's top is the container top, but we need the text baseline to match
-                        const endLeft = targetRect ? targetRect.left : (isMobile ? 16 : 24);
-                        const navFontSize = targetRect ? targetRect.fontSize : (isMobile ? 24 : 30);
-                        const endScale = navFontSize / splashFontSize;
-
-                        // When scaling down with transformOrigin 'left top', there's a slight vertical 
-                        // offset because the text's visual baseline doesn't sit at the top of the bounding box.
-                        // Add a small correction to push the logo down to match navbar position.
-                        const verticalOffset = isMobile ? 5 : 6;
-                        const endTop = targetRect ? (targetRect.top + verticalOffset) : (isMobile ? 17 : 24);
+                        if (targetRect && splashLogoStatsRef.current) {
+                            const stats = splashLogoStatsRef.current;
+                            const currentWidth = stats.width || 1;
+                            const currentHeight = stats.height || 1;
+                            
+                            // Perfect scale match based on exact rendered width before docking
+                            endScale = targetRect.width / currentWidth;
+                            endLeft = targetRect.left;
+                            
+                            // Perfect vertical alignment using center points
+                            // targetCenterY = top + height/2
+                            // Because transformOrigin is 'left top', scaled height is currentHeight * endScale
+                            const targetCenterY = targetRect.top + targetRect.height / 2;
+                            endTop = targetCenterY - (currentHeight * endScale) / 2;
+                        } else {
+                            // Safe fallback
+                            endScale = isMobile ? (24/36) : 0.5;
+                            endLeft = isMobile ? 16 : 24;
+                            endTop = isMobile ? 17 : 24;
+                        }
 
                         return (
                             <motion.div
@@ -395,6 +407,7 @@ const WelcomeScreen = ({ onComplete, onDockStart, onNavLogoReveal }) => {
                                     position: 'fixed',
                                     // Use top-left origin for precise positioning when docking
                                     transformOrigin: 'left top',
+                                    willChange: 'transform, left, top, opacity',
                                 }}
                                 initial={{
                                     opacity: 0,
@@ -423,7 +436,7 @@ const WelcomeScreen = ({ onComplete, onDockStart, onNavLogoReveal }) => {
                                     duration: isDocking ? (isMobile ? 1.4 : 1.6) : 1.0, // Luxury timing
                                     ease: ease.luxury, // Premium ease-out-expo feel
                                     opacity: isDocking
-                                        ? { duration: 0, delay: isMobile ? 1.4 : 1.6 } // Instant hide at the end (no fade)
+                                        ? { duration: 0.3, delay: isMobile ? 1.3 : 1.5 } // Smooth crossfade handoff
                                         : { duration: 0.8 },
                                 }}
                             >
@@ -435,9 +448,9 @@ const WelcomeScreen = ({ onComplete, onDockStart, onNavLogoReveal }) => {
                                         animate={{ opacity: [0, 0.6, 0.3] }}
                                         transition={{ delay: 0.3, duration: 1.6, ease: ease.smooth }}
                                         style={{
-                                            background: 'radial-gradient(ellipse at center, rgba(1, 104, 108, 0.25) 0%, transparent 70%)',
-                                            filter: 'blur(30px)',
+                                            background: 'radial-gradient(ellipse at center, rgba(1, 104, 108, 0.3) 0%, transparent 70%)',
                                             transform: 'scale(2.5)',
+                                            willChange: 'opacity',
                                         }}
                                     />
                                 )}
