@@ -198,8 +198,15 @@ const Navbar = ({ isLogoVisible = true }) => {
         // Note: scroll-to-top is handled by individual page components and ScrollToHash
     };
 
-    const openServices = () => { clearTimeout(servicesTimeout.current); setIsServicesOpen(true); };
-    const closeServices = () => { servicesTimeout.current = setTimeout(() => setIsServicesOpen(false), 100); };
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (navRef.current && !navRef.current.contains(event.target)) {
+                setIsServicesOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     return (
         <>
@@ -266,8 +273,6 @@ const Navbar = ({ isLogoVisible = true }) => {
                                     <div
                                         key={link.name}
                                         className="relative"
-                                        onMouseEnter={openServices}
-                                        onMouseLeave={closeServices}
                                     >
                                         <motion.button
                                             className="relative font-heading text-[0.95rem] font-medium text-text-heading py-2 px-4 hover:text-primary-teal group flex items-center gap-1 cursor-pointer"
@@ -275,6 +280,10 @@ const Navbar = ({ isLogoVisible = true }) => {
                                             custom={index}
                                             onMouseEnter={() => setIsHovered(link.name)}
                                             onMouseLeave={() => setIsHovered(null)}
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                setIsServicesOpen(!isServicesOpen);
+                                            }}
                                             whileHover={{ y: -2 }}
                                             transition={{ duration: 0.18 }}
                                         >
@@ -318,8 +327,6 @@ const Navbar = ({ isLogoVisible = true }) => {
                                                     initial="hidden"
                                                     animate="visible"
                                                     exit="hidden"
-                                                    onMouseEnter={openServices}
-                                                    onMouseLeave={closeServices}
                                                 >
                                                     <div className="h-[3px] bg-gradient-to-r from-primary-teal via-teal-400 to-primary-dark" />
                                                     <div className="px-6 pt-4 pb-3 border-b border-gray-100">
