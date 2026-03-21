@@ -4,54 +4,59 @@ import { HiStar } from 'react-icons/hi';
 import { useReducedMotion } from '../../hooks';
 
 const testimonials = [
-    {
-        id: 1,
-        initials: "AK",
-        name: 'Ankit Kumar',
-        title: 'CEO, TechVentures',
-        content: 'Working with AuraPixel transformed our digital presence. Their strategic approach and dedication delivered results beyond our expectations. Truly a game-changer for our business.',
-        rating: 5,
-    },
-    {
-        id: 2,
-        initials: "SJ",
-        name: 'Sarah Johnson',
-        title: 'CEO, TechFlow',
-        content: 'Aura Pixel transformed our digital presence completely. Their strategic approach to marketing helped us achieve 300% growth in just 6 months. Highly recommended!',
-        rating: 5,
-    },
-    {
-        id: 3,
-        initials: "MC",
-        name: 'Michael Chen',
-        title: 'Founder, StartupX',
-        content: 'The team at Aura Pixel is exceptional. They understand the nuances of digital marketing and deliver results that exceed expectations. Our ROI has never been better.',
-        rating: 5,
-    },
-    {
-        id: 4,
-        initials: "ER",
-        name: 'Emily Rodriguez',
-        title: 'Marketing Director, Luxe Brand',
-        content: 'Working with Aura Pixel was a game-changer for our brand. Their creative campaigns and data-driven strategies helped us reach our target audience effectively.',
-        rating: 5,
-    },
-    {
-        id: 5,
-        initials: "DK",
-        name: 'David Kim',
-        title: 'CTO, FinanceHub',
-        content: 'The level of professionalism and expertise at Aura Pixel is unmatched. They took our marketing to the next level with innovative strategies and flawless execution.',
-        rating: 5,
-    },
-    {
-        id: 6,
-        initials: "AF",
-        name: 'Amanda Foster',
-        title: 'Owner, EcoTech Solutions',
-        content: 'Aura Pixel helped us build a strong online presence from scratch. Their team is responsive, creative, and truly invested in our success. Amazing results!',
-        rating: 5,
-    },
+{
+    id: 1,
+    initials: "RP",
+    name: "Rakesh Patel",
+    title: "Owner, Patel Wedding Studio – Ahmedabad",
+    content: "We hired them for our studio website and branding, and the experience was excellent. The team understood exactly what we needed for our wedding photography business. Within a few weeks our website looked modern and professional, and clients started trusting our brand more.",
+    rating: 5,
+},
+
+{
+    id: 2,
+    initials: "KM",
+    name: "Kunal Mehta",
+    title: "Founder, Mehta Electronics – Surat",
+    content: "I was struggling to build a proper online presence for my business. Their team designed a clean website and helped us showcase our products professionally. The response from customers has improved a lot since the launch.",
+    rating: 5,
+},
+
+{
+    id: 3,
+    initials: "SP",
+    name: "Sneha Patel",
+    title: "Marketing Manager, Urban Boutique – Vadodara",
+    content: "The design quality and attention to detail really impressed us. They delivered exactly what they promised and were always available whenever we had questions. Highly reliable team to work with.",
+    rating: 5,
+},
+
+{
+    id: 4,
+    initials: "JR",
+    name: "Jayesh Rana",
+    title: "Owner, Rana Caterers – Rajkot",
+    content: "We wanted a professional website for our catering service. The team handled everything smoothly and the final result exceeded our expectations. Many of our customers now find us online.",
+    rating: 5,
+},
+
+{
+    id: 5,
+    initials: "DK",
+    name: "Dhruv Khanna",
+    title: "Startup Founder – Mumbai",
+    content: "Their approach is very professional and transparent. The team understands business goals, not just design. They helped us create a strong brand identity and website that represents our startup perfectly.",
+    rating: 5,
+},
+
+{
+    id: 6,
+    initials: "NP",
+    name: "Nirali Patel",
+    title: "Boutique Owner – Ahmedabad",
+    content: "ખરેખર ખુબ સરસ કામ કર્યું. અમારી બૂટિક માટે બનાવેલી વેબસાઇટ ખૂબ જ સુંદર અને સરળ છે. હવે અમારા ઘણા ગ્રાહકો ઓનલાઇન અમને શોધી શકે છે. આખી ટીમ ખૂબ સહકાર આપતી હતી.",
+    rating: 5,
+}
 ];
 
 // Staggered reveal animation - optimized

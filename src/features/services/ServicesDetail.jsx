@@ -282,99 +282,57 @@ const Card3D = ({ children, className = '', onClick }) => {
 // ALL SERVICES VIEW COMPONENT
 // ============================================
 const AllServicesView = ({ onServiceClick }) => {
-    const headerRef = useRef(null);
-    const { scrollYProgress } = useScroll({
-        target: headerRef,
-        offset: ["start start", "end start"]
-    });
-    const headerY = useTransform(scrollYProgress, [0, 1], [0, 100]);
-    const headerOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-
     return (
-        <motion.div
+        <div
             key="all-services"
-            variants={pageVariants}
-            initial="initial"
-            animate="enter"
-            exit="exit"
         >
-            <FloatingParticles />
-
             {/* Header */}
-            <motion.div
-                ref={headerRef}
+            <div
                 className="text-center mb-16 relative"
-                style={{ y: headerY, opacity: headerOpacity }}
             >
-                {/* Animated badge */}
-                <motion.span
+                {/* Badge */}
+                <span
                     className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-primary-light via-teal-50 to-primary-light text-primary-teal font-heading font-semibold text-sm rounded-full mb-8 border border-primary-teal/20 shadow-lg shadow-primary-teal/10 relative overflow-hidden"
-                    initial={{ opacity: 0, y: -20, scale: 0.9 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
                 >
-                    <motion.span
-                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent"
-                        animate={{ x: ['-200%', '200%'] }}
-                        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                    />
-                    <HiSparkles className="w-4 h-4 animate-pulse" />
+                    <HiSparkles className="w-4 h-4" />
                     Our Services
-                </motion.span>
+                </span>
 
-                {/* Animated title with gradient */}
-                <motion.h1
+                {/* Title */}
+                <h1
                     className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-bold text-text-heading mb-6 leading-tight"
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3, duration: 0.8 }}
                 >
                     Comprehensive Digital{' '}
-                    <motion.span
-                        className="relative inline-block"
-                        whileHover={{ scale: 1.05 }}
+                    <span
+                        className="relative inline-block transition-transform hover:scale-105"
                     >
-                        <span className="text-gradient bg-gradient-to-r from-primary-teal via-blue-500 to-purple-500 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
+                        <span className="text-gradient bg-gradient-to-r from-primary-teal via-blue-500 to-purple-500 bg-clip-text text-transparent bg-[length:200%_auto]">
                             Solutions
                         </span>
-                        <motion.span
+                        <span
                             className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-primary-teal via-blue-500 to-purple-500 rounded-full"
-                            initial={{ scaleX: 0 }}
-                            animate={{ scaleX: 1 }}
-                            transition={{ delay: 0.8, duration: 0.6 }}
                         />
-                    </motion.span>
-                </motion.h1>
+                    </span>
+                </h1>
 
-                <motion.p
+                <p
                     className="text-text-body text-lg md:text-xl max-w-2xl mx-auto leading-relaxed"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5 }}
                 >
                     Transform your digital presence with our full suite of marketing services designed to drive growth and maximize ROI.
-                </motion.p>
+                </p>
 
                 {/* Decorative elements */}
-                <motion.div
+                <div
                     className="absolute -top-10 left-1/4 w-20 h-20 bg-gradient-to-r from-primary-teal/20 to-blue-500/20 rounded-full blur-2xl"
-                    variants={floatingVariants}
-                    animate="animate"
                 />
-                <motion.div
+                <div
                     className="absolute -bottom-5 right-1/4 w-16 h-16 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full blur-2xl"
-                    variants={floatingVariants}
-                    animate="animate"
-                    style={{ animationDelay: '2s' }}
                 />
-            </motion.div>
+            </div>
 
             {/* Services Grid */}
-            <motion.div
+            <div
                 className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
-                variants={staggerContainer}
-                initial="hidden"
-                animate="visible"
             >
                 {servicesList.map((service, index) => {
                     const serviceId = getServiceIdFromName(service.name);
@@ -382,25 +340,18 @@ const AllServicesView = ({ onServiceClick }) => {
                     const IconComponent = service.icon;
 
                     return (
-                        <motion.div
+                        <div
                             key={service.name}
-                            custom={index}
-                            variants={cardVariants}
                             className="perspective-1000"
                         >
-                            <Card3D
+                            <div
                                 onClick={() => onServiceClick(serviceId)}
-                                className="group h-full"
+                                className="group h-full cursor-pointer"
                             >
                                 <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-7 shadow-xl border border-white/50 hover:shadow-2xl hover:shadow-primary-teal/10 transition-all duration-500 overflow-hidden h-full flex flex-col transform-gpu">
-                                    {/* Animated gradient background */}
-                                    <motion.div
+                                    {/* Gradient background on hover */}
+                                    <div
                                         className={`absolute inset-0 bg-gradient-to-br ${categoryData?.bgGradient || 'from-gray-50 to-white'} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
-                                    />
-
-                                    {/* Shine effect */}
-                                    <motion.div
-                                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"
                                     />
 
                                     {/* Glow effect on hover */}
@@ -408,21 +359,16 @@ const AllServicesView = ({ onServiceClick }) => {
 
                                     {/* Content */}
                                     <div className="relative z-10">
-                                        {/* Icon with animated ring */}
+                                        {/* Icon */}
                                         <div className="relative mb-5">
-                                            <motion.div
-                                                className={`w-16 h-16 rounded-2xl ${service.bg} flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-500`}
-                                                whileHover={{ scale: 1.15, rotate: 10 }}
-                                                transition={{ type: "spring", stiffness: 300 }}
+                                            <div
+                                                className={`w-16 h-16 rounded-2xl ${service.bg} flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-500 transform group-hover:scale-115 group-hover:rotate-6`}
                                             >
                                                 <IconComponent className={`w-8 h-8 ${service.iconColor}`} />
-                                            </motion.div>
-                                            {/* Animated ring */}
-                                            <motion.div
-                                                className="absolute inset-0 rounded-2xl border-2 border-primary-teal/30"
-                                                initial={{ scale: 1, opacity: 0 }}
-                                                whileHover={{ scale: 1.4, opacity: 0 }}
-                                                transition={{ duration: 0.6, repeat: Infinity }}
+                                            </div>
+                                            {/* Ring */}
+                                            <div
+                                                className="absolute inset-0 rounded-2xl border-2 border-primary-teal/30 opacity-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500"
                                             />
                                         </div>
 
@@ -434,43 +380,35 @@ const AllServicesView = ({ onServiceClick }) => {
                                             {service.desc}
                                         </p>
 
-                                        {/* Sub-services count with animation */}
+                                        {/* Sub-services count */}
                                         {service.subServices && service.subServices.length > 0 && (
-                                            <motion.div
+                                            <div
                                                 className="text-xs text-text-body/70 flex items-center gap-2 mb-4"
-                                                initial={{ opacity: 0 }}
-                                                animate={{ opacity: 1 }}
-                                                transition={{ delay: 0.3 + index * 0.1 }}
                                             >
                                                 <span className="relative flex h-2.5 w-2.5">
-                                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-teal opacity-75"></span>
                                                     <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary-teal"></span>
                                                 </span>
                                                 {service.subServices.length} specialized services
-                                            </motion.div>
+                                            </div>
                                         )}
 
-                                        {/* Animated CTA */}
-                                        <motion.div
+                                        {/* CTA */}
+                                        <div
                                             className="flex items-center text-primary-teal font-semibold text-sm gap-2 group-hover:gap-3 transition-all duration-300"
-                                            whileHover={{ x: 5 }}
                                         >
                                             Explore
-                                            <motion.span
-                                                animate={{ x: [0, 5, 0] }}
-                                                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                                            >
+                                            <span>
                                                 <HiArrowRight className="w-5 h-5" />
-                                            </motion.span>
-                                        </motion.div>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </Card3D>
-                        </motion.div>
+                            </div>
+                        </div>
                     );
                 })}
-            </motion.div>
-        </motion.div>
+            </div>
+        </div>
     );
 };
 
@@ -516,39 +454,27 @@ const ServiceDetailView = ({ serviceId, onBack, onSubServiceClick }) => {
     const IconComponent = service.icon;
 
     return (
-        <motion.div
+        <div
             ref={containerRef}
             key={`service-${serviceId}`}
-            variants={pageVariants}
-            initial="initial"
-            animate="enter"
-            exit="exit"
             className="relative"
         >
             <FloatingParticles />
 
             {/* Back Navigation */}
-            <motion.div
+            <div
                 className="mb-8"
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 }}
             >
                 <BackButton onClick={onBack} label="All Services" />
-            </motion.div>
+            </div>
 
             {/* Service Header with Parallax */}
-            <motion.div
+            <div
                 className={`relative rounded-[2rem] p-8 md:p-12 mb-16 overflow-hidden bg-gradient-to-br ${service.bgGradient} shadow-2xl`}
-                style={{ y: backgroundY, opacity }}
             >
-                {/* Animated Background Pattern */}
-                <motion.div
+                {/* Background Pattern */}
+                <div
                     className="absolute inset-0"
-                    animate={{
-                        backgroundPosition: ['0% 0%', '100% 100%'],
-                    }}
-                    transition={{ duration: 20, repeat: Infinity, repeatType: 'reverse' }}
                     style={{
                         backgroundImage: `radial-gradient(circle at 20% 30%, ${service.primaryColor}30 0%, transparent 50%),
                                           radial-gradient(circle at 80% 70%, ${service.primaryColor}25 0%, transparent 50%),
@@ -556,88 +482,63 @@ const ServiceDetailView = ({ serviceId, onBack, onSubServiceClick }) => {
                     }}
                 />
 
-                {/* Animated mesh gradient overlay */}
+                {/* Mesh gradient overlay */}
                 <div className="absolute inset-0 opacity-30">
                     <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/20 via-transparent to-transparent" />
                 </div>
 
                 <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center gap-8">
-                    {/* Animated Icon */}
-                    <motion.div
-                        className={`relative w-24 h-24 rounded-3xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-2xl`}
-                        initial={{ scale: 0, rotate: -180 }}
-                        animate={{ scale: 1, rotate: 0 }}
-                        transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-                        whileHover={{ scale: 1.1, rotate: 10 }}
+                    {/* Icon */}
+                    <div
+                        className={`relative w-24 h-24 rounded-3xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-2xl transition-transform duration-300 hover:scale-110 hover:rotate-6`}
                     >
                         <IconComponent className="w-12 h-12 text-white" />
                         {/* Glow effect */}
-                        <motion.div
-                            className="absolute inset-0 rounded-3xl bg-white/30"
-                            animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0, 0.5] }}
-                            transition={{ duration: 2, repeat: Infinity }}
+                        <div
+                            className="absolute inset-0 rounded-3xl bg-white/30 opacity-50"
                         />
-                    </motion.div>
+                    </div>
 
-                    {/* Title & Description with stagger */}
+                    {/* Title & Description */}
                     <div className="flex-1">
-                        <motion.h1
+                        <h1
                             className="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-text-heading mb-3"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.3 }}
                         >
                             {service.title}
-                        </motion.h1>
-                        <motion.p
+                        </h1>
+                        <p
                             className="text-lg md:text-xl text-text-body"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.4 }}
                         >
                             {service.tagline}
-                        </motion.p>
+                        </p>
                     </div>
                 </div>
 
-                {/* Animated Stats */}
-                <motion.div
+                {/* Stats */}
+                <div
                     className="relative z-10 grid grid-cols-3 gap-6 mt-10 pt-10 border-t border-white/20"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.5 }}
                 >
                     {service.stats.map((stat, index) => (
-                        <motion.div
+                        <div
                             key={index}
-                            className="text-center group"
-                            initial={{ opacity: 0, y: 30, scale: 0.8 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            transition={{ delay: 0.5 + index * 0.15, type: "spring", stiffness: 150 }}
-                            whileHover={{ scale: 1.05, y: -5 }}
+                            className="text-center group transition-transform duration-300 hover:-translate-y-1 hover:scale-105"
                         >
-                            <motion.div
+                            <div
                                 className="text-3xl md:text-4xl font-bold text-text-heading mb-1"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ delay: 0.7 + index * 0.1 }}
                             >
                                 {stat.value}
-                            </motion.div>
+                            </div>
                             <div className="text-sm text-text-body font-medium">{stat.label}</div>
-                        </motion.div>
+                        </div>
                     ))}
-                </motion.div>
-            </motion.div>
+                </div>
+            </div>
 
             {/* Description with animated border */}
-            <AnimatedSection delay={0.1} className="mb-16">
+            <div className="mb-16">
                 <div className="relative p-8 bg-white/60 backdrop-blur-sm rounded-3xl border border-white/50 shadow-xl overflow-hidden">
-                    <motion.div
+                    <div
                         className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-teal via-blue-500 to-purple-500"
-                        initial={{ scaleX: 0 }}
-                        whileInView={{ scaleX: 1 }}
-                        transition={{ duration: 0.8, delay: 0.2 }}
                     />
                     <h2 className="text-2xl md:text-3xl font-heading font-bold text-text-heading mb-5 flex items-center gap-3">
                         <HiLightningBolt className="w-7 h-7 text-primary-teal" />
@@ -645,17 +546,13 @@ const ServiceDetailView = ({ serviceId, onBack, onSubServiceClick }) => {
                     </h2>
                     <p className="text-text-body text-lg leading-relaxed">{service.description}</p>
                 </div>
-            </AnimatedSection>
+            </div>
 
             {/* Features with optimized smooth animations */}
-            <AnimatedSection delay={0.2} className="mb-16">
+            <div className="mb-16">
                 {/* Section Container with elegant glassmorphism */}
-                <motion.div
+                <div
                     className="relative p-6 md:p-10 rounded-3xl bg-gradient-to-br from-white/95 via-white/80 to-primary-light/20 border border-white/60 shadow-xl overflow-hidden transform-gpu"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, ease: "easeOut" }}
                 >
                     {/* Static background gradient orbs - no animation for performance */}
                     <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-gradient-to-br from-primary-teal/15 to-blue-400/15 blur-3xl pointer-events-none" />
@@ -672,31 +569,13 @@ const ServiceDetailView = ({ serviceId, onBack, onSubServiceClick }) => {
                     </div>
 
                     {/* Features Grid with staggered fade-in */}
-                    <motion.div
+                    <div
                         className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true, margin: "-30px" }}
-                        variants={{
-                            hidden: { opacity: 0 },
-                            visible: {
-                                opacity: 1,
-                                transition: { staggerChildren: 0.06, delayChildren: 0.1 }
-                            }
-                        }}
                     >
                         {service.features.map((feature, index) => (
-                            <motion.div
+                            <div
                                 key={index}
                                 className="group transform-gpu"
-                                variants={{
-                                    hidden: { opacity: 0, y: 16 },
-                                    visible: {
-                                        opacity: 1,
-                                        y: 0,
-                                        transition: { duration: 0.35, ease: "easeOut" }
-                                    }
-                                }}
                             >
                                 {/* Card with CSS hover effects for better mobile performance */}
                                 <div className="relative flex items-center gap-4 p-4 md:p-5 bg-white/95 rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 ease-out cursor-default transform-gpu">
@@ -716,86 +595,66 @@ const ServiceDetailView = ({ serviceId, onBack, onSubServiceClick }) => {
                                         {feature}
                                     </span>
                                 </div>
-                            </motion.div>
+                            </div>
                         ))}
-                    </motion.div>
+                    </div>
 
                     {/* Subtle bottom accent line */}
                     <div className="absolute bottom-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-primary-teal/20 to-transparent" />
-                    <motion.div
+                    <div
                         className="absolute bottom-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-primary-teal/30 to-transparent"
-                        initial={{ scaleX: 0, opacity: 0 }}
-                        whileInView={{ scaleX: 1, opacity: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 1, delay: 0.5 }}
                     />
-                </motion.div>
-            </AnimatedSection>
+                </div>
+            </div>
 
             {/* Sub-Services with advanced cards */}
             {subServices.length > 0 && (
-                <AnimatedSection delay={0.3} className="mb-16">
+                <div className="mb-16">
                     <h2 className="text-2xl md:text-3xl font-heading font-bold text-text-heading mb-8 flex items-center gap-3">
-                        <motion.span
+                        <span
                             className="inline-block w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center"
-                            animate={{ rotate: [0, 10, -10, 0] }}
-                            transition={{ duration: 4, repeat: Infinity }}
                         >
                             <HiSparkles className="w-5 h-5 text-white" />
-                        </motion.span>
+                        </span>
                         Specialized Services
                     </h2>
-                    <motion.div
+                    <div
                         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-                        variants={staggerContainer}
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true }}
                     >
                         {subServices.map((subService, index) => {
                             const SubIcon = subService.icon;
                             return (
-                                <motion.div
+                                <div
                                     key={subService.id}
                                     className="perspective-1000"
-                                    variants={cardVariants}
-                                    custom={index}
                                 >
-                                    <Card3D
+                                    <div
                                         onClick={() => onSubServiceClick(subService.id)}
-                                        className="group h-full"
+                                        className="group h-full cursor-pointer"
                                     >
                                         <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-7 shadow-xl border border-white/50 hover:shadow-2xl transition-all duration-500 h-full overflow-hidden">
                                             {/* Animated gradient border */}
-                                            <motion.div
+                                            <div
                                                 className="absolute inset-0 rounded-3xl border-2 border-transparent"
                                                 style={{
                                                     background: `linear-gradient(white, white) padding-box, linear-gradient(135deg, ${subService.color}40, transparent, ${subService.color}40) border-box`
                                                 }}
-                                                whileHover={{
-                                                    background: `linear-gradient(white, white) padding-box, linear-gradient(135deg, ${subService.color}, ${subService.color}80, ${subService.color}) border-box`
-                                                }}
                                             />
 
                                             {/* Icon with glow */}
-                                            <motion.div
-                                                className="relative z-10 w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
+                                            <div
+                                                className="relative z-10 w-14 h-14 rounded-2xl flex items-center justify-center mb-5 transform transition-transform duration-300 group-hover:scale-115 group-hover:rotate-12"
                                                 style={{ backgroundColor: `${subService.color}20` }}
-                                                whileHover={{ scale: 1.15, rotate: 10 }}
-                                                transition={{ type: "spring", stiffness: 300 }}
                                             >
                                                 <SubIcon
                                                     className="w-7 h-7"
                                                     style={{ color: subService.color }}
                                                 />
-                                                <motion.div
-                                                    className="absolute inset-0 rounded-2xl"
+                                                <div
+                                                    className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-20 transform scale-80 group-hover:scale-130 transition-all duration-300"
                                                     style={{ backgroundColor: subService.color }}
-                                                    initial={{ opacity: 0, scale: 0.8 }}
-                                                    whileHover={{ opacity: 0.2, scale: 1.3 }}
-                                                    transition={{ duration: 0.3 }}
                                                 />
-                                            </motion.div>
+                                            </div>
 
                                             {/* Content */}
                                             <div className="relative z-10">
@@ -807,61 +666,52 @@ const ServiceDetailView = ({ serviceId, onBack, onSubServiceClick }) => {
                                                 </p>
 
                                                 {/* Animated CTA */}
-                                                <motion.div
-                                                    className="flex items-center text-primary-teal font-semibold text-sm gap-2"
-                                                    whileHover={{ x: 5 }}
+                                                <div
+                                                    className="flex items-center text-primary-teal font-semibold text-sm gap-2 transform transition-transform duration-300 group-hover:translate-x-1"
                                                 >
                                                     View Details
-                                                    <motion.span
-                                                        animate={{ x: [0, 5, 0] }}
-                                                        transition={{ duration: 1.5, repeat: Infinity }}
+                                                    <span
+                                                        className="group-hover:translate-x-1 transition-transform duration-300"
                                                     >
                                                         <HiOutlineChevronRight className="w-5 h-5" />
-                                                    </motion.span>
-                                                </motion.div>
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </Card3D>
-                                </motion.div>
+                                    </div>
+                                </div>
                             );
                         })}
-                    </motion.div>
-                </AnimatedSection>
+                    </div>
+                </div>
             )}
 
             {/* Services from constant list that don't have sub-services in categories */}
             {serviceFromList?.subServices && subServices.length === 0 && (
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6 }}
-                >
+                <div>
                     <h2 className="text-2xl font-heading font-bold text-text-heading mb-6">
                         What We Offer
                     </h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {serviceFromList.subServices.map((subName, index) => (
-                            <motion.div
+                            <div
                                 key={index}
-                                className="flex items-center gap-3 p-4 bg-white rounded-xl border border-border-light shadow-sm"
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.6 + index * 0.05 }}
+                                className="flex items-center gap-3 p-4 bg-white rounded-xl border border-border-light shadow-sm transition-opacity duration-300"
                             >
                                 <div
                                     className="w-2 h-2 rounded-full flex-shrink-0"
                                     style={{ backgroundColor: service.primaryColor }}
                                 />
                                 <span className="text-text-heading font-medium">{subName}</span>
-                            </motion.div>
+                            </div>
                         ))}
                     </div>
-                </motion.div>
+                </div>
             )}
 
             {/* CTA Section - Clean and minimal */}
-            <AnimatedSection delay={0.4} className="mt-20">
-                <motion.div
+            <div className="mt-20">
+                <div
                     className="relative rounded-2xl p-8 md:p-12 bg-gradient-to-r from-primary-teal to-primary-dark overflow-hidden"
                 >
                     {/* Subtle gradient overlay */}
@@ -876,33 +726,26 @@ const ServiceDetailView = ({ serviceId, onBack, onSubServiceClick }) => {
                                 Let's discuss how we can transform your digital presence with our {service.title} solutions.
                             </p>
                         </div>
-                        <motion.a
+                        <a
                             href="/#contact"
                             className="flex-shrink-0 inline-flex items-center gap-2 relative group cursor-pointer"
                             onClick={(e) => {
                                 e.preventDefault();
                                 navigate('/#contact');
                             }}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
                         >
-                            <motion.div className="absolute -inset-1 bg-white/30 rounded-xl blur-md opacity-0 group-hover:opacity-60 transition-opacity duration-500" />
-                            <div className="relative flex items-center gap-2 bg-white text-primary-dark font-heading font-semibold text-sm py-3 px-6 rounded-xl overflow-hidden">
-                                <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary-teal/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                            <div className="absolute -inset-1 bg-white/30 rounded-xl blur-md opacity-0 group-hover:opacity-60 transition-opacity duration-500" />
+                            <div className="relative flex items-center gap-2 bg-white text-primary-dark font-heading font-semibold text-sm py-3 px-6 rounded-xl overflow-hidden transition-transform duration-200 active:scale-95 hover:scale-102">
+                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary-teal/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                                 <BsLightningChargeFill className="text-yellow-500" />
                                 <span>Get Free Strategy Call</span>
-                                <motion.div
-                                    animate={{ x: [0, 4, 0] }}
-                                    transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-                                >
-                                    <BsArrowRight className="text-lg" />
-                                </motion.div>
+                                <BsArrowRight className="text-lg transition-transform duration-500 group-hover:translate-x-1" />
                             </div>
-                        </motion.a>
+                        </a>
                     </div>
-                </motion.div>
-            </AnimatedSection>
-        </motion.div>
+                </div>
+            </div>
+        </div>
     );
 };
 
@@ -917,171 +760,119 @@ const SubServiceDetailView = ({ subServiceId, onBackToService, onBackToAllServic
 
     if (!subService) {
         return (
-            <motion.div
-                className="text-center py-20"
-                variants={pageVariants}
-                initial="initial"
-                animate="enter"
-            >
-                <motion.div
-                    initial={{ scale: 0, rotate: -180 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    transition={{ type: "spring", stiffness: 200 }}
+            <div className="text-center py-20">
+                <div
                     className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center shadow-xl"
                 >
                     <HiSparkles className="w-10 h-10 text-gray-400" />
-                </motion.div>
+                </div>
                 <h2 className="text-2xl font-heading font-bold text-text-heading mb-4">Service Not Found</h2>
                 <p className="text-text-body mb-6">The requested service could not be found.</p>
                 <BackButton onClick={onBackToAllServices} label="Back to Services" />
-            </motion.div>
+            </div>
         );
     }
 
     const IconComponent = subService.icon;
 
     return (
-        <motion.div
+        <div
             ref={containerRef}
             key={`sub-service-${subServiceId}`}
-            variants={pageVariants}
-            initial="initial"
-            animate="enter"
-            exit="exit"
             className="relative"
         >
-            <FloatingParticles />
-
             {/* Breadcrumb Navigation */}
-            <motion.div
+            <div
                 className="mb-10 flex flex-wrap items-center gap-4"
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 }}
             >
                 <BackButton onClick={onBackToService} label={parentService?.title || 'Back'} />
-                <motion.span
+                <span
                     className="text-text-body/30 text-2xl"
-                    animate={{ opacity: [0.3, 0.7, 0.3] }}
-                    transition={{ duration: 2, repeat: Infinity }}
                 >
                     /
-                </motion.span>
+                </span>
                 <BackButton onClick={onBackToAllServices} label="All Services" />
-            </motion.div>
+            </div>
 
             {/* Sub-Service Header with enhanced styling */}
-            <motion.div
+            <div
                 className="relative rounded-[2rem] p-8 md:p-12 mb-16 overflow-hidden bg-gradient-to-br from-white via-white to-bg-soft border border-white/50 shadow-2xl"
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, type: "spring", stiffness: 100 }}
             >
-                {/* Animated Background Accents */}
-                <motion.div
+                {/* Background Accents */}
+                <div
                     className="absolute top-0 right-0 w-80 h-80 rounded-full blur-[100px] opacity-30"
                     style={{ backgroundColor: subService.color }}
-                    animate={{
-                        scale: [1, 1.3, 1],
-                        opacity: [0.2, 0.4, 0.2],
-                    }}
-                    transition={{ duration: 6, repeat: Infinity }}
                 />
-                <motion.div
+                <div
                     className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full blur-[80px] opacity-20"
                     style={{ backgroundColor: subService.color }}
-                    animate={{
-                        scale: [1, 1.2, 1],
-                        opacity: [0.15, 0.3, 0.15],
-                    }}
-                    transition={{ duration: 8, repeat: Infinity, delay: 1 }}
                 />
 
                 <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center gap-8">
-                    {/* Animated Icon with glow */}
-                    <motion.div
-                        className="relative w-24 h-24 rounded-3xl flex items-center justify-center shadow-2xl"
+                    {/* Icon with glow */}
+                    <div
+                        className="relative w-24 h-24 rounded-3xl flex items-center justify-center shadow-2xl transform transition-transform duration-300 hover:scale-110 hover:rotate-6"
                         style={{ backgroundColor: subService.color }}
-                        initial={{ scale: 0, rotate: -180 }}
-                        animate={{ scale: 1, rotate: 0 }}
-                        transition={{ type: "spring", stiffness: 200, delay: 0.3 }}
-                        whileHover={{ scale: 1.1, rotate: 10 }}
                     >
                         <IconComponent className="w-12 h-12 text-white" />
-                        {/* Animated glow ring */}
-                        <motion.div
-                            className="absolute inset-0 rounded-3xl"
+                        {/* Glow ring */}
+                        <div
+                            className="absolute inset-0 rounded-3xl opacity-50"
                             style={{ border: `3px solid ${subService.color}` }}
-                            animate={{ scale: [1, 1.3, 1], opacity: [0.8, 0, 0.8] }}
-                            transition={{ duration: 2, repeat: Infinity }}
                         />
-                    </motion.div>
+                    </div>
 
                     {/* Title & Category */}
                     <div className="flex-1">
-                        <motion.div
+                        <div
                             className="flex items-center gap-3 mb-3"
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.4 }}
                         >
-                            <motion.span
-                                className="px-4 py-1.5 text-sm font-semibold rounded-full shadow-lg"
+                            <span
+                                className="px-4 py-1.5 text-sm font-semibold rounded-full shadow-lg transition-transform duration-300 hover:scale-105"
                                 style={{
                                     backgroundColor: `${subService.color}20`,
                                     color: subService.color
                                 }}
-                                whileHover={{ scale: 1.05 }}
                             >
                                 {parentService?.title}
-                            </motion.span>
-                        </motion.div>
-                        <motion.h1
+                            </span>
+                        </div>
+                        <h1
                             className="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-text-heading"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.5 }}
                         >
                             {subService.title}
-                        </motion.h1>
+                        </h1>
                     </div>
                 </div>
-            </motion.div>
+            </div>
 
             {/* Description with glass effect */}
-            <AnimatedSection delay={0.1} className="mb-16">
+            <div className="mb-16">
                 <div className="relative p-8 md:p-10 bg-white/70 backdrop-blur-md rounded-3xl border border-white/50 shadow-xl overflow-hidden">
-                    {/* Animated accent line */}
-                    <motion.div
+                    {/* Accent line */}
+                    <div
                         className="absolute top-0 left-0 w-full h-1.5 rounded-full"
                         style={{ background: `linear-gradient(90deg, ${subService.color}, ${subService.color}80, ${subService.color})` }}
-                        initial={{ scaleX: 0 }}
-                        whileInView={{ scaleX: 1 }}
-                        transition={{ duration: 1, delay: 0.2 }}
                     />
                     <h2 className="text-2xl md:text-3xl font-heading font-bold text-text-heading mb-5 flex items-center gap-3">
-                        <motion.span
-                            className="inline-flex w-10 h-10 rounded-xl items-center justify-center"
+                        <span
+                            className="inline-flex w-10 h-10 rounded-xl items-center justify-center transition-transform duration-700 hover:rotate-[360deg]"
                             style={{ backgroundColor: `${subService.color}20` }}
-                            whileHover={{ rotate: 360 }}
-                            transition={{ duration: 0.6 }}
                         >
                             <HiLightningBolt className="w-5 h-5" style={{ color: subService.color }} />
-                        </motion.span>
+                        </span>
                         Overview
                     </h2>
                     <p className="text-text-body text-lg leading-relaxed">{subService.description}</p>
                 </div>
-            </AnimatedSection>
+            </div>
 
             {/* Two Column Layout with enhanced cards */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
                 {/* Features Card */}
-                <AnimatedSection delay={0.15}>
-                    <motion.div
-                        className="h-full bg-white/80 backdrop-blur-sm rounded-3xl p-7 md:p-9 shadow-xl border border-white/50 overflow-hidden relative group"
-                        whileHover={{ y: -5, scale: 1.01 }}
-                        transition={{ duration: 0.3 }}
+                <div>
+                    <div
+                        className="h-full bg-white/80 backdrop-blur-sm rounded-3xl p-7 md:p-9 shadow-xl border border-white/50 overflow-hidden relative group transition-all duration-300 hover:-translate-y-1 hover:scale-[1.01]"
                     >
                         {/* Hover glow effect */}
                         <div
@@ -1090,50 +881,40 @@ const SubServiceDetailView = ({ subServiceId, onBackToService, onBackToAllServic
                         />
 
                         <h3 className="text-xl md:text-2xl font-heading font-bold text-text-heading mb-8 flex items-center gap-3">
-                            <motion.span
-                                className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg"
+                            <span
+                                className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6"
                                 style={{ backgroundColor: `${subService.color}20` }}
-                                whileHover={{ scale: 1.1, rotate: 10 }}
                             >
                                 <HiOutlineCheckCircle className="w-5 h-5" style={{ color: subService.color }} />
-                            </motion.span>
+                            </span>
                             What's Included
                         </h3>
                         <ul className="space-y-4">
                             {subService.features.map((feature, index) => (
-                                <motion.li
+                                <li
                                     key={index}
                                     className="flex items-start gap-4 group/item"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    whileInView={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.1 + index * 0.08 }}
-                                    viewport={{ once: true }}
                                 >
-                                    <motion.div
-                                        className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 shadow-md"
+                                    <div
+                                        className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 shadow-md transition-transform duration-300 group-hover/item:scale-110"
                                         style={{ backgroundColor: `${subService.color}25` }}
-                                        whileHover={{ scale: 1.3 }}
                                     >
-                                        <motion.div
+                                        <div
                                             className="w-2.5 h-2.5 rounded-full"
                                             style={{ backgroundColor: subService.color }}
-                                            animate={{ scale: [1, 1.2, 1] }}
-                                            transition={{ duration: 2, repeat: Infinity, delay: index * 0.2 }}
                                         />
-                                    </motion.div>
+                                    </div>
                                     <span className="text-text-body group-hover/item:text-text-heading transition-colors">{feature}</span>
-                                </motion.li>
+                                </li>
                             ))}
                         </ul>
-                    </motion.div>
-                </AnimatedSection>
+                    </div>
+                </div>
 
                 {/* Benefits Card */}
-                <AnimatedSection delay={0.2}>
-                    <motion.div
-                        className="h-full bg-white/80 backdrop-blur-sm rounded-3xl p-7 md:p-9 shadow-xl border border-white/50 overflow-hidden relative group"
-                        whileHover={{ y: -5, scale: 1.01 }}
-                        transition={{ duration: 0.3 }}
+                <div>
+                    <div
+                        className="h-full bg-white/80 backdrop-blur-sm rounded-3xl p-7 md:p-9 shadow-xl border border-white/50 overflow-hidden relative group transition-all duration-300 hover:-translate-y-1 hover:scale-[1.01]"
                     >
                         {/* Hover glow effect */}
                         <div
@@ -1142,56 +923,46 @@ const SubServiceDetailView = ({ subServiceId, onBackToService, onBackToAllServic
                         />
 
                         <h3 className="text-xl md:text-2xl font-heading font-bold text-text-heading mb-8 flex items-center gap-3">
-                            <motion.span
-                                className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg"
+                            <span
+                                className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6"
                                 style={{ backgroundColor: `${subService.color}20` }}
-                                whileHover={{ scale: 1.1, rotate: -10 }}
                             >
                                 <HiArrowRight className="w-5 h-5" style={{ color: subService.color }} />
-                            </motion.span>
+                            </span>
                             Benefits
                         </h3>
                         <ul className="space-y-4">
                             {subService.benefits.map((benefit, index) => (
-                                <motion.li
+                                <li
                                     key={index}
                                     className="flex items-start gap-4 group/item"
-                                    initial={{ opacity: 0, x: 20 }}
-                                    whileInView={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.1 + index * 0.08 }}
-                                    viewport={{ once: true }}
                                 >
-                                    <motion.div
-                                        className="flex-shrink-0 mt-0.5"
-                                        whileHover={{ scale: 1.3, rotate: 360 }}
-                                        transition={{ duration: 0.4 }}
+                                    <div
+                                        className="flex-shrink-0 mt-0.5 transition-transform duration-300 group-hover/item:scale-110"
                                     >
                                         <HiOutlineCheckCircle
                                             className="w-6 h-6"
                                             style={{ color: subService.color }}
                                         />
-                                    </motion.div>
+                                    </div>
                                     <span className="text-text-body group-hover/item:text-text-heading transition-colors">{benefit}</span>
-                                </motion.li>
+                                </li>
                             ))}
                         </ul>
-                    </motion.div>
-                </AnimatedSection>
+                    </div>
+                </div>
             </div>
 
             {/* Process - Modern Timeline Design */}
-            <AnimatedSection delay={0.25} className="mb-16">
+            <div className="mb-16">
                 <div className="text-center mb-12">
-                    <motion.div
+                    <div
                         className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-4"
                         style={{ backgroundColor: `${subService.color}15` }}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
                     >
                         <HiSparkles className="w-4 h-4" style={{ color: subService.color }} />
                         <span className="text-sm font-medium" style={{ color: subService.color }}>How We Work</span>
-                    </motion.div>
+                    </div>
                     <h2 className="text-3xl md:text-4xl font-heading font-bold text-text-heading">
                         Our Process
                     </h2>
@@ -1212,24 +983,16 @@ const SubServiceDetailView = ({ subServiceId, onBackToService, onBackToAllServic
                                     style={{ left: `${halfStep}%`, right: `${halfStep}%` }}
                                 />
 
-                                {/* Animated Progress Segments - Loading bar effect */}
+                                {/* Progress Segments */}
                                 {subService.process.map((_, index) => (
                                     index < stepCount - 1 && (
-                                        <motion.div
+                                        <div
                                             key={`progress-${index}`}
                                             className="absolute top-[57px] h-1.5 rounded-full origin-left"
                                             style={{
                                                 backgroundColor: subService.color,
                                                 left: `calc(${halfStep}% + ${index * widthPercent}%)`,
                                                 width: `${widthPercent}%`,
-                                            }}
-                                            initial={{ scaleX: 0 }}
-                                            whileInView={{ scaleX: 1 }}
-                                            viewport={{ once: true }}
-                                            transition={{
-                                                duration: 1.2,
-                                                delay: 0.8 + index * 1.0,
-                                                ease: [0.25, 0.1, 0.25, 1]
                                             }}
                                         />
                                     )
@@ -1240,34 +1003,18 @@ const SubServiceDetailView = ({ subServiceId, onBackToService, onBackToAllServic
                                     style={{ gridTemplateColumns: `repeat(${stepCount}, 1fr)` }}
                                 >
                                     {subService.process.map((step, index) => (
-                                        <motion.div
+                                        <div
                                             key={index}
                                             className="relative pt-28 flex flex-col items-center"
-                                            initial={{ opacity: 0, y: 30 }}
-                                            whileInView={{ opacity: 1, y: 0 }}
-                                            viewport={{ once: true }}
-                                            transition={{ delay: 0.8 + index * 1.0, duration: 0.6 }}
                                         >
                                             {/* Step Circle on Timeline */}
-                                            <motion.div
+                                            <div
                                                 className="absolute top-[44px] left-0 right-0 flex justify-center z-10"
-                                                initial={{ scale: 0 }}
-                                                whileInView={{ scale: 1 }}
-                                                viewport={{ once: true }}
-                                                transition={{ delay: 0.8 + index * 1.0, type: "spring", stiffness: 200 }}
                                             >
                                                 {/* Pulse ring animation */}
-                                                <motion.div
-                                                    className="absolute w-8 h-8 rounded-full"
+                                                <div
+                                                    className="absolute w-8 h-8 rounded-full opacity-50"
                                                     style={{ backgroundColor: subService.color }}
-                                                    initial={{ scale: 1, opacity: 0.5 }}
-                                                    animate={{ scale: [1, 1.8, 1], opacity: [0.5, 0, 0.5] }}
-                                                    transition={{
-                                                        duration: 2,
-                                                        repeat: Infinity,
-                                                        delay: index * 0.4,
-                                                        ease: "easeInOut"
-                                                    }}
                                                 />
                                                 <div
                                                     className="relative w-8 h-8 rounded-full border-4 border-white shadow-lg flex items-center justify-center text-white text-xs font-bold"
@@ -1275,12 +1022,14 @@ const SubServiceDetailView = ({ subServiceId, onBackToService, onBackToAllServic
                                                 >
                                                     {step.step}
                                                 </div>
-                                            </motion.div>
+                                            </div>
 
                                             {/* Content Card */}
-                                            <motion.div
-                                                className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 group cursor-pointer"
-                                                whileHover={{ y: -8, borderColor: subService.color }}
+                                            <div
+                                                className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 group cursor-pointer hover:-translate-y-2"
+                                                style={{ borderColor: 'transparent' }}
+                                                onMouseEnter={(e) => e.currentTarget.style.borderColor = subService.color}
+                                                onMouseLeave={(e) => e.currentTarget.style.borderColor = 'transparent'}
                                             >
                                                 <h4 className="font-heading font-bold text-lg text-text-heading mb-2 group-hover:text-primary-teal transition-colors">
                                                     {step.title}
@@ -1288,8 +1037,8 @@ const SubServiceDetailView = ({ subServiceId, onBackToService, onBackToAllServic
                                                 <p className="text-text-body text-sm leading-relaxed">
                                                     {step.desc}
                                                 </p>
-                                            </motion.div>
-                                        </motion.div>
+                                            </div>
+                                        </div>
                                     ))}
                                 </div>
                             </>
@@ -1302,45 +1051,21 @@ const SubServiceDetailView = ({ subServiceId, onBackToService, onBackToAllServic
                     {/* Vertical Line Background Track */}
                     <div className="absolute left-5 sm:left-6 top-0 bottom-0 w-0.5 bg-gray-200 rounded-full" />
 
-                    {/* Animated Progress Line - Single slow loading bar */}
-                    <motion.div
-                        className="absolute left-5 sm:left-6 top-0 w-0.5 rounded-full origin-top"
+                    {/* Progress Line */}
+                    <div
+                        className="absolute left-5 sm:left-6 top-0 w-0.5 rounded-full origin-top h-full"
                         style={{ backgroundColor: subService.color }}
-                        initial={{ height: 0 }}
-                        whileInView={{ height: '100%' }}
-                        viewport={{ once: true, margin: "-100px" }}
-                        transition={{
-                            duration: 2.5,
-                            delay: 0.3,
-                            ease: [0.4, 0, 0.2, 1]
-                        }}
                     />
 
                     <div className="space-y-5 sm:space-y-6">
                         {subService.process.map((step, index) => (
-                            <motion.div
+                            <div
                                 key={index}
                                 className="relative"
-                                initial={{ opacity: 0, x: -16 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                viewport={{ once: true, margin: "-50px" }}
-                                transition={{
-                                    delay: 0.4 + index * 0.3,
-                                    duration: 0.4,
-                                    ease: "easeOut"
-                                }}
                             >
                                 {/* Step Number Circle */}
-                                <motion.div
+                                <div
                                     className="absolute -left-9 sm:-left-10 top-4 z-10"
-                                    initial={{ scale: 0, opacity: 0 }}
-                                    whileInView={{ scale: 1, opacity: 1 }}
-                                    viewport={{ once: true }}
-                                    transition={{
-                                        delay: 0.5 + index * 0.3,
-                                        duration: 0.35,
-                                        ease: "easeOut"
-                                    }}
                                 >
                                     <div
                                         className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-lg ring-4 ring-white"
@@ -1348,7 +1073,7 @@ const SubServiceDetailView = ({ subServiceId, onBackToService, onBackToAllServic
                                     >
                                         {step.step}
                                     </div>
-                                </motion.div>
+                                </div>
 
                                 {/* Content Card */}
                                 <div className="bg-white rounded-2xl p-5 sm:p-6 shadow-md border border-gray-100/80 hover:shadow-lg transition-shadow duration-300">
@@ -1359,15 +1084,15 @@ const SubServiceDetailView = ({ subServiceId, onBackToService, onBackToAllServic
                                         {step.desc}
                                     </p>
                                 </div>
-                            </motion.div>
+                            </div>
                         ))}
                     </div>
                 </div>
-            </AnimatedSection>
+            </div>
 
             {/* CTA Section - Matching theme */}
-            <AnimatedSection delay={0.3} className="mt-20">
-                <motion.div
+            <div className="mt-20">
+                <div
                     className="relative rounded-2xl p-8 md:p-12 bg-gradient-to-r from-primary-teal to-primary-dark overflow-hidden"
                 >
                     {/* Subtle gradient overlay */}
@@ -1382,33 +1107,24 @@ const SubServiceDetailView = ({ subServiceId, onBackToService, onBackToAllServic
                                 Let's discuss how we can help you achieve your goals with our {subService.title} solutions.
                             </p>
                         </div>
-                        <motion.a
+                        <a
                             href="/#contact"
                             className="flex-shrink-0 inline-flex items-center gap-2 relative group cursor-pointer"
                             onClick={(e) => {
                                 e.preventDefault();
                                 navigate('/#contact');
                             }}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
                         >
-                            <motion.div className="absolute -inset-1 bg-white/30 rounded-xl blur-md opacity-0 group-hover:opacity-60 transition-opacity duration-500" />
-                            <div className="relative flex items-center gap-2 bg-white text-primary-dark font-heading font-semibold text-sm py-3 px-6 rounded-xl overflow-hidden">
-                                <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary-teal/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                            <div className="relative flex items-center gap-2 bg-white text-primary-dark font-heading font-semibold text-sm py-3 px-6 rounded-xl overflow-hidden transition-transform duration-200 active:scale-95 hover:scale-102">
                                 <BsLightningChargeFill className="text-yellow-500" />
                                 <span>Get Free Strategy Call</span>
-                                <motion.div
-                                    animate={{ x: [0, 4, 0] }}
-                                    transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-                                >
-                                    <BsArrowRight className="text-lg" />
-                                </motion.div>
+                                <BsArrowRight className="text-lg transition-transform duration-500 group-hover:translate-x-1" />
                             </div>
-                        </motion.a>
+                        </a>
                     </div>
-                </motion.div>
-            </AnimatedSection>
-        </motion.div>
+                </div>
+            </div>
+        </div>
     );
 };
 
@@ -1485,23 +1201,16 @@ const ServicesDetail = () => {
         <section className="relative min-h-screen py-20 pt-28 bg-gradient-to-br from-bg-soft via-white to-bg-soft overflow-hidden">
             {/* Enhanced Background Elements */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                {/* Animated Gradient Mesh */}
-                <motion.div
+                {/* Gradient Mesh */}
+                <div
                     className="absolute inset-0 opacity-40"
-                    animate={{
-                        background: [
-                            'radial-gradient(ellipse at 0% 0%, rgba(0, 128, 128, 0.1) 0%, transparent 50%)',
-                            'radial-gradient(ellipse at 100% 100%, rgba(0, 128, 128, 0.1) 0%, transparent 50%)',
-                            'radial-gradient(ellipse at 100% 0%, rgba(0, 128, 128, 0.1) 0%, transparent 50%)',
-                            'radial-gradient(ellipse at 0% 100%, rgba(0, 128, 128, 0.1) 0%, transparent 50%)',
-                            'radial-gradient(ellipse at 0% 0%, rgba(0, 128, 128, 0.1) 0%, transparent 50%)',
-                        ]
+                    style={{
+                        background: 'radial-gradient(ellipse at 0% 0%, rgba(0, 128, 128, 0.1) 0%, transparent 50%)'
                     }}
-                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                 />
 
-                {/* Animated Pixel Grid */}
-                <motion.div
+                {/* Pixel Grid */}
+                <div
                     className="w-full h-full opacity-30"
                     style={{
                         backgroundImage: `
@@ -1510,59 +1219,38 @@ const ServicesDetail = () => {
                         `,
                         backgroundSize: '60px 60px'
                     }}
-                    animate={{ backgroundPosition: ['0px 0px', '60px 60px'] }}
-                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                 />
 
                 {/* Enhanced Floating Orbs */}
-                <motion.div
+                <div
                     className="absolute top-20 left-10 w-40 h-40 bg-gradient-to-r from-primary-teal/15 to-blue-500/15 rounded-full blur-3xl hidden lg:block"
-                    animate={{
-                        x: [0, 50, 0],
-                        y: [0, 30, 0],
-                        scale: [1, 1.2, 1],
-                    }}
-                    transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
                 />
-                <motion.div
+                <div
                     className="absolute bottom-20 right-10 w-52 h-52 bg-gradient-to-r from-pink-500/15 to-purple-500/15 rounded-full blur-3xl hidden lg:block"
-                    animate={{
-                        x: [0, -40, 0],
-                        y: [0, -50, 0],
-                        scale: [1, 1.3, 1],
-                    }}
-                    transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
                 />
-                <motion.div
+                <div
                     className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-cyan-500/10 to-teal-500/10 rounded-full blur-3xl hidden lg:block"
-                    animate={{
-                        scale: [1, 1.5, 1],
-                        opacity: [0.3, 0.6, 0.3],
-                    }}
-                    transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
                 />
             </div>
 
             <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <AnimatePresence mode="wait">
-                    {currentView === VIEW_TYPES.ALL_SERVICES && (
-                        <AllServicesView onServiceClick={handleServiceClick} />
-                    )}
-                    {currentView === VIEW_TYPES.SERVICE_DETAIL && (
-                        <ServiceDetailView
-                            serviceId={activeServiceId}
-                            onBack={handleBackToAllServices}
-                            onSubServiceClick={handleSubServiceClick}
-                        />
-                    )}
-                    {currentView === VIEW_TYPES.SUB_SERVICE_DETAIL && (
-                        <SubServiceDetailView
-                            subServiceId={activeSubServiceId}
-                            onBackToService={handleBackToService}
-                            onBackToAllServices={handleBackToAllServices}
-                        />
-                    )}
-                </AnimatePresence>
+                {currentView === VIEW_TYPES.ALL_SERVICES && (
+                    <AllServicesView onServiceClick={handleServiceClick} />
+                )}
+                {currentView === VIEW_TYPES.SERVICE_DETAIL && (
+                    <ServiceDetailView
+                        serviceId={activeServiceId}
+                        onBack={handleBackToAllServices}
+                        onSubServiceClick={handleSubServiceClick}
+                    />
+                )}
+                {currentView === VIEW_TYPES.SUB_SERVICE_DETAIL && (
+                    <SubServiceDetailView
+                        subServiceId={activeSubServiceId}
+                        onBackToService={handleBackToService}
+                        onBackToAllServices={handleBackToAllServices}
+                    />
+                )}
             </div>
         </section>
     );
