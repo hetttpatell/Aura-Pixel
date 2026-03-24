@@ -96,7 +96,7 @@ const Testimonials = () => {
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-        }, 10000);
+        }, 8000);
 
         return () => clearInterval(interval);
     }, [testimonials.length]);

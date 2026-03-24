@@ -12,8 +12,8 @@ const stats = [
 ];
 
 const team = [
-    { name: 'Kathan', role: 'Founder & CEO', image: '/kathaan-about.png', splash: '/p-SPLASH.png' },
-    { name: 'Priyal', role: 'Creative Director', image: '/priyal-About.png', splash: '/Splash.png' },
+    { name: 'Kathan', role: 'Founder & CEO', image: '/kathan-photo.jpeg', splash: '/p-SPLASH.png' },
+    { name: 'Priyal', role: 'Creative Director', image: '/priyal-photo.jpeg', splash: '/Splash.png' },
 ];
 
 const faqs = [
@@ -451,26 +451,20 @@ const AboutUs = () => {
                                     style={{ transform: 'translateZ(0)' }}
                                 >
                                     {/* Image Container */}
-                                    <div className="relative aspect-[3/4] sm:aspect-[4/5] bg-gradient-to-br from-bg-soft to-white">
+                                    <div className="relative aspect-[3/4] sm:aspect-[4/5] overflow-hidden">
                                         <img
-                                            src={member.splash}
-                                            alt="Splash"
-                                            className="absolute inset-0 w-full h-full object-contain opacity-15"
+                                            src={member.image}
+                                            alt={member.name}
+                                            className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-110"
                                         />
-                                        <div className="absolute inset-0 flex items-end justify-center pb-2 sm:pb-4">
-                                            <img
-                                                src={member.image}
-                                                alt={member.name}
-                                                className="w-full h-full object-contain object-bottom max-h-[85%] sm:max-h-[90%]"
-                                            />
-                                        </div>
-                                        <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
+                                        {/* Overlay Gradient for Text Contrast */}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
                                     </div>
 
                                     {/* Team Info */}
-                                    <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 bg-gradient-to-t from-white via-white/95 to-transparent">
-                                        <h3 className="text-xl sm:text-2xl font-bold text-text-heading font-heading">{member.name}</h3>
-                                        <p className="text-sm sm:text-base text-primary-teal font-semibold">{member.role}</p>
+                                    <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 z-10">
+                                        <h3 className="text-xl sm:text-2xl font-bold text-white font-heading">{member.name}</h3>
+                                        <p className="text-sm sm:text-base text-cyan-400 font-semibold">{member.role}</p>
                                     </div>
                                 </motion.div>
                             </FadeIn>
