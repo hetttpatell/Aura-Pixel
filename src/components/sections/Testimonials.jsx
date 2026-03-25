@@ -108,6 +108,7 @@ const Testimonials = () => {
     const prevSlide = () => {
         setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
     };
+    //hello
 
     // Elegant fade and slide animation - Optimized for performance
     const cardVariants = {
