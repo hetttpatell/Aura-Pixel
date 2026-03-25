@@ -253,8 +253,8 @@ const ScrollingCompany = () => {
                 }
 
                 @media (max-width: 768px) {
-                    .logo-item-wrapper { margin: 0 3rem; }
-                    .floating-logo { height: 100px; }
+                    .logo-item-wrapper { margin: 0 2rem; }
+                    .floating-logo { height: 140px; }
                     .fade-left, .fade-right { width: 120px; }
                     .partners-section { padding: 6rem 0 3rem; }
                     .ticker-wrapper { padding: 2rem 0; }

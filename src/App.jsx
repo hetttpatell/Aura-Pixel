@@ -89,8 +89,13 @@ const HomeSEO = () => {
       <WhyChooseUs />
       <Suspense fallback={<SectionLoader />}>
         <Portfolio />
-        <ScrollingCompany />
-        <Testimonials />
+        {/* Reduce bottom margin of ScrollingCompany, reduce top margin of Testimonials */}
+        <div style={{ marginBottom: '-2rem' }}>
+          <ScrollingCompany />
+        </div>
+        <div style={{ marginTop: '-2rem' }}>
+          <Testimonials />
+        </div>
         <Blog />
         <LeadCapture />
       </Suspense>

@@ -128,7 +128,15 @@ const Testimonials = () => {
     };
 
     return (
-        <section className="py-[100px] bg-white relative overflow-hidden">
+        <section className="py-[100px] bg-white relative overflow-hidden testimonials-section">
+                        <style>{`
+                            @media (max-width: 768px) {
+                                .testimonials-section {
+                                    padding-top: 2.5rem !important;
+                                    padding-bottom: 2.5rem !important;
+                                }
+                            }
+                        `}</style>
             {/* Background Elements */}
             <div className="absolute inset-0 pointer-events-none">
                 <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-primary-light/20 to-transparent" />
