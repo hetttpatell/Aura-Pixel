@@ -13,7 +13,7 @@ const stats = [
 
 const team = [
     { name: 'Kathan', role: 'Founder & CEO', image: '/kathan-photo.PNG', splash: '/p-SPLASH.png' },
-    { name: 'Priyal', role: 'Creative Director', image: '/priyal-photo.jpeg', splash: '/Splash.png' },
+    { name: 'Priyal', role: 'Creative Director', image: '/priyal.jpg', splash: '/Splash.png' },
 ];
 
 const faqs = [
