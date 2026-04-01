@@ -149,12 +149,21 @@ const BlogSEOWrapper = () => {
     </Suspense>
   );
 };
-
+//this is testing 
 function App() {
   // Welcome screen - shows only once per session
   const [showWelcome, setShowWelcome] = useState(() => {
     if (typeof window !== 'undefined') {
-      return !sessionStorage.getItem('auraPixelWelcomed');
+      const isFirstVisit = !sessionStorage.getItem('auraPixelWelcomed');
+      // Only show on root path with no hash
+      const isStrictHome = window.location.pathname === '/' && !window.location.hash;
+
+      if (isFirstVisit && !isStrictHome) {
+        // Mark as welcomed so they don't see it if navigating to home later
+        sessionStorage.setItem('auraPixelWelcomed', 'true');
+        return false;
+      }
+      return isFirstVisit && isStrictHome;
     }
     return false;
   });
