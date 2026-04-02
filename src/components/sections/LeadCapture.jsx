@@ -64,9 +64,9 @@ const LeadCapture = () => {
         try {
             // EmailJS Integration
             // IDs are trimmed to prevent invisible whitespace errors
-            const SERVICE_ID = "service_w7iw5rw".trim();
-            const TEMPLATE_ID = "template_7s4brvy".trim();
-            const PUBLIC_KEY = "bwpbqijxAOuDDPJq5".trim();
+            const SERVICE_ID = "service_z8z23pl".trim();
+            const TEMPLATE_ID = "template_g4pdkgu".trim();
+            const PUBLIC_KEY = "tuNDSqoqkog4iX1NW".trim();
 
             const templateParams = {
                 from_name: formData.name,
@@ -76,7 +76,7 @@ const LeadCapture = () => {
                 message: formData.message,
                 submitted_at: new Date().toLocaleString(),
                 source_url: window.location.href,
-                to_email: 'hetpatel140505@gmail.com',
+                to_email: 'auraapixel@gmail.com',
             };
 
             await emailjs.send(
@@ -255,7 +255,7 @@ const LeadCapture = () => {
                                                 value={formData.name}
                                                 onChange={handleInputChange}
                                                 required
-                                                placeholder="John Doe"
+                                                placeholder="[Your Name]"
                                                 className="w-full pl-12 pr-4 py-3 md:py-3.5 bg-bg-soft/50 border border-border-light rounded-btn text-text-heading placeholder:text-text-muted focus:outline-none focus:border-primary-teal focus:ring-2 focus:ring-primary-teal/20 focus:bg-white transition-all duration-300"
                                             />
                                         </div>
@@ -275,7 +275,7 @@ const LeadCapture = () => {
                                                 value={formData.email}
                                                 onChange={handleInputChange}
                                                 required
-                                                placeholder="john@company.com"
+                                                placeholder="[EMAIL_ADDRESS]"
                                                 className="w-full pl-12 pr-4 py-3 md:py-3.5 bg-bg-soft/50 border border-border-light rounded-btn text-text-heading placeholder:text-text-muted focus:outline-none focus:border-primary-teal focus:ring-2 focus:ring-primary-teal/20 focus:bg-white transition-all duration-300"
                                             />
                                         </div>
@@ -294,7 +294,7 @@ const LeadCapture = () => {
                                                 name="phone"
                                                 value={formData.phone}
                                                 onChange={handleInputChange}
-                                                placeholder="+1 (555) 000-0000"
+                                                placeholder="[Your Number]"
                                                 className="w-full pl-12 pr-4 py-3 md:py-3.5 bg-bg-soft/50 border border-border-light rounded-btn text-text-heading placeholder:text-text-muted focus:outline-none focus:border-primary-teal focus:ring-2 focus:ring-primary-teal/20 focus:bg-white transition-all duration-300"
                                             />
                                         </div>
