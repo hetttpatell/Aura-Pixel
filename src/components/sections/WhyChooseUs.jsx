@@ -166,25 +166,25 @@ const FloatingSymbol = ({ icon: Icon, label, color, delay, position }) => {
 const features = [
     {
         icon: HiOutlineLightningBolt,
-        value: 10,
+        value: 1,
         suffix: '+',
         label: 'Years Experience',
     },
     {
         icon: HiOutlineUserGroup,
-        value: 150,
+        value: 25,
         suffix: '+',
         label: 'Happy Clients',
     },
     {
         icon: HiOutlineBadgeCheck,
-        value: 500,
+        value: 50,
         suffix: '+',
         label: 'Projects Delivered',
     },
     {
         icon: HiOutlineTrendingUp,
-        value: 300,
+        value: 200,
         suffix: '%',
         label: 'Average ROI',
     },

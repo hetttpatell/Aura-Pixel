@@ -31,10 +31,10 @@ const floatingIcons = [
 ];
 
 const stats = [
-    { value: '150+', label: 'Clients' },
-    { value: '5M+', label: 'Ad Spend' },
-    { value: '300%', label: 'ROI' },
-    { value: '95%', label: 'Retention' },
+    { value: '25+', label: 'Clients' },
+    { value: '1M+', label: 'Ad Spend' },
+    { value: '200%', label: 'ROI' },
+    { value: '85%', label: 'Retention' },
 ];
 
 const desktopPositions = [
