@@ -387,27 +387,37 @@ const WeddingHero = () => {
   // ─── Entrance animations ──────────────────────────────────────────────────
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const ctx = gsap.context(() => {
+    const ctx = gsap.context((self) => {
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
+      // Defensive targets
+      const t = {
+        toran: toranRef.current,
+        canvas: canvasRef.current,
+        content: contentRef.current,
+        mandala: mandalaRef.current,
+        bells: [bellLeftRef.current, bellRightRef.current].filter(Boolean),
+        curtains: [curtainLeftRef.current, curtainRightRef.current].filter(Boolean),
+        diyas: [leftDiyasRef.current, rightDiyasRef.current].filter(Boolean)
+      };
+
       // Initial states
-      gsap.set([toranRef.current], { yPercent: -100, opacity: 0 });
-      gsap.set(canvasRef.current, { opacity: 0 });
-      gsap.set(contentRef.current, { opacity: 0, y: 30 });
-      gsap.set(mandalaRef.current, { opacity: 0, scale: 0.7, rotation: -15 });
-      gsap.set([bellLeftRef.current, bellRightRef.current], { y: -80, opacity: 0 });
-      gsap.set([curtainLeftRef.current, curtainRightRef.current], { opacity: 0 });
+      if (t.toran) gsap.set(t.toran, { yPercent: -100, opacity: 0 });
+      if (t.canvas) gsap.set(t.canvas, { opacity: 0 });
+      if (t.content) gsap.set(t.content, { opacity: 0, y: 30 });
+      if (t.mandala) gsap.set(t.mandala, { opacity: 0, scale: 0.7, rotation: -15, xPercent: -50, yPercent: -50 });
+      if (t.bells.length) gsap.set(t.bells, { y: -80, opacity: 0 });
+      if (t.curtains.length) gsap.set(t.curtains, { opacity: 0 });
       if (leftDiyasRef.current) gsap.set(leftDiyasRef.current, { opacity: 0, x: -20 });
       if (rightDiyasRef.current) gsap.set(rightDiyasRef.current, { opacity: 0, x: 20 });
 
-      tl
-        .to(toranRef.current, { yPercent: 0, opacity: 1, duration: 1.2 }, 0.1)
-        .to([bellLeftRef.current, bellRightRef.current], { y: 0, opacity: 1, duration: 1, stagger: 0.15 }, 0.4)
-        .to([curtainLeftRef.current, curtainRightRef.current], { opacity: 1, duration: 1.4 }, 0.3)
-        .to(mandalaRef.current, { opacity: 1, scale: 1, rotation: 0, duration: 1.8, ease: 'back.out(1.4)' }, 0.6)
-        .to(canvasRef.current, { opacity: 1, duration: 1.5 }, 0.5)
-        .to(contentRef.current, { opacity: 1, y: 0, duration: 1, ease: 'power2.out' }, 0.9)
-        .to([leftDiyasRef.current, rightDiyasRef.current], { opacity: 1, x: 0, duration: 0.8, stagger: 0.1 }, 1.2);
+      if (t.toran) tl.to(t.toran, { yPercent: 0, opacity: 1, duration: 1.2 }, 0.1);
+      if (t.bells.length) tl.to(t.bells, { y: 0, opacity: 1, duration: 1, stagger: 0.15 }, 0.4);
+      if (t.curtains.length) tl.to(t.curtains, { opacity: 1, duration: 1.4 }, 0.3);
+      if (t.mandala) tl.to(t.mandala, { opacity: 1, scale: 1, rotation: 0, duration: 1.8, ease: 'back.out(1.4)' }, 0.6);
+      if (t.canvas) tl.to(t.canvas, { opacity: 1, duration: 1.5 }, 0.5);
+      if (t.content) tl.to(t.content, { opacity: 1, y: 0, duration: 1, ease: 'power2.out' }, 0.9);
+      if (t.diyas.length) tl.to(t.diyas, { opacity: 1, x: 0, duration: 0.8, stagger: 0.1 }, 1.2);
 
       setReady(true);
 
@@ -424,12 +434,14 @@ const WeddingHero = () => {
       });
 
       // Mandala slow rotation
-      gsap.to(mandalaRef.current, {
-        rotation: 360,
-        duration: 80,
-        repeat: -1,
-        ease: 'none',
-      });
+      if (mandalaRef.current) {
+        gsap.to(mandalaRef.current, {
+          rotation: 360,
+          duration: 80,
+          repeat: -1,
+          ease: 'none',
+        });
+      }
 
       // Desktop scroll reveal
       if (!isMobile) {
@@ -447,19 +459,20 @@ const WeddingHero = () => {
           .to(curtainLeftRef.current, { xPercent: -120, ease: 'power2.inOut' }, 0)
           .to(curtainRightRef.current, { xPercent: 120, ease: 'power2.inOut' }, 0)
           .to(toranRef.current, { y: -250, ease: 'power2.inOut' }, 0)
-          .to([bellLeftRef.current, bellRightRef.current], { y: -200, opacity: 0, ease: 'power1.inOut', stagger: 0.05 }, 0)
+          .to([bellLeftRef.current, bellRightRef.current].filter(Boolean), { y: -200, opacity: 0, ease: 'power1.inOut', stagger: 0.05 }, 0)
           .to(contentRef.current, { y: 0, ease: 'power1.inOut' }, 0)
-          .to(mandalaRef.current, { scale: 1, ease: 'power1.inOut' }, 0)
-          .to(canvasRef.current, { opacity: 1, ease: 'power1.inOut' }, 0);
+          .to(mandalaRef.current, { scale: 1.1, ease: 'power1.inOut' }, 0)
+          .to(canvasRef.current, { opacity: 0.4, ease: 'power1.inOut' }, 0);
 
         // Mouse parallax (subtle)
         const onMouseMove = (e) => {
+          if (!mandalaRef.current) return;
           const x = e.clientX / window.innerWidth - 0.5;
           const y = e.clientY / window.innerHeight - 0.5;
           gsap.to(mandalaRef.current, { x: x * 18, y: y * 12, duration: 1.8, ease: 'power2.out', overwrite: 'auto' });
         };
         window.addEventListener('mousemove', onMouseMove);
-        return () => window.removeEventListener('mousemove', onMouseMove);
+        self.add(() => window.removeEventListener('mousemove', onMouseMove));
       }
     }, sectionRef.current);
 
@@ -475,23 +488,52 @@ const WeddingHero = () => {
 
       {/* ══ Background layers ══ */}
       <div className="absolute inset-0 z-0">
-        {/* Base warm gradient */}
+        {/* Base warm gradient - Multi-layered for premium feel */}
         <div className="absolute inset-0" style={{
-          background: 'radial-gradient(ellipse at 50% 0%, #EDD8A0 0%, #F5E6C0 45%, #EDD5A0 100%)'
+          background: 'radial-gradient(circle at center, #FDF7E2 0%, #F8EDD1 25%, #F5E6C0 60%, #EDD5A0 100%)'
         }} />
-        {/* Subtle vignette */}
+        
+        {/* Subtle vignette for depth */}
         <div className="absolute inset-0" style={{
-          background: 'radial-gradient(ellipse at center, transparent 40%, rgba(90,20,5,0.15) 100%)'
+          background: 'radial-gradient(circle at center, transparent 30%, rgba(139, 101, 8, 0.08) 70%, rgba(90, 20, 5, 0.15) 100%)'
         }} />
-        {/* Faint geometric grid (rangoli grid feel) */}
-        <div className="absolute inset-0 opacity-[0.03]" style={{
-          backgroundImage: `
-            linear-gradient(#8B6508 1px, transparent 1px),
-            linear-gradient(90deg, #8B6508 1px, transparent 1px)
-          `,
-          backgroundSize: '48px 48px',
-        }} />
+
+        {/* Professional Geometric Pattern (Centered) */}
+        <div 
+          className="absolute inset-0 z-0 opacity-[0.08]" 
+          style={{
+            backgroundImage: `
+              url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%238B6508' stroke-width='0.5' opacity='0.4'%3E%3Cpath d='M40 0L80 40L40 80L0 40Z' /%3E%3Ccircle cx='40' cy='40' r='1.5' fill='%238B6508' fill-opacity='0.2' /%3E%3C/g%3E%3C/svg%3E"),
+              url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='0.5' fill='%238B6508' fill-opacity='0.15' /%3E%3C/svg%3E")
+            `,
+            backgroundSize: '80px 80px, 20px 20px',
+            backgroundPosition: 'center center',
+            backgroundRepeat: 'repeat',
+            maskImage: 'radial-gradient(circle at center, black 10%, transparent 90%)',
+            WebkitMaskImage: 'radial-gradient(circle at center, black 10%, transparent 90%)',
+          }} 
+        />
       </div>
+
+      {/* ══ Keyframe Animations ══ */}
+      <style>{`
+        @keyframes charFadeUp {
+          from { opacity: 0; transform: translateY(15px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes goldPulse {
+          0%, 100% { filter: drop-shadow(0 0 2px rgba(212,175,55,0.4)); opacity: 0.8; }
+          50% { filter: drop-shadow(0 0 10px rgba(212,175,55,0.7)); opacity: 1; }
+        }
+        @keyframes diyaFlicker {
+          0%, 100% { opacity: 0.7; transform: scale(1); }
+          50% { opacity: 0.9; transform: scale(1.05); }
+        }
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(20px) translateX(-50%); }
+          to { opacity: 1; transform: translateY(0) translateX(-50%); }
+        }
+      `}</style>
 
       {/* ══ Particle Canvas ══ */}
       <canvas
@@ -613,9 +655,9 @@ const WeddingHero = () => {
         style={{
           top: '50%',
           left: '50%',
-          transform: 'translate(-50%, -50%)',
           width: isMobile ? '80vw' : '55vw',
           maxWidth: 620,
+          transform: 'translate(-50%, -50%)', // Ensure CSS centering fallback
         }}
         aria-hidden="true"
       >
@@ -650,8 +692,8 @@ const WeddingHero = () => {
         ref={contentRef}
         className="relative z-[10] flex flex-col items-center text-center pointer-events-none"
         style={{
-          marginTop: isMobile ? '80px' : '0px',
-          padding: isMobile ? '0 72px' : '0 200px',
+          marginTop: isMobile ? '40px' : '0px',
+          padding: isMobile ? '0 40px' : '0 200px',
           maxWidth: '100%',
         }}
       >

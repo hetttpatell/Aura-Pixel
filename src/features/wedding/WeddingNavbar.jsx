@@ -10,7 +10,7 @@ const EASE = [0.4, 0, 0.2, 1];
 
 const navVariants = {
   hidden: { y: -60, opacity: 0 },
-  visible: { y: 0, opacity: 1, transition: { duration: 0.4, ease: EASE, staggerChildren: 0.06 } },
+  visible: { y: 0, opacity: 1, transition: { duration: 0.8, ease: EASE, staggerChildren: 0.06, delay: 0.6 } },
 };
 
 const linkVariants = {
@@ -36,7 +36,7 @@ const navLinks = [
 ];
 
 const WeddingNavbar = () => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
@@ -48,13 +48,11 @@ const WeddingNavbar = () => {
   const { scrollYProgress } = useScroll();
   const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
 
-  // Show navbar after scrolling past hero
+  // Handle scroll for background and active section
   useEffect(() => {
     const handleScroll = () => {
-      const heroHeight = window.innerHeight;
-      const pastHero = window.scrollY > heroHeight * 0.85;
-      setIsVisible(pastHero);
-      setIsScrolled(window.scrollY > 50);
+      const scrolled = window.scrollY > 100;
+      setIsScrolled(scrolled);
 
       // Active section tracking
       const sections = ['showcase', 'work', 'bts', 'inquiry'];
@@ -114,30 +112,25 @@ const WeddingNavbar = () => {
         style={{
           scaleX: smoothProgress,
           background: 'linear-gradient(90deg, #7A1B1B, #D4AF37, #7A1B1B)',
-          opacity: isVisible ? 1 : 0,
+          opacity: isScrolled ? 1 : 0,
           transition: 'opacity 0.3s ease',
         }}
       />
 
       <motion.nav
         ref={navRef}
-        className="fixed top-0 left-0 right-0 z-[200] py-2 border-b lg:py-2"
+        className="fixed top-0 left-0 right-0 z-[200] py-2 lg:py-2"
         style={{
-          backgroundColor: isVisible
-            ? (isScrolled ? 'rgba(255, 243, 227, 0.97)' : 'rgba(255, 243, 227, 0.92)')
-            : 'transparent',
-          backdropFilter: isVisible ? 'blur(20px) saturate(180%)' : 'none',
-          borderColor: isVisible ? 'rgba(122, 27, 27, 0.12)' : 'transparent',
-          boxShadow: isVisible && isScrolled
-            ? '0 4px 24px rgba(122, 27, 27, 0.10)'
-            : 'none',
-          transform: isVisible ? 'translateY(0)' : 'translateY(-100%)',
-          opacity: isVisible ? 1 : 0,
-          transition: 'transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease, background-color 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease',
-          pointerEvents: isVisible ? 'auto' : 'none',
+          backgroundColor: isScrolled ? 'rgba(255, 243, 227, 0.97)' : 'transparent',
+          backdropFilter: isScrolled ? 'blur(20px) saturate(180%)' : 'none',
+          borderBottom: isScrolled ? '1px solid rgba(122, 27, 27, 0.12)' : 'none',
+          boxShadow: isScrolled ? '0 4px 24px rgba(122, 27, 27, 0.10)' : 'none',
+          transform: 'translateY(0)',
+          opacity: 1,
+          transition: 'background-color 0.4s ease, box-shadow 0.4s ease, border-bottom 0.4s ease, backdrop-filter 0.4s ease',
         }}
         initial="hidden"
-        animate={isVisible ? "visible" : "hidden"}
+        animate="visible"
         variants={navVariants}
       >
         {/* Gradient underline on scroll */}
@@ -183,8 +176,13 @@ const WeddingNavbar = () => {
               }}
               transition={{ fontSize: { duration: 0.4 } }}
             >
-              <span className="font-['Plus_Jakarta_Sans'] font-medium tracking-wide text-[#2B0F0F]">Wedding</span>
-              <span className="font-['Plus_Jakarta_Sans'] font-bold tracking-wide text-[#D4AF37]">Pixel</span>
+              <span 
+                className="font-['Plus_Jakarta_Sans'] font-medium tracking-wide transition-colors duration-400"
+                style={{ color: isScrolled ? '#2B0F0F' : '#FFF3E3' }}
+              >
+                Wedding
+              </span>
+              <span className="font-['Plus_Jakarta_Sans'] font-bold tracking-wide text-[#D4AF37] ml-1">Pixel</span>
             </motion.div>
           </motion.div>
 
@@ -196,7 +194,8 @@ const WeddingNavbar = () => {
                 return (
                   <motion.button
                     key={link.name}
-                    className="relative text-[0.95rem] font-medium py-2 px-4 group transition-colors duration-200 font-['Plus_Jakarta_Sans'] text-[#5C3A21] hover:text-[#7A1B1B] cursor-pointer"
+                    className="relative text-[0.95rem] font-semibold py-2 px-4 group transition-colors duration-300 font-['Plus_Jakarta_Sans'] cursor-pointer"
+                    style={{ color: isScrolled ? '#5C3A21' : '#FFD700' }}
                     onClick={() => scrollToSection(link.href)}
                     variants={linkVariants}
                     custom={index}
@@ -247,26 +246,26 @@ const WeddingNavbar = () => {
 
             {/* Aura Pixel switcher — uses Aura Pixel brand colors */}
             <motion.button
-              className="hidden xl:flex items-center gap-2.5 px-5 py-2 rounded-full border cursor-pointer group"
+              className="hidden xl:flex items-center gap-2.5 px-5 py-2 rounded-full border cursor-pointer group transition-all duration-300"
               style={{
-                borderColor: 'rgba(1, 104, 108, 0.2)',
-                background: 'rgba(1, 104, 108, 0.05)',
+                borderColor: isScrolled ? 'rgba(1, 104, 108, 0.2)' : 'rgba(255, 243, 227, 0.3)',
+                background: isScrolled ? 'rgba(1, 104, 108, 0.05)' : 'rgba(255, 243, 227, 0.1)',
               }}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.4 }}
               whileHover={{
                 scale: 1.03,
-                borderColor: 'rgba(1, 104, 108, 0.4)',
-                background: 'rgba(1, 104, 108, 0.1)',
+                borderColor: isScrolled ? 'rgba(1, 104, 108, 0.4)' : 'rgba(255, 243, 227, 0.5)',
+                background: isScrolled ? 'rgba(1, 104, 108, 0.1)' : 'rgba(255, 243, 227, 0.2)',
               }}
               whileTap={{ scale: 0.97 }}
               onClick={handleBack}
             >
-              <BsArrowLeft className="text-[#01686C] group-hover:-translate-x-0.5 transition-transform duration-200" />
+              <BsArrowLeft className="group-hover:-translate-x-0.5 transition-transform duration-200" style={{ color: isScrolled ? '#01686C' : '#FFF3E3' }} />
               <span className="text-sm font-semibold font-['Plus_Jakarta_Sans']">
-                <span className="text-slate-700">Aura</span>
-                <span className="text-[#01686C]">Pixel</span>
+                <span style={{ color: isScrolled ? '#475569' : '#FFF3E3', opacity: isScrolled ? 1 : 0.8 }}>Aura</span>
+                <span style={{ color: isScrolled ? '#01686C' : '#4FD1D9' }}>Pixel</span>
               </span>
             </motion.button>
 
@@ -286,7 +285,7 @@ const WeddingNavbar = () => {
                 style={{ background: 'linear-gradient(90deg, #7A1B1B, #D4AF37)' }}
               />
               <div
-                className="relative flex items-center gap-2 text-white font-['Plus_Jakarta_Sans'] font-semibold text-sm py-3 px-6 rounded-xl overflow-hidden"
+                className="relative flex items-center gap-2 text-white font-['Plus_Jakarta_Sans'] font-semibold text-sm py-3 px-6 rounded-xl overflow-hidden shadow-lg"
                 style={{ background: 'linear-gradient(135deg, #7A1B1B, #9B2C2C)' }}
               >
                 {/* Shimmer effect */}
@@ -311,10 +310,10 @@ const WeddingNavbar = () => {
 
             {/* ── Mobile Hamburger ── */}
             <motion.button
-              className="lg:hidden flex items-center justify-center w-10 h-10 backdrop-blur-sm border rounded-xl cursor-pointer z-10 flex-shrink-0"
+              className="lg:hidden flex items-center justify-center w-10 h-10 backdrop-blur-sm border rounded-xl cursor-pointer z-10 flex-shrink-0 transition-all duration-300"
               style={{
-                background: 'rgba(212, 175, 55, 0.08)',
-                borderColor: 'rgba(122, 27, 27, 0.12)',
+                background: isScrolled ? 'rgba(212, 175, 55, 0.08)' : 'rgba(255, 243, 227, 0.15)',
+                borderColor: isScrolled ? 'rgba(122, 27, 27, 0.12)' : 'rgba(255, 243, 227, 0.3)',
               }}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               whileTap={{ scale: 0.9 }}
@@ -323,11 +322,11 @@ const WeddingNavbar = () => {
               <AnimatePresence mode="wait">
                 {isMobileMenuOpen ? (
                   <motion.div key="close" initial={{ rotate: -90 }} animate={{ rotate: 0 }} exit={{ rotate: 90 }} transition={{ duration: 0.15 }}>
-                    <HiX size={20} className="text-[#7A1B1B]" />
+                    <HiX size={20} style={{ color: isScrolled ? '#7A1B1B' : '#FFF3E3' }} />
                   </motion.div>
                 ) : (
                   <motion.div key="menu" initial={{ rotate: 90 }} animate={{ rotate: 0 }} exit={{ rotate: -90 }} transition={{ duration: 0.15 }}>
-                    <HiMenuAlt3 size={20} className="text-[#7A1B1B]" />
+                    <HiMenuAlt3 size={20} style={{ color: isScrolled ? '#7A1B1B' : '#FFF3E3' }} />
                   </motion.div>
                 )}
               </AnimatePresence>

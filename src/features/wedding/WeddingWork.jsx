@@ -4,46 +4,35 @@ const portfolioItems = [
   {
     title: "The Royal Affair",
     subtitle: "Udaipur, Rajasthan",
-    description: "A celebration of love amidst historic palaces and serene lakes. Every frame tells a story etched in royalty.",
+    description: "A celebration of love amidst historic palaces and serene lakes.",
     src: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=2940&auto=format&fit=crop",
-    accent: "#D4AF37",
-    tag: "Destination Wedding",
-    number: "01",
   },
   {
     title: "Eternal Vows",
     subtitle: "Jaipur, Rajasthan",
-    description: "Traditional ceremonies captured with an editorial eye. Rituals reimagined through the lens of timeless beauty.",
+    description: "Traditional ceremonies captured with an editorial eye.",
     src: "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?q=80&w=3174&auto=format&fit=crop",
-    accent: "#A8C5A0",
-    tag: "Traditional Ceremony",
-    number: "02",
   },
   {
     title: "Sacred Fire",
     subtitle: "Mumbai, Maharashtra",
-    description: "Intimate and cinematic Phere moments. The eternal bond between souls captured in warmth and light.",
+    description: "Intimate and cinematic Phere moments. The eternal bond.",
     src: "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2913&auto=format&fit=crop",
-    accent: "#E8A87C",
-    tag: "Pheras & Rituals",
-    number: "03",
   },
   {
     title: "Vibrant Haldi",
     subtitle: "Ahmedabad, Gujarat",
-    description: "Pure emotion and vibrant hues of the Haldi ceremony — where joy is worn on every face, every hand.",
+    description: "Pure emotion and vibrant hues of the Haldi ceremony.",
     src: "https://images.unsplash.com/photo-1549417229-aa67d3263c09?q=80&w=2940&auto=format&fit=crop",
-    accent: "#F5C842",
-    tag: "Pre-Wedding",
-    number: "04",
   },
 ];
 
 const WeddingWork = () => {
-  const containerRef = useRef(null);
+  const scrollRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef(null);
+  const cardRefs = useRef([]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -55,374 +44,446 @@ const WeddingWork = () => {
   }, []);
 
   useEffect(() => {
-    const container = containerRef.current;
+    const container = scrollRef.current;
     if (!container) return;
 
     const handleScroll = () => {
-      const scrollLeft = container.scrollLeft;
-      const itemWidth = container.offsetWidth;
-      const index = Math.round(scrollLeft / itemWidth);
-      setActiveIndex(index);
+      const containerRect = container.getBoundingClientRect();
+      const containerCenter = containerRect.left + containerRect.width / 2;
+
+      let closestIndex = 0;
+      let minDistance = Infinity;
+
+      cardRefs.current.forEach((card, idx) => {
+        if (!card) return;
+        const rect = card.getBoundingClientRect();
+        const cardCenter = rect.left + rect.width / 2;
+        const distance = Math.abs(containerCenter - cardCenter);
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestIndex = idx;
+        }
+      });
+
+      setActiveIndex(closestIndex);
     };
 
     container.addEventListener('scroll', handleScroll, { passive: true });
-    return () => container.removeEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleScroll);
+    handleScroll();
+
+    return () => {
+      container.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
   }, []);
 
-  const scrollToIndex = (i) => {
-    const container = containerRef.current;
-    if (!container) return;
-    container.scrollTo({ left: i * container.offsetWidth, behavior: 'smooth' });
+  const scrollToIndex = (index) => {
+    const container = scrollRef.current;
+    const targetCard = cardRefs.current[index];
+    if (!container || !targetCard) return;
+
+    const containerWidth = container.offsetWidth;
+    const cardWidth = targetCard.offsetWidth;
+    const cardOffset = targetCard.offsetLeft;
+    
+    // Calculate the position to center the card
+    const scrollTarget = cardOffset - (containerWidth / 2) + (cardWidth / 2);
+    
+    container.scrollTo({
+      left: scrollTarget,
+      behavior: 'smooth'
+    });
+    
+    // Proactively set active index for immediate feedback
+    setActiveIndex(index);
   };
+
+  const goPrev = () => activeIndex > 0 && scrollToIndex(activeIndex - 1);
+  const goNext = () => activeIndex < portfolioItems.length - 1 && scrollToIndex(activeIndex + 1);
 
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap');
 
-        .ww-section {
-          background: #0D0A08;
+        .mw-section {
+          background-color: #F7F5F2;
           min-height: 100vh;
           position: relative;
-          overflow: hidden;
-          font-family: 'DM Sans', sans-serif;
+          overflow-x: hidden;
+          font-family: 'Inter', sans-serif;
+          color: #1C1A18;
         }
 
-        .ww-grain {
-          position: absolute;
+        .mw-grain {
+          position: fixed;
           inset: 0;
-          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-          background-size: 200px 200px;
           pointer-events: none;
-          z-index: 1;
+          opacity: 0.2;
+          background-image: radial-gradient(#ccc 0.5px, transparent 0.5px);
+          background-size: 16px 16px;
+          z-index: 0;
         }
 
-        .ww-header {
-          padding: 80px 60px 48px;
+        .mw-container {
+          max-width: 1800px;
+          margin: 0 auto;
+          padding: 64px 48px 80px 48px;
           position: relative;
-          z-index: 10;
+          z-index: 2;
+        }
+
+        .mw-header {
           display: flex;
-          align-items: flex-end;
-          justify-content: space-between;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          border-bottom: 1px solid #E2DCD5;
+          padding-bottom: 40px;
+          margin-bottom: 64px;
+          gap: 16px;
           opacity: 0;
-          transform: translateY(32px);
-          transition: opacity 0.9s ease, transform 0.9s ease;
+          transform: translateY(20px);
+          transition: opacity 0.7s ease, transform 0.7s ease;
         }
-        .ww-header.visible { opacity: 1; transform: translateY(0); }
-
-        .ww-eyebrow {
-          font-family: 'DM Sans', sans-serif;
-          font-size: 10px;
-          letter-spacing: 0.35em;
-          text-transform: uppercase;
-          color: #7A6A5A;
-          margin-bottom: 16px;
+        .mw-header.visible {
+          opacity: 1;
+          transform: translateY(0);
         }
 
-        .ww-title {
-          font-family: 'Playfair Display', serif;
-          font-size: clamp(52px, 8vw, 96px);
-          font-weight: 400;
-          color: #F0EAE0;
-          line-height: 0.92;
-          margin: 0;
-        }
-        .ww-title em {
-          font-style: italic;
-          color: #D4AF37;
-        }
-
-        .ww-count {
-          font-family: 'DM Sans', sans-serif;
-          font-size: 11px;
-          letter-spacing: 0.25em;
-          color: #4A3F35;
-          text-transform: uppercase;
-        }
-
-        /* Scroll container */
-        .ww-track {
+        .mw-title-group {
           display: flex;
-          overflow-x: scroll;
+          flex-direction: column;
+          gap: 6px;
+        }
+
+        .mw-kicker {
+          font-size: 10px;
+          letter-spacing: 3px;
+          text-transform: uppercase;
+          color: #9B8E7C;
+          font-weight: 400;
+        }
+
+        .mw-main-title {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: clamp(36px, 6vw, 72px);
+          font-weight: 400;
+          letter-spacing: -0.01em;
+          color: #1C1A18;
+          line-height: 1;
+        }
+
+        .mw-main-title span {
+          font-style: italic;
+          font-weight: 400;
+          color: #A67C52;
+        }
+
+        .mw-counter {
+          font-size: 12px;
+          font-weight: 400;
+          letter-spacing: 4px;
+          color: #BCA98A;
+          margin-top: 8px;
+        }
+
+        .mw-scroll-area {
+          overflow-x: auto;
           scroll-snap-type: x mandatory;
+          scroll-behavior: smooth;
           -webkit-overflow-scrolling: touch;
+          cursor: grab;
+          margin-bottom: 48px;
+          padding-bottom: 24px;
           scrollbar-width: none;
-          padding: 0 60px;
-          gap: 24px;
-          position: relative;
-          z-index: 5;
-          padding-bottom: 60px;
         }
-        .ww-track::-webkit-scrollbar { display: none; }
+        .mw-scroll-area:active {
+          cursor: grabbing;
+        }
+        .mw-scroll-area::-webkit-scrollbar {
+          display: none;
+        }
 
-        .ww-card {
+        .mw-track {
+          display: flex;
+          gap: 40px;
+          padding: 0 calc(50vw - 280px); /* Centers the cards initially */
+        }
+
+        @media (max-width: 760px) {
+          .mw-track {
+            padding: 0 calc(50vw - 160px);
+            gap: 20px;
+          }
+        }
+
+        .mw-card {
           scroll-snap-align: center;
-          flex: 0 0 calc(70vw);
-          max-width: 880px;
-          min-width: 320px;
-          position: relative;
-          border-radius: 4px;
-          overflow: hidden;
+          flex: 0 0 74vw;
+          max-width: 560px;
+          min-width: 280px;
+          background: transparent;
           cursor: pointer;
-          transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+          transition: opacity 0.3s ease;
         }
 
-        .ww-card-img-wrap {
+        .mw-image-frame {
           position: relative;
           width: 100%;
-          aspect-ratio: 3/2;
+          aspect-ratio: 4 / 5;
           overflow: hidden;
+          background: #EAE5DE;
+          margin-bottom: 24px;
         }
 
-        .ww-card-img {
+        .mw-image {
           width: 100%;
           height: 100%;
           object-fit: cover;
           display: block;
-          transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
-          filter: saturate(0.7) brightness(0.85);
-          transform: scale(1.08);
-        }
-        .ww-card.active .ww-card-img {
-          filter: saturate(1) brightness(0.9);
-          transform: scale(1);
+          transition: transform 0.7s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+          filter: grayscale(0%) contrast(1.02);
         }
 
-        /* Overlay gradient */
-        .ww-card-overlay {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(
-            to bottom,
-            transparent 30%,
-            rgba(8, 5, 3, 0.2) 60%,
-            rgba(8, 5, 3, 0.85) 100%
-          );
-          transition: opacity 0.6s ease;
-        }
-        .ww-card:not(.active) .ww-card-overlay {
-          background: linear-gradient(
-            to bottom,
-            rgba(8,5,3,0.3) 0%,
-            rgba(8, 5, 3, 0.75) 100%
-          );
+        .mw-card.active .mw-image {
+          transform: scale(1.02);
         }
 
-        /* Card number stamp */
-        .ww-card-num {
-          position: absolute;
-          top: 28px;
-          left: 28px;
-          font-family: 'Playfair Display', serif;
-          font-size: 11px;
-          letter-spacing: 0.2em;
-          color: rgba(240,234,224,0.5);
-          transition: color 0.6s ease;
-        }
-        .ww-card.active .ww-card-num {
-          color: rgba(240,234,224,0.9);
-        }
-
-        /* Tag pill */
-        .ww-card-tag {
-          position: absolute;
-          top: 28px;
-          right: 28px;
-          font-family: 'DM Sans', sans-serif;
-          font-size: 9px;
-          letter-spacing: 0.25em;
-          text-transform: uppercase;
-          color: rgba(240,234,224,0.55);
-          border: 1px solid rgba(240,234,224,0.15);
-          padding: 6px 12px;
-          border-radius: 100px;
-          backdrop-filter: blur(8px);
-          transition: all 0.6s ease;
-        }
-        .ww-card.active .ww-card-tag {
-          color: rgba(240,234,224,0.9);
-          border-color: rgba(240,234,224,0.3);
-        }
-
-        /* Bottom text block */
-        .ww-card-text {
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          padding: 32px 32px 36px;
-          transform: translateY(12px);
-          transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .ww-card.active .ww-card-text {
-          transform: translateY(0);
-        }
-
-        .ww-card-subtitle {
-          font-family: 'DM Sans', sans-serif;
-          font-size: 10px;
-          letter-spacing: 0.3em;
-          text-transform: uppercase;
-          color: var(--accent, #D4AF37);
-          margin-bottom: 10px;
-          opacity: 0;
-          transform: translateY(8px);
-          transition: opacity 0.5s ease 0.15s, transform 0.5s ease 0.15s;
-        }
-        .ww-card.active .ww-card-subtitle {
-          opacity: 1;
-          transform: translateY(0);
-        }
-
-        .ww-card-title {
-          font-family: 'Playfair Display', serif;
-          font-size: clamp(28px, 3.5vw, 44px);
-          font-weight: 400;
-          color: #F0EAE0;
-          margin: 0 0 12px 0;
-          line-height: 1.05;
-          opacity: 0;
-          transform: translateY(12px);
-          transition: opacity 0.55s ease 0.1s, transform 0.55s ease 0.1s;
-        }
-        .ww-card.active .ww-card-title {
-          opacity: 1;
-          transform: translateY(0);
-        }
-
-        .ww-card-desc {
-          font-family: 'DM Sans', sans-serif;
-          font-size: 13px;
-          font-weight: 300;
-          color: rgba(240,234,224,0.65);
-          line-height: 1.7;
-          max-width: 480px;
-          margin: 0;
-          opacity: 0;
-          transform: translateY(8px);
-          transition: opacity 0.5s ease 0.25s, transform 0.5s ease 0.25s;
-        }
-        .ww-card.active .ww-card-desc {
-          opacity: 1;
-          transform: translateY(0);
-        }
-
-        /* Accent line on active */
-        .ww-card-line {
-          position: absolute;
-          left: 32px;
-          bottom: 0;
-          height: 2px;
-          width: 0;
-          background: var(--accent, #D4AF37);
-          transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
-        }
-        .ww-card.active .ww-card-line {
-          width: 48px;
-        }
-
-        /* Dots nav */
-        .ww-dots {
+        .mw-card-meta {
           display: flex;
+          flex-direction: column;
           align-items: center;
-          gap: 10px;
-          padding: 0 60px 64px;
-          position: relative;
-          z-index: 10;
+          text-align: center;
+          gap: 6px;
+          padding: 0 12px;
         }
 
-        .ww-dot {
+        .mw-card-location {
+          font-size: 11px;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          color: #A68B6E;
+          font-weight: 400;
+          transition: color 0.2s;
+        }
+
+        .mw-card-title {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: clamp(22px, 4vw, 34px);
+          font-weight: 500;
+          letter-spacing: -0.3px;
+          color: #1C1A18;
+          margin: 0;
+          line-height: 1.15;
+        }
+
+        .mw-card-desc {
+          font-size: 13px;
+          line-height: 1.5;
+          color: #6A5D4F;
+          font-weight: 350;
+          max-width: 400px;
+          margin: 8px auto 0 auto;
+          opacity: 0;
+          transform: translateY(6px);
+          transition: opacity 0.4s ease, transform 0.4s ease;
+          transition-delay: 0.05s;
+        }
+
+        .mw-card.active .mw-card-desc {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        .mw-card:not(.active) .mw-card-location,
+        .mw-card:not(.active) .mw-card-title {
+          opacity: 0.7;
+          transition: opacity 0.3s;
+        }
+
+        .mw-card-line {
+          width: 0;
+          height: 1.5px;
+          background: #C7AD7F;
+          margin: 12px auto 0 auto;
+          transition: width 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        .mw-card.active .mw-card-line {
+          width: 54px;
+        }
+
+        .mw-nav {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 32px;
+          margin-top: 48px;
+          padding-top: 32px;
+          border-top: 1px solid #E5DDD2;
+        }
+
+        .mw-dots {
+          display: flex;
+          gap: 18px;
+        }
+
+        .mw-nav-dot {
+          width: 34px;
           height: 1px;
-          background: #3A3028;
-          transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1), background 0.5s ease;
+          background: #D4C9BC;
+          transition: all 0.3s ease;
           cursor: pointer;
           border: none;
           padding: 0;
         }
-        .ww-dot:not(.active) { width: 24px; }
-        .ww-dot.active { width: 48px; background: #D4AF37; }
 
-        /* Decorative vertical text */
-        .ww-side-text {
-          position: absolute;
-          right: 60px;
-          bottom: 160px;
-          writing-mode: vertical-rl;
-          font-family: 'DM Sans', sans-serif;
-          font-size: 9px;
-          letter-spacing: 0.35em;
-          text-transform: uppercase;
-          color: #2A2018;
-          z-index: 2;
-          user-select: none;
+        .mw-nav-dot.active {
+          background: #7A5A3A;
+          width: 68px;
         }
 
-        @media (max-width: 768px) {
-          .ww-header { padding: 48px 24px 32px; flex-direction: column; align-items: flex-start; gap: 16px; }
-          .ww-track { padding: 0 24px 48px; }
-          .ww-card { flex: 0 0 calc(85vw); }
-          .ww-dots { padding: 0 24px 48px; }
-          .ww-side-text { display: none; }
+        .mw-nav-arrows {
+          display: flex;
+          gap: 48px;
+          order: -1; /* Place arrows above dots for better visibility */
+        }
+
+        .mw-arrow {
+          background: none;
+          border: 1px solid #D7CABB;
+          border-radius: 50%;
+          font-size: 24px;
+          cursor: pointer;
+          color: #7A5A3A;
+          transition: all 0.3s ease;
+          width: 56px;
+          height: 56px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .mw-arrow:hover {
+          background: #7A5A3A;
+          color: #F7F5F2;
+          border-color: #7A5A3A;
+          transform: translateY(-2px);
+        }
+
+        .mw-arrow:disabled {
+          opacity: 0.3;
+          cursor: not-allowed;
+        }
+
+        .mw-silent-index {
+          font-size: 10px;
+          color: #D7CABB;
+          letter-spacing: 2px;
+          margin-top: 24px;
+          text-align: center;
+          text-transform: uppercase;
+        }
+
+        @media (max-width: 760px) {
+          .mw-container {
+            padding: 40px 24px 60px 24px;
+          }
+          .mw-card {
+            flex: 0 0 86vw;
+            max-width: 460px;
+          }
+          .mw-nav-arrows {
+            display: none;
+          }
+          .mw-dots {
+            gap: 12px;
+          }
+          .mw-nav-dot {
+            width: 28px;
+          }
+          .mw-nav-dot.active {
+            width: 48px;
+          }
         }
       `}</style>
 
-      <section id="work" className="ww-section" ref={sectionRef}>
-        <div className="ww-grain" />
-        <span className="ww-side-text">Scroll to explore</span>
+      <section className="mw-section" ref={sectionRef}>
+        <div className="mw-grain" />
 
-        {/* Header */}
-        <div className={`ww-header ${isVisible ? 'visible' : ''}`}>
-          <div>
-            <p className="ww-eyebrow">Curated Portfolio</p>
-            <h2 className="ww-title">
-              Visual <em>Poetry</em>
-            </h2>
-          </div>
-          <p className="ww-count">{String(activeIndex + 1).padStart(2, '0')} / 04</p>
-        </div>
-
-        {/* Scroll Track */}
-        <div className="ww-track" ref={containerRef}>
-          {portfolioItems.map((item, i) => (
-            <div
-              key={i}
-              className={`ww-card ${i === activeIndex ? 'active' : ''}`}
-              style={{ '--accent': item.accent }}
-              onClick={() => scrollToIndex(i)}
-            >
-              <div className="ww-card-img-wrap">
-                <img
-                  src={item.src}
-                  alt={item.title}
-                  className="ww-card-img"
-                  loading="lazy"
-                />
-                <div className="ww-card-overlay" />
-              </div>
-
-              <span className="ww-card-num">{item.number}</span>
-              <span className="ww-card-tag">{item.tag}</span>
-
-              <div className="ww-card-text">
-                <p className="ww-card-subtitle">{item.subtitle}</p>
-                <h3 className="ww-card-title">{item.title}</h3>
-                <p className="ww-card-desc">{item.description}</p>
-              </div>
-              <div className="ww-card-line" />
+        <div className="mw-container">
+          <div className={`mw-header ${isVisible ? 'visible' : ''}`}>
+            <div className="mw-title-group">
+              <div className="mw-kicker">Silent Archives</div>
+              <h1 className="mw-main-title">
+                Frames of <span>stillness</span>
+              </h1>
             </div>
-          ))}
-        </div>
+            <div className="mw-counter">
+              {String(activeIndex + 1).padStart(2, '0')} / {portfolioItems.length}
+            </div>
+          </div>
 
-        {/* Dots */}
-        <div className="ww-dots">
-          {portfolioItems.map((_, i) => (
-            <button
-              key={i}
-              className={`ww-dot ${i === activeIndex ? 'active' : ''}`}
-              onClick={() => scrollToIndex(i)}
-              aria-label={`Go to slide ${i + 1}`}
-            />
-          ))}
+          <div className="mw-scroll-area" ref={scrollRef}>
+            <div className="mw-track">
+              {portfolioItems.map((item, idx) => (
+                <div
+                  key={idx}
+                  ref={(el) => (cardRefs.current[idx] = el)}
+                  className={`mw-card ${idx === activeIndex ? 'active' : ''}`}
+                  onClick={() => scrollToIndex(idx)}
+                >
+                  <div className="mw-image-frame">
+                    <img
+                      src={item.src}
+                      alt={item.title}
+                      className="mw-image"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="mw-card-meta">
+                    <div className="mw-card-location">{item.subtitle}</div>
+                    <h3 className="mw-card-title">{item.title}</h3>
+                    <p className="mw-card-desc">{item.description}</p>
+                    <div className="mw-card-line" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mw-nav">
+            <div className="mw-dots">
+              {portfolioItems.map((_, idx) => (
+                <button
+                  key={idx}
+                  className={`mw-nav-dot ${idx === activeIndex ? 'active' : ''}`}
+                  onClick={() => scrollToIndex(idx)}
+                  aria-label={`Go to slide ${idx + 1}`}
+                />
+              ))}
+            </div>
+            <div className="mw-nav-arrows">
+              <button 
+                className="mw-arrow" 
+                onClick={goPrev} 
+                disabled={activeIndex === 0}
+                aria-label="Previous"
+              >
+                ←
+              </button>
+              <button 
+                className="mw-arrow" 
+                onClick={goNext} 
+                disabled={activeIndex === portfolioItems.length - 1}
+                aria-label="Next"
+              >
+                →
+              </button>
+            </div>
+          </div>
+          <div className="mw-silent-index">drag · scroll</div>
         </div>
       </section>
     </>

@@ -14,69 +14,86 @@ const WeddingShowcase = () => {
   const statRefs = useRef([]);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     const ctx = gsap.context(() => {
+      // Defensive targets
+      const t = {
+        section: sectionRef.current,
+        image: imageRef.current,
+        lines: linesRef.current.filter(Boolean),
+        stats: statRefs.current.filter(Boolean)
+      };
+
       // Subtle section fade-in
-      gsap.fromTo(sectionRef.current,
-        { opacity: 0, y: 50 },
-        {
-          opacity: 1, y: 0, duration: 1.2, ease: 'power2.out', scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 90%',
-            toggleActions: 'play none none none',
+      if (t.section) {
+        gsap.fromTo(t.section,
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1, y: 0, duration: 1.2, ease: 'power2.out', scrollTrigger: {
+              trigger: t.section,
+              start: 'top 90%',
+              toggleActions: 'play none none none',
+            }
           }
-        }
-      );
+        );
+      }
 
       // Elegant text line reveals
-      linesRef.current.forEach((line, i) => {
-        gsap.from(line, {
-          y: 30,
-          opacity: 0,
-          duration: 0.8,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: line,
-            start: 'top 90%',
-            toggleActions: 'play none none none',
-          },
-          delay: i * 0.12,
+      if (t.lines.length) {
+        t.lines.forEach((line, i) => {
+          gsap.from(line, {
+            y: 30,
+            opacity: 0,
+            duration: 0.8,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: line,
+              start: 'top 90%',
+              toggleActions: 'play none none none',
+            },
+            delay: i * 0.12,
+          });
         });
-      });
+      }
 
       // Soft image reveal
-      gsap.from(imageRef.current, {
-        scale: 0.98,
-        opacity: 0,
-        duration: 1.2,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: imageRef.current,
-          start: 'top 85%',
-          toggleActions: 'play none none none',
-        }
-      });
-
-      // Stats counter animation
-      statRefs.current.forEach((stat, i) => {
-        const finalValue = parseInt(stat.innerText);
-        if (isNaN(finalValue)) return;
-
-        gsap.from(stat, {
-          innerText: 0,
+      if (t.image) {
+        gsap.from(t.image, {
+          scale: 0.95,
+          opacity: 0,
           duration: 1.5,
-          ease: 'power2.out',
-          snap: { innerText: 1 },
+          ease: 'power3.out',
           scrollTrigger: {
-            trigger: stat,
+            trigger: t.image,
             start: 'top 85%',
             toggleActions: 'play none none none',
-          },
-          onUpdate: function () {
-            stat.innerText = Math.floor(this.targets()[0].innerText);
-          },
+          }
         });
-      });
-    }, sectionRef);
+      }
+
+      // Stats counter animation
+      if (t.stats.length) {
+        t.stats.forEach((stat, i) => {
+          const finalValue = parseInt(stat.innerText);
+          if (isNaN(finalValue)) return;
+
+          gsap.from(stat, {
+            innerText: 0,
+            duration: 2,
+            ease: 'power2.out',
+            snap: { innerText: 1 },
+            scrollTrigger: {
+              trigger: stat,
+              start: 'top 85%',
+              toggleActions: 'play none none none',
+            },
+            onUpdate: function () {
+              if (stat) stat.innerText = Math.floor(this.targets()[0].innerText);
+            },
+          });
+        });
+      }
+    }, sectionRef.current);
 
     return () => ctx.revert();
   }, []);
