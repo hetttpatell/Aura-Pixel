@@ -4,7 +4,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import {
     HiOutlineMail,
     HiOutlinePhone,
-    HiOutlineLocationMarker
 } from 'react-icons/hi';
 import {
     SiFacebook,
@@ -42,24 +41,18 @@ const socialLinks = [
 
 const Footer = memo(() => {
     const currentYear = new Date().getFullYear();
-
     const navigate = useNavigate();
 
     const handleNavClick = useCallback((href) => {
-        // Check if navigating to a different page (not just a hash on the same page)
         const isFullPageNavigation = href.startsWith('/') && !href.startsWith('/#');
-
         navigate(href.startsWith('#') ? `/${href}` : href);
-
-        // Scroll to top for full page navigations
         if (isFullPageNavigation) {
             window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
         }
     }, [navigate]);
 
     return (
-        <footer className="bg-text-heading relative overflow-hidden">
-            {/* Background Elements */}
+        <footer className="relative overflow-hidden bg-text-heading">
             <div className="absolute inset-0 pointer-events-none">
                 <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary-teal/30 to-transparent" />
                 <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-primary-teal/5 rounded-full blur-3xl" />
@@ -67,46 +60,33 @@ const Footer = memo(() => {
             </div>
 
             <div className="max-w-[1280px] mx-auto px-4 sm:px-6 relative z-10">
-                {/* Main Footer Content */}
                 <div className="py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
-                    {/* Company Info */}
                     <div className="lg:col-span-1">
                         <a href="/#home" className="inline-block mb-6" onClick={(e) => { e.preventDefault(); handleNavClick('/#home'); }}>
                             <span className="text-2xl font-heading font-bold text-white">Aura Pixel</span>
                         </a>
-                        <p className="text-gray-400 mb-6 leading-relaxed">
-                            Transforming businesses through intelligent digital marketing strategies.
-                            Your growth is our mission.
+                        <p className="mb-6 leading-relaxed text-gray-400">
+                            Transforming businesses through intelligent digital marketing strategies. Your growth is our mission.
                         </p>
-                        {/* Contact Info */}
                         <div className="space-y-3">
-                            <a href="mailto:hello@aurapixel.com" className="flex items-center gap-3 text-gray-400 hover:text-primary-teal transition-colors duration-300">
+                            <a href="mailto:hello@aurapixel.com" className="flex items-center gap-3 transition-colors duration-300 text-gray-400 hover:text-primary-teal">
                                 <HiOutlineMail size={20} />
                                 <span>hello@aurapixel.com</span>
                             </a>
-                            <a href="tel:+1234567890" className="flex items-center gap-3 text-gray-400 hover:text-primary-teal transition-colors duration-300">
+                            <a href="tel:+919879794198" className="flex items-center gap-3 transition-colors duration-300 text-gray-400 hover:text-primary-teal">
                                 <HiOutlinePhone size={20} />
-                                <span>+91 9409404332</span>
+                                <span>+91 98797 94198</span>
                             </a>
-                            {/* <div className="flex items-start gap-3 text-gray-400">
-                                <HiOutlineLocationMarker size={20} className="flex-shrink-0 mt-1" />
-                                <span></span>
-                            </div> */}
                         </div>
                     </div>
 
-                    {/* Quick Links */}
                     <div>
-                        <h4 className="text-white font-heading font-semibold text-lg mb-6">Quick Links</h4>
+                        <h4 className="font-semibold text-lg mb-6 text-white font-heading">Quick Links</h4>
                         <ul className="space-y-3">
                             {quickLinks.map((link) => (
                                 <li key={link.name}>
-                                    <a
-                                        href={link.href}
-                                        onClick={(e) => { e.preventDefault(); handleNavClick(link.href); }}
-                                        className="text-gray-400 hover:text-primary-teal transition-colors duration-300 flex items-center gap-2 group"
-                                    >
-                                        <span className="w-1.5 h-1.5 rounded-full bg-gray-600 group-hover:bg-primary-teal transition-colors duration-300" />
+                                    <a href={link.href} onClick={(e) => { e.preventDefault(); handleNavClick(link.href); }} className="transition-colors duration-300 flex items-center gap-2 group text-gray-400 hover:text-primary-teal">
+                                        <span className="w-1.5 h-1.5 rounded-full transition-colors duration-300 bg-gray-600 group-hover:bg-primary-teal" />
                                         {link.name}
                                     </a>
                                 </li>
@@ -114,18 +94,13 @@ const Footer = memo(() => {
                         </ul>
                     </div>
 
-                    {/* Services */}
                     <div>
-                        <h4 className="text-white font-heading font-semibold text-lg mb-6">Services</h4>
+                        <h4 className="font-semibold text-lg mb-6 text-white font-heading">Services</h4>
                         <ul className="space-y-3">
                             {servicesLinks.map((service) => (
                                 <li key={service.name}>
-                                    <a
-                                        href={service.href}
-                                        onClick={(e) => { e.preventDefault(); handleNavClick(service.href); }}
-                                        className="text-gray-400 hover:text-primary-teal transition-colors duration-300 flex items-center gap-2 group"
-                                    >
-                                        <span className="w-1.5 h-1.5 rounded-full bg-gray-600 group-hover:bg-primary-teal transition-colors duration-300" />
+                                    <a href={service.href} onClick={(e) => { e.preventDefault(); handleNavClick(service.href); }} className="transition-colors duration-300 flex items-center gap-2 group text-gray-400 hover:text-primary-teal">
+                                        <span className="w-1.5 h-1.5 rounded-full transition-colors duration-300 bg-gray-600 group-hover:bg-primary-teal" />
                                         {service.name}
                                     </a>
                                 </li>
@@ -133,25 +108,13 @@ const Footer = memo(() => {
                         </ul>
                     </div>
 
-                    {/* Social Links */}
                     <div>
-                        <h4 className="text-white font-heading font-semibold text-lg mb-6">Follow Us</h4>
-
-                        {/* Social Links */}
+                        <h4 className="font-semibold text-lg mb-6 text-white font-heading">Follow Us</h4>
                         <div>
-                            <p className="text-gray-400 text-sm mb-3">Connect with us:</p>
+                            <p className="text-sm mb-3 text-gray-400">Connect with us:</p>
                             <div className="flex gap-3">
                                 {socialLinks.map((social) => (
-                                    <motion.a
-                                        key={social.label}
-                                        href={social.href}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="w-10 h-10 rounded-lg bg-white/5 border border-gray-700 flex items-center justify-center text-gray-400 hover:bg-primary-teal hover:border-primary-teal hover:text-white transition-all duration-300"
-                                        whileHover={{ scale: 1.1, y: -2 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        aria-label={social.label}
-                                    >
+                                    <motion.a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 bg-white/5 border border-gray-700 text-gray-400 hover:bg-primary-teal hover:border-primary-teal hover:text-white" whileHover={{ scale: 1.1, y: -2 }} whileTap={{ scale: 0.95 }} aria-label={social.label}>
                                         <social.icon size={18} />
                                     </motion.a>
                                 ))}
@@ -160,22 +123,14 @@ const Footer = memo(() => {
                     </div>
                 </div>
 
-                {/* Bottom Bar */}
                 <div className="py-6 border-t border-gray-800">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                        <p className="text-gray-500 text-sm text-center md:text-left">
+                        <p className="text-sm text-center md:text-left text-gray-500">
                             © {currentYear} Aura Pixel. All rights reserved.
                         </p>
                         <div className="flex gap-6 text-sm">
-                            <Link to="/privacy-policy" className="text-gray-500 hover:text-primary-teal transition-colors duration-300">
-                                Privacy Policy
-                            </Link>
-                            <Link to="/terms-of-service" className="text-gray-500 hover:text-primary-teal transition-colors duration-300">
-                                Terms of Service
-                            </Link>
-                            <Link to="/cookie-policy" className="text-gray-500 hover:text-primary-teal transition-colors duration-300">
-                                Cookie Policy
-                            </Link>
+                            <Link to="/privacy-policy" className="transition-colors duration-300 text-gray-500 hover:text-primary-teal">Privacy Policy</Link>
+                            <Link to="/terms-of-service" className="transition-colors duration-300 text-gray-500 hover:text-primary-teal">Terms of Service</Link>
                         </div>
                     </div>
                 </div>

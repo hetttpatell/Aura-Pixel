@@ -9,7 +9,7 @@ const companies = Array.from({ length: 16 }, (_, i) => ({
 
 const stats = [
     { value: '16+', label: 'Active Partners' },
-    { value: '150+', label: 'Happy Clients' },
+    { value: '25+', label: 'Happy Clients' },
     { value: '98%', label: 'Satisfaction' },
 ];
 
@@ -430,9 +430,9 @@ const ScrollingCompany = () => {
                 /* ── Logo card ── */
                 .sc-logo-item {
                     flex-shrink: 0;
-                    margin: 0 1.4rem;
-                    width: 420px;
-                    height: 280px;
+                    margin: 0 1.6rem;
+                    width: 500px;
+                    height: 330px;
                     background: rgba(255,255,255,0.96);
                     border: 1px solid rgba(0,0,0,0.07);
                     border-radius: 16px;
@@ -465,7 +465,7 @@ const ScrollingCompany = () => {
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    padding: 28px 36px;
+                    padding: 32px 42px;
                     box-sizing: border-box;
                 }
 
@@ -506,12 +506,12 @@ const ScrollingCompany = () => {
                     .sc-fade { width: 80px; }
 
                     .sc-logo-item {
-                        margin: 0 0.75rem;
-                        width: 200px;
-                        height: 130px;
+                        margin: 0 1rem;
+                        width: 280px;
+                        height: 180px;
                         border-radius: 12px;
                     }
-                    .sc-logo-inner { padding: 20px 24px; }
+                    .sc-logo-inner { padding: 24px 30px; }
 
                     .sc-stats { gap: 0.5rem; }
                     .sc-stat-pill { padding: 9px 16px; gap: 10px; }
@@ -525,12 +525,12 @@ const ScrollingCompany = () => {
                 @media (max-width: 480px) {
                     .sc-heading { font-size: 2rem; }
                     .sc-logo-item {
-                        margin: 0 0.6rem;
-                        width: 160px;
-                        height: 106px;
+                        margin: 0 0.8rem;
+                        width: 220px;
+                        height: 140px;
                         border-radius: 10px;
                     }
-                    .sc-logo-inner { padding: 16px 20px; }
+                    .sc-logo-inner { padding: 18px 24px; }
                     .sc-fade { width: 50px; }
                 }
 

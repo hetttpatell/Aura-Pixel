@@ -1,5 +1,6 @@
 /* Google Fonts Import - Preconnect handled in index.html */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Lora:wght@400;500;600;700&family=Cormorant+SC:wght@400;600;700&display=swap');
 
 /* ========================================
    PERFORMANCE OPTIMIZATIONS
@@ -87,6 +88,97 @@
   --transition-slow: 0.5s ease;
   --transition-spring: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+
+/* ========================================= */
+/*   THEME BOARD: OPULENT HERITAGE           */
+/*   Aesthetic: Premium, Cinematic, Indian   */
+/* ========================================= */
+
+.wedding-theme {
+  /* --- 1. CORE BACKGROUNDS (The Canvas) --- */
+  --color-bg-base:      #0B0E14;  /* Deep Midnight */
+  --color-bg-surface:   #151A22;  /* Twilight Blue */
+  --color-bg-glass:     #151a22b3;/* 70% opacity for frosted glass */
+
+  /* --- 2. TYPOGRAPHY (The Story) --- */
+  --color-text-hero:    #FDFBF7;  /* Warm Ivory */
+  --color-text-body:    #A0AABF;  /* Muted Silver */
+  
+  /* --- 3. BRAND ACCENTS (The Jewelry) --- */
+  --color-accent-gold:  #D4AF37;  /* Antique Gold - Primary */
+  --color-accent-ruby:  #8B1E1E;  /* Deep Crimson */
+  --color-spark-glow:   #FCA311;  /* Marigold */
+
+  /* Override Global Variables for Wedding Theme */
+  --bg-main: var(--color-bg-base);
+  --bg-soft: var(--color-bg-surface);
+  --bg-glass: var(--color-bg-glass);
+  
+  --text-heading: var(--color-text-hero);
+  --text-body: var(--color-text-body);
+  
+  --primary-teal: var(--color-accent-gold);
+  --primary-dark: #B8962E;
+  --primary-glow: rgba(212, 175, 55, 0.3);
+
+  --font-heading: 'Cormorant Garamond', serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+.aura-theme {
+  /* Default Aura Pixel variables are already in :root, but we can ensure consistency here if needed */
+}
+
+/* ========================================
+   LENIS SMOOTH SCROLL
+   ======================================== */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* ========================================
+   WEDDING PAGE OVERRIDES
+   Allow GSAP pinning & horizontal scroll
+   ======================================== */
+.wedding-page section,
+.wedding-page main {
+  overflow: visible !important;
+  max-width: none !important;
+}
+
+/* Wedding page scrollbar */
+.wedding-page ::-webkit-scrollbar-track {
+  background: #0B0E14;
+}
+
+.wedding-page ::-webkit-scrollbar-thumb {
+  background: #D4AF37;
+}
+
+/* Wedding page selection */
+.wedding-page ::selection {
+  background: #D4AF37;
+  color: #0B0E14;
+}
+
+/* Base Styles */
 
 /* ========================================
    BASE STYLES
@@ -1526,3 +1618,5 @@ img {
     opacity: 1 !important;
   }
 }
+
+/* End of styles */

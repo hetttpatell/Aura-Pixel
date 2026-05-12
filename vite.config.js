@@ -140,6 +140,10 @@ export default defineConfig(({ mode }) => ({
       'react-router-dom',
       'framer-motion',
       'react-intersection-observer',
+      'gsap',
+      'gsap/ScrollTrigger',
+
+      '@studio-freight/lenis',
     ],
     exclude: [],
   },

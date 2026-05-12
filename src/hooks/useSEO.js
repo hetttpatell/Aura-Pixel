@@ -97,6 +97,13 @@ export const seoConfig = {
         ogImage: 'https://aurapixel.com/AURA-PIXEL.PNG',
         canonical: 'https://aurapixel.com/services/meta-ads',
     },
+    wedding: {
+        title: 'Wedding Pixel | Luxury Wedding Photography & Cinematic Films',
+        description: 'Wedding Pixel by Aura Pixel captures your most precious moments with cinematic elegance. Luxury wedding photography and videography for your heritage celebrations.',
+        keywords: 'wedding photography, cinematic wedding films, luxury wedding videographer, Indian wedding photography, wedding cinema, Aura Pixel wedding',
+        ogImage: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop',
+        canonical: 'https://aurapixel.com/wedding',
+    },
 };
 
 /**

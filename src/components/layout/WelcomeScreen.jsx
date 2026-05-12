@@ -14,6 +14,7 @@ import {
     SiTelegram,
 } from 'react-icons/si';
 
+
 // Premium easing curves
 const ease = {
     smooth: [0.22, 1, 0.36, 1],
@@ -47,10 +48,12 @@ const FLOATING_SHAPES = [
     { x: 120, y: 90, size: 9, delay: 0.6 },
 ];
 
+
+
 // Icon component with smoother, slower animations
 const SocialIcon = ({ IconComponent, x, y, delay, phase, idx }) => (
     <motion.div
-        className="absolute w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7"
+        className="absolute w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-white"
         initial={{ left: `${x}%`, top: `${y}%`, opacity: 0, scale: 0, rotate: -180 }}
         animate={
             phase === 'show'
@@ -63,11 +66,12 @@ const SocialIcon = ({ IconComponent, x, y, delay, phase, idx }) => (
                 : { delay: idx * 0.04, duration: 0.7, ease: ease.flow }
         }
     >
-        <IconComponent className="w-full h-full text-white" />
+        <IconComponent className="w-full h-full text-current" />
     </motion.div>
 );
 
 const WelcomeScreen = ({ onComplete, onDockStart, onNavLogoReveal }) => {
+
     const [phase, setPhase] = useState('show'); // show → converge → text → dock → done
     const [showText, setShowText] = useState(false);
     const [showPortal, setShowPortal] = useState(false);
@@ -165,14 +169,17 @@ const WelcomeScreen = ({ onComplete, onDockStart, onNavLogoReveal }) => {
         return () => [t0, t1, t2, t3, t4, t5].forEach(clearTimeout);
     }, [done, onDockStart, onNavLogoReveal, calculateTarget]);
 
+    const bgBaseColor = '#006D6D';
+    const bgFinalColor = '#FFFFFF';
+
     return (
         <AnimatePresence>
             <motion.div
                 className="fixed inset-0 z-[500] flex items-center justify-center overflow-hidden pointer-events-none"
-                style={{ backgroundColor: isDocking ? 'transparent' : (showText ? '#FFFFFF' : '#006D6D') }}
-                initial={{ backgroundColor: '#006D6D' }}
+                style={{ backgroundColor: isDocking ? 'transparent' : (showText ? bgFinalColor : bgBaseColor) }}
+                initial={{ backgroundColor: bgBaseColor }}
                 animate={{
-                    backgroundColor: isDocking ? 'rgba(255,255,255,0)' : (showText ? '#FFFFFF' : '#006D6D'),
+                    backgroundColor: isDocking ? 'rgba(255,255,255,0)' : (showText ? bgFinalColor : bgBaseColor),
                 }}
                 transition={{
                     backgroundColor: { duration: isDocking ? 1.0 : 0.6, ease: ease.smooth },
@@ -281,7 +288,7 @@ const WelcomeScreen = ({ onComplete, onDockStart, onNavLogoReveal }) => {
                     )}
                 </AnimatePresence>
 
-                {/* Floating decorative shapes */}
+                {/* Floating decorative shapes / Mandalas */}
                 <AnimatePresence>
                     {showText && !isDocking && (
                         <>
@@ -323,7 +330,9 @@ const WelcomeScreen = ({ onComplete, onDockStart, onNavLogoReveal }) => {
                                             ease: 'easeInOut'
                                         }
                                     }}
-                                />
+                                >
+
+                                </motion.div>
                             ))}
                         </>
                     )}
@@ -402,7 +411,7 @@ const WelcomeScreen = ({ onComplete, onDockStart, onNavLogoReveal }) => {
                         return (
                             <motion.div
                                 ref={splashLogoRef}
-                                className="flex items-baseline z-10"
+                                className="flex items-baseline z-10 gap-1"
                                 style={{
                                     position: 'fixed',
                                     // Use top-left origin for precise positioning when docking
@@ -476,36 +485,24 @@ const WelcomeScreen = ({ onComplete, onDockStart, onNavLogoReveal }) => {
                                     </motion.div>
                                 )}
 
-                                <motion.span
-                                    className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-wide font-['Plus_Jakarta_Sans'] font-medium text-slate-800"
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{
-                                        opacity: 1,
-                                        scale: 1,
-                                    }}
-                                    transition={{
-                                        delay: 0.1,
-                                        duration: 0.6,
-                                        ease: ease.smooth,
-                                    }}
-                                >
-                                    Aura
-                                </motion.span>
-                                <motion.span
-                                    className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-wide font-['Plus_Jakarta_Sans'] font-bold text-[#01686C]"
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{
-                                        opacity: 1,
-                                        scale: 1,
-                                    }}
-                                    transition={{
-                                        delay: 0.2,
-                                        duration: 0.6,
-                                        ease: ease.smooth,
-                                    }}
-                                >
-                                    Pixel
-                                </motion.span>
+                                <>
+                                    <motion.span
+                                        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-wide font-['Plus_Jakarta_Sans'] font-medium text-slate-800"
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        transition={{ delay: 0.1, duration: 0.6, ease: ease.smooth }}
+                                    >
+                                        Aura
+                                    </motion.span>
+                                    <motion.span
+                                        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-wide font-['Plus_Jakarta_Sans'] font-bold text-[#01686C]"
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        transition={{ delay: 0.2, duration: 0.6, ease: ease.smooth }}
+                                    >
+                                        Pixel
+                                    </motion.span>
+                                </>
                             </motion.div>
                         );
                     })()}

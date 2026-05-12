@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence, useScroll, useSpring, LayoutGroup } from 'framer-motion';
 import { HiMenuAlt3, HiX, HiChevronDown } from 'react-icons/hi';
 import { BsArrowRight, BsLightningChargeFill } from 'react-icons/bs';
+import { useBrand } from '../../context/BrandContext';
 
 
 import { services } from '../Services/constants';
@@ -94,7 +95,7 @@ const dropdownItemVariants = {
     visible: { x: 0, opacity: 1, transition: { duration: 0.15, ease: EASE } },
 };
 
-const navLinks = [
+const auraNavLinks = [
     { name: 'Home', href: '/#home' },
     { name: 'Services', href: '/#services', hasDropdown: true },
     { name: 'About Us', href: '/about' },
@@ -116,8 +117,10 @@ const Navbar = ({ isLogoVisible = true }) => {
     const navRef = useRef(null);
     const servicesTimeout = useRef(null);
 
+    const { brand, setBrand, startTransition } = useBrand();
     const navigate = useNavigate();
     const location = useLocation();
+    const navLinks = auraNavLinks;
 
     const { scrollYProgress } = useScroll();
     const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
@@ -212,15 +215,15 @@ const Navbar = ({ isLogoVisible = true }) => {
         <>
             {/* Scroll progress bar */}
             <motion.div
-                className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-primary-teal via-teal-400 to-primary-dark z-[300] origin-left"
+                className="fixed top-0 left-0 right-0 h-[3px] z-[300] origin-left bg-gradient-to-r from-primary-teal via-teal-400 to-primary-dark"
                 style={{ scaleX: smoothProgress }}
             />
 
             <motion.nav
                 ref={navRef}
                 className={`fixed top-0 left-0 right-0 z-[200] py-2 border-b lg:py-2 ${isScrolled
-                    ? 'bg-white border-primary-teal/10 shadow-[0_4px_24px_rgba(0,128,128,0.12)]'
-                    : 'bg-white lg:bg-transparent border-transparent lg:border-none lg:shadow-none'}`}
+                        ? 'bg-white border-primary-teal/10 shadow-[0_4px_24px_rgba(0,128,128,0.12)]'
+                        : 'bg-white lg:bg-transparent border-transparent lg:border-none lg:shadow-none'}`}
                 initial="hidden"
                 animate="visible"
                 variants={navVariants}
@@ -260,8 +263,12 @@ const Navbar = ({ isLogoVisible = true }) => {
                                 opacity: { duration: 0.2 }
                             }}
                         >
-                            <span className="font-['Plus_Jakarta_Sans'] font-medium tracking-wide text-slate-800">Aura</span>
-                            <span className="font-['Plus_Jakarta_Sans'] font-bold tracking-wide text-[#01686C]">Pixel</span>
+                            { (
+                                <>
+                                    <span className="font-['Plus_Jakarta_Sans'] font-medium tracking-wide text-slate-800">Aura</span>
+                                    <span className="font-['Plus_Jakarta_Sans'] font-bold tracking-wide text-[#01686C]">Pixel</span>
+                                </>
+                            )}
                         </motion.div>
                     </motion.a>
 
@@ -275,7 +282,7 @@ const Navbar = ({ isLogoVisible = true }) => {
                                         className="relative"
                                     >
                                         <motion.button
-                                            className="relative font-heading text-[0.95rem] font-medium text-text-heading py-2 px-4 hover:text-primary-teal group flex items-center gap-1 cursor-pointer"
+                                            className="relative text-[0.95rem] font-medium py-2 px-4 group flex items-center gap-1 cursor-pointer transition-colors duration-200 font-heading text-text-heading hover:text-primary-teal"
                                             variants={linkVariants}
                                             custom={index}
                                             onMouseEnter={() => setIsHovered(link.name)}
@@ -298,20 +305,20 @@ const Navbar = ({ isLogoVisible = true }) => {
 
                                             {activeSection === 'services' && (
                                                 <motion.div
-                                                    className="absolute inset-0 bg-primary-light rounded-lg"
+                                                    className="absolute inset-0 rounded-lg bg-primary-light"
                                                     layoutId="activeNav"
                                                     transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                                                 />
                                             )}
 
                                             <motion.div
-                                                className="absolute inset-0 bg-primary-light/50 rounded-lg"
+                                                className="absolute inset-0 rounded-lg bg-primary-light/50"
                                                 animate={{ opacity: isHovered === link.name ? 1 : 0, scale: isHovered === link.name ? 1 : 0.85 }}
                                                 transition={{ duration: 0.2 }}
                                             />
 
                                             <motion.span
-                                                className="absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 bg-gradient-to-r from-primary-teal to-primary-dark rounded-full"
+                                                className="absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 rounded-full bg-gradient-to-r from-primary-teal to-primary-dark"
                                                 animate={{ width: activeSection === 'services' ? '60%' : 0 }}
                                                 whileHover={{ width: '60%' }}
                                                 transition={{ duration: 0.3 }}
@@ -413,7 +420,7 @@ const Navbar = ({ isLogoVisible = true }) => {
                                     <motion.a
                                         key={link.name}
                                         href={link.href}
-                                        className="relative font-heading text-[0.95rem] font-medium text-text-heading py-2 px-4 hover:text-primary-teal group transition-colors duration-200"
+                                        className="relative text-[0.95rem] font-medium py-2 px-4 group transition-colors duration-200 font-heading text-text-heading hover:text-primary-teal"
                                         onClick={(e) => { e.preventDefault(); handleNavClick(link.href); }}
                                         variants={linkVariants}
                                         custom={index}
@@ -425,18 +432,18 @@ const Navbar = ({ isLogoVisible = true }) => {
                                         <span className="relative z-10">{link.name}</span>
                                         {activeSection === (link.href === '/about' ? 'about' : link.href === '/blog' ? 'blog' : link.href.substring(2)) && (
                                             <motion.div
-                                                className="absolute inset-0 bg-primary-light rounded-lg"
+                                                className="absolute inset-0 rounded-lg bg-primary-light"
                                                 layoutId="activeNav"
                                                 transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                                             />
                                         )}
                                         <motion.div
-                                            className="absolute inset-0 bg-primary-light/50 rounded-lg"
+                                            className="absolute inset-0 rounded-lg bg-primary-light/50"
                                             animate={{ opacity: isHovered === link.name ? 1 : 0, scale: isHovered === link.name ? 1 : 0.85 }}
                                             transition={{ duration: 0.2 }}
                                         />
                                         <motion.span
-                                            className="absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 bg-gradient-to-r from-primary-teal to-primary-dark rounded-full"
+                                            className="absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 rounded-full bg-gradient-to-r from-primary-teal to-primary-dark"
                                             animate={{ width: activeSection === (link.href === '/about' ? 'about' : link.href === '/blog' ? 'blog' : link.href.substring(2)) ? '60%' : 0 }}
                                             whileHover={{ width: '60%' }}
                                             transition={{ duration: 0.3 }}
@@ -446,6 +453,41 @@ const Navbar = ({ isLogoVisible = true }) => {
                             )}
                         </div>
                     </LayoutGroup>
+
+
+                    {/* ── Wedding Pixel Switcher — Gold/Crimson themed ── */}
+                    <motion.button
+                        className="hidden xl:flex items-center gap-2.5 mr-4 px-5 py-2.5 rounded-full border cursor-pointer group relative overflow-hidden"
+                        style={{
+                            borderColor: 'rgba(212, 175, 55, 0.3)',
+                            background: 'linear-gradient(135deg, rgba(255,243,227,0.5), rgba(212,175,55,0.06))',
+                        }}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.4 }}
+                        whileHover={{
+                            scale: 1.04,
+                            boxShadow: '0 0 24px rgba(212,175,55,0.18), 0 0 8px rgba(122,27,27,0.08)',
+                            borderColor: 'rgba(212, 175, 55, 0.5)',
+                        }}
+                        whileTap={{ scale: 0.97 }}
+                        onClick={() => startTransition('wedding')}
+                    >
+                        {/* Gold shimmer on hover */}
+                        <motion.div
+                            className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700"
+                            style={{ background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.12), transparent)' }}
+                        />
+                        {/* Gold star icon */}
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#D4AF37" />
+                        </svg>
+                        <span className="text-sm font-semibold font-['Plus_Jakarta_Sans'] relative z-10">
+                            <span className="text-[#5C3A21]">Wedding</span>
+                            <span className="text-[#D4AF37] ml-0.5">Pixel</span>
+                        </span>
+                        <BsArrowRight className="text-[#D4AF37] group-hover:translate-x-0.5 transition-transform duration-200" size={14} />
+                    </motion.button>
 
                     {/* ── CTA Button (Desktop) ── */}
                     <motion.a
@@ -458,23 +500,25 @@ const Navbar = ({ isLogoVisible = true }) => {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                     >
-                        <motion.div className="absolute -inset-1 bg-gradient-to-r from-primary-teal to-primary-dark rounded-xl blur-md opacity-0 group-hover:opacity-60 transition-opacity duration-500" />
-                        <div className="relative flex items-center gap-2 bg-gradient-to-r from-primary-teal to-primary-dark text-white font-heading font-semibold text-sm py-3 px-6 rounded-xl overflow-hidden">
-                            <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full" />
-                            <BsLightningChargeFill className="text-yellow-300" />
-                            <span>Get Free Strategy Call</span>
-                            <motion.div
-                                animate={{ x: [0, 4, 0] }}
-                                transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-                            >
-                                <BsArrowRight className="text-lg" />
-                            </motion.div>
-                        </div>
+                        <>
+                            <motion.div className="absolute -inset-1 bg-gradient-to-r from-primary-teal to-primary-dark rounded-xl blur-md opacity-0 group-hover:opacity-60 transition-opacity duration-500" />
+                            <div className="relative flex items-center gap-2 bg-gradient-to-r from-primary-teal to-primary-dark text-white font-heading font-semibold text-sm py-3 px-6 rounded-xl overflow-hidden">
+                                <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full" />
+                                <BsLightningChargeFill className="text-yellow-300" />
+                                <span>Get Free Strategy Call</span>
+                                <motion.div
+                                    animate={{ x: [0, 4, 0] }}
+                                    transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                                >
+                                    <BsArrowRight className="text-lg" />
+                                </motion.div>
+                            </div>
+                        </>
                     </motion.a>
 
                     {/* ── Mobile Hamburger ── */}
                     <motion.button
-                        className="lg:hidden flex items-center justify-center w-10 h-10 bg-primary-light/80 backdrop-blur-sm border border-primary-teal/10 rounded-xl cursor-pointer z-10 flex-shrink-0"
+                        className="lg:hidden flex items-center justify-center w-10 h-10 backdrop-blur-sm border rounded-xl cursor-pointer z-10 flex-shrink-0 bg-primary-light/80 border-primary-teal/10"
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                         whileTap={{ scale: 0.9 }}
                         aria-label="Toggle menu"
@@ -507,7 +551,7 @@ const Navbar = ({ isLogoVisible = true }) => {
                             />
 
                             <motion.div
-                                className="absolute top-full left-0 right-0 bg-white border-b border-border-light shadow-[0_20px_50px_rgba(0,128,128,0.12)] overflow-y-auto lg:hidden"
+                                className="absolute top-full left-0 right-0 border-b overflow-y-auto lg:hidden bg-white border-border-light shadow-[0_20px_50px_rgba(0,128,128,0.12)]"
                                 style={{ maxHeight: 'calc(100dvh - 70px)' }}
                                 variants={mobileMenuVariants}
                                 initial="closed"
@@ -633,32 +677,64 @@ const Navbar = ({ isLogoVisible = true }) => {
                                             <motion.a
                                                 key={link.name}
                                                 href={link.href}
-                                                className={`font-heading text-base font-semibold py-3 px-4 rounded-xl transition-all duration-200 ${activeSection === (link.href === '/about' ? 'about' : link.href.substring(2))
-                                                    ? 'bg-primary-light text-primary-teal'
-                                                    : 'text-text-heading hover:bg-primary-light/70 hover:text-primary-teal active:scale-95'
-                                                    }`}
+                                                className={`text-base font-semibold py-3 px-4 rounded-xl transition-all duration-200 font-heading ${
+                                                            activeSection === (link.href === '/about' ? 'about' : link.href.substring(2))
+                                                                ? 'bg-primary-light text-primary-teal'
+                                                                : 'text-text-heading hover:bg-primary-light/70 hover:text-primary-teal active:scale-95'
+                                                          }`}
                                                 onClick={(e) => { e.preventDefault(); handleNavClick(link.href); }}
                                                 variants={mobileItemVariants}
                                                 whileTap={{ scale: 0.97 }}
                                             >
                                                 <span className="flex items-center justify-between">
                                                     {link.name}
-                                                    <BsArrowRight className={`text-primary-teal transition-opacity duration-200 ${activeSection === (link.href === '/about' ? 'about' : link.href.substring(2)) ? 'opacity-100' : 'opacity-0'}`} />
+                                                    <BsArrowRight className={`transition-opacity duration-200 text-primary-teal ${activeSection === (link.href === '/about' ? 'about' : link.href.substring(2)) ? 'opacity-100' : 'opacity-0'}`} />
                                                 </span>
                                             </motion.a>
                                         )
                                     )}
 
+
+                                    {/* Brand Switcher Mobile — Gold/Crimson themed */}
+                                    <motion.div className="mt-4 pt-4 border-t border-border-light" variants={mobileItemVariants}>
+                                        <button
+                                            className="w-full flex items-center justify-between py-4 px-6 rounded-xl border font-heading font-bold cursor-pointer relative overflow-hidden group"
+                                            style={{
+                                                background: 'linear-gradient(135deg, rgba(255,243,227,0.6), rgba(212,175,55,0.08))',
+                                                borderColor: 'rgba(212, 175, 55, 0.25)',
+                                                color: '#5C3A21',
+                                            }}
+                                            onClick={() => {
+                                                setIsMobileMenuOpen(false);
+                                                startTransition('wedding');
+                                            }}
+                                        >
+                                            {/* Shimmer */}
+                                            <div className="absolute inset-0 -translate-x-full group-active:translate-x-full transition-transform duration-500"
+                                                style={{ background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.1), transparent)' }}
+                                            />
+                                            <div className="flex items-center gap-3 relative z-10">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="flex-shrink-0">
+                                                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#D4AF37" />
+                                                </svg>
+                                                <span>
+                                                    <span className="text-[#5C3A21]">Switch to Wedding</span>
+                                                    <span className="text-[#D4AF37] ml-0.5">Pixel</span>
+                                                </span>
+                                            </div>
+                                            <BsArrowRight className="text-[#D4AF37] relative z-10" />
+                                        </button>
+                                    </motion.div>
+
                                     {/* Mobile CTA */}
-                                    <motion.div className="mt-3 pt-3 border-t border-border-light" variants={mobileItemVariants}>
+                                    <motion.div className="mt-2 pt-2 border-t border-border-light" variants={mobileItemVariants}>
                                         <motion.a
                                             href="/#contact"
-                                            className="flex items-center justify-center gap-2 bg-gradient-to-r from-primary-teal to-primary-dark text-white font-heading font-semibold py-4 px-6 rounded-xl w-full"
+                                            className="flex items-center justify-center gap-2 font-semibold py-4 px-6 rounded-xl w-full bg-gradient-to-r from-primary-teal to-primary-dark text-white font-heading"
                                             onClick={(e) => { e.preventDefault(); handleNavClick('/#contact'); }}
                                             whileTap={{ scale: 0.98 }}
                                         >
-                                            <BsLightningChargeFill className="text-yellow-300" />
-                                            <span>Get Free Strategy Call</span>
+                                            <><BsLightningChargeFill className="text-yellow-300" /><span>Get Free Strategy Call</span></>
                                         </motion.a>
                                     </motion.div>
                                 </div>

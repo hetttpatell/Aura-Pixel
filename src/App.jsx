@@ -1,11 +1,12 @@
 import { useEffect, useState, lazy, Suspense, memo, useCallback } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation, useParams } from 'react-router-dom';
+import { useBrand } from './context/BrandContext';
 
 // Layout Components
 import { Navbar, Footer, WelcomeScreen } from './components/layout';
 
 // Common Components
-import { SkipToContent, ErrorBoundary } from './components/common';
+import { SkipToContent, ErrorBoundary, BrandTransition } from './components/common';
 
 // Section Components - Import critical above-the-fold components eagerly
 import { Hero, Services, WhyChooseUs } from './components/sections';
@@ -24,6 +25,9 @@ const ScrollingCompany = lazy(() => import('./components/sections/ScrollingCompa
 const Testimonials = lazy(() => import('./components/sections/Testimonials'));
 const Blog = lazy(() => import('./components/sections/Blog'));
 const LeadCapture = lazy(() => import('./components/sections/LeadCapture'));
+
+// Wedding Pixel - Full Page
+const WeddingPixelPage = lazy(() => import('./features/wedding/WeddingPixelPage'));
 
 // Memoized loader component for better performance
 const SectionLoader = memo(() => (
@@ -69,7 +73,7 @@ const ScrollToHash = () => {
     } else {
       // For page navigation without hash, scroll to top instantly first
       // then apply a subtle entrance transition
-      // Only scroll to top for non-service routes (ServicesDetail handles its own scroll)
+      // For page navigation without hash, scroll to top instantly first
       if (!pathname.startsWith('/services')) {
         window.scrollTo({ top: 0, behavior: 'instant' });
       }
@@ -100,6 +104,16 @@ const HomeSEO = () => {
         <LeadCapture />
       </Suspense>
     </main>
+  );
+};
+
+// Wedding Pixel Home Page - Full cinematic experience
+const WeddingPixelHome = () => {
+  useSEO('wedding');
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <WeddingPixelPage />
+    </Suspense>
   );
 };
 
@@ -149,8 +163,10 @@ const BlogSEOWrapper = () => {
     </Suspense>
   );
 };
+
 //this is testing 
 function App() {
+  const { brand } = useBrand();
   // Welcome screen - shows only once per session
   const [showWelcome, setShowWelcome] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -231,34 +247,42 @@ function App() {
   return (
     <BrowserRouter>
       <ErrorBoundary>
-        {/* Welcome Screen - First visit only */}
-        {showWelcome && <WelcomeScreen onComplete={handleWelcomeComplete} onDockStart={handleDockStart} onNavLogoReveal={handleNavLogoReveal} />}
+          {/* Cinematic Brand Transition Overlay */}
+          <BrandTransition />
 
-        <SkipToContent />
-        <ScrollToHash />
-        {/* Navbar always visible for logo position calculation */}
-        <Navbar isLogoVisible={!showWelcome || isNavLogoVisible} />
-        <div
-          className={`min-h-[100dvh] bg-bg-main font-body text-text-body antialiased transition-opacity ${showWelcome && !isDockingPhase
-            ? 'opacity-0 duration-0'
-            : isDockingPhase
-              ? 'opacity-100 duration-1000'
-              : 'opacity-100 duration-500'
-            }`}
-        >
-          <Routes>
-            <Route path="/" element={<HomeSEO />} />
-            <Route path="/about" element={<AboutSEO />} />
-            <Route path="/blog" element={<BlogSEOWrapper />} />
-            <Route path="/services" element={<ServicesSEOWrapper />} />
-            <Route path="/services/:serviceId" element={<ServicesSEOWrapper />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-          <Suspense fallback={<div className="h-64 bg-bg-soft" />}>
-            <Footer />
-          </Suspense>
-        </div>
-      </ErrorBoundary>
+          {/* Welcome Screen - First visit only */}
+          {showWelcome && <WelcomeScreen onComplete={handleWelcomeComplete} onDockStart={handleDockStart} onNavLogoReveal={handleNavLogoReveal} />}
+
+          <SkipToContent />
+          <ScrollToHash />
+          {/* Navbar always visible for logo position calculation */}
+          {brand !== 'wedding' && (
+            <Navbar isLogoVisible={!showWelcome || isNavLogoVisible} />
+          )}
+          <div
+            className={`min-h-[100dvh] bg-bg-main font-body text-text-body antialiased transition-opacity ${brand === 'wedding' ? 'wedding-theme' : 'aura-theme'} ${showWelcome && !isDockingPhase
+              ? 'opacity-0 duration-0'
+              : isDockingPhase
+                ? 'opacity-100 duration-1000'
+                : 'opacity-100 duration-500'
+              }`}
+          >
+            <Routes>
+              <Route path="/" element={<HomeSEO />} />
+              <Route path="/wedding" element={<WeddingPixelHome />} />
+              <Route path="/about" element={<AboutSEO />} />
+              <Route path="/blog" element={<BlogSEOWrapper />} />
+              <Route path="/services" element={<ServicesSEOWrapper />} />
+              <Route path="/services/:serviceId" element={<ServicesSEOWrapper />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+            {brand !== 'wedding' && (
+              <Suspense fallback={<div className="h-64 bg-bg-soft" />}>
+                <Footer />
+              </Suspense>
+            )}
+          </div>
+        </ErrorBoundary>
     </BrowserRouter>
   );
 }
