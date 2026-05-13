@@ -253,13 +253,26 @@ function useParticleCanvas(canvasRef, isMobile) {
     const ctx = canvas.getContext('2d');
     let raf;
 
+    let lastWidth = window.innerWidth;
+    let resizeTimeout;
     const resize = () => {
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = canvas.offsetWidth * dpr;
-      canvas.height = canvas.offsetHeight * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      if (window.innerWidth === lastWidth) return;
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        lastWidth = window.innerWidth;
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = canvas.offsetWidth * dpr;
+        canvas.height = canvas.offsetHeight * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }, 100);
     };
-    resize();
+    
+    // Initial resize
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = canvas.offsetWidth * dpr;
+    canvas.height = canvas.offsetHeight * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    
     window.addEventListener('resize', resize);
     const W = () => canvas.offsetWidth;
     const H = () => canvas.offsetHeight;
@@ -283,7 +296,10 @@ function useParticleCanvas(canvasRef, isMobile) {
     }));
 
     let t = 0;
+    let isVisible = true;
+
     const draw = () => {
+      if (!isVisible) return;
       t++;
       ctx.clearRect(0, 0, W(), H());
       for (const p of petals) {
@@ -310,8 +326,28 @@ function useParticleCanvas(canvasRef, isMobile) {
       }
       raf = requestAnimationFrame(draw);
     };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const wasVisible = isVisible;
+        isVisible = entries[0].isIntersecting;
+        if (isVisible && !wasVisible) {
+          cancelAnimationFrame(raf);
+          raf = requestAnimationFrame(draw);
+        } else if (!isVisible) {
+          cancelAnimationFrame(raf);
+        }
+      },
+      { threshold: 0 }
+    );
+    observer.observe(canvas);
+
     draw();
-    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
+    return () => { 
+      cancelAnimationFrame(raf); 
+      window.removeEventListener('resize', resize); 
+      observer.disconnect();
+    };
   }, [canvasRef, isMobile]);
 }
 
@@ -372,10 +408,16 @@ const WeddingHero = () => {
   const leftDiyasRef = useRef(null);
   const rightDiyasRef = useRef(null);
 
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
   const [ready, setReady] = useState(false);
 
-  const checkMobile = useCallback(() => setIsMobile(window.innerWidth < 768), []);
+  const checkMobile = useCallback(() => {
+    setIsMobile((prev) => {
+      const isNowMobile = window.innerWidth < 768;
+      if (prev !== isNowMobile) return isNowMobile;
+      return prev;
+    });
+  }, []);
   useEffect(() => {
     checkMobile();
     window.addEventListener('resize', checkMobile);
@@ -465,14 +507,21 @@ const WeddingHero = () => {
           .to(canvasRef.current, { opacity: 0.4, ease: 'power1.inOut' }, 0);
 
         // Mouse parallax (subtle)
+        let mouseRaf;
         const onMouseMove = (e) => {
           if (!mandalaRef.current) return;
-          const x = e.clientX / window.innerWidth - 0.5;
-          const y = e.clientY / window.innerHeight - 0.5;
-          gsap.to(mandalaRef.current, { x: x * 18, y: y * 12, duration: 1.8, ease: 'power2.out', overwrite: 'auto' });
+          cancelAnimationFrame(mouseRaf);
+          mouseRaf = requestAnimationFrame(() => {
+            const x = e.clientX / window.innerWidth - 0.5;
+            const y = e.clientY / window.innerHeight - 0.5;
+            gsap.to(mandalaRef.current, { x: x * 18, y: y * 12, duration: 1.8, ease: 'power2.out', overwrite: 'auto' });
+          });
         };
         window.addEventListener('mousemove', onMouseMove);
-        self.add(() => window.removeEventListener('mousemove', onMouseMove));
+        self.add(() => {
+          window.removeEventListener('mousemove', onMouseMove);
+          cancelAnimationFrame(mouseRaf);
+        });
       }
     }, sectionRef.current);
 
@@ -482,8 +531,8 @@ const WeddingHero = () => {
   return (
     <section
       ref={sectionRef}
-      className={`relative w-full overflow-hidden flex items-center justify-center ${isMobile ? 'min-h-screen' : 'h-screen'}`}
-      style={{ backgroundColor: '#F5E6C0' }}
+      className={`relative w-full overflow-hidden flex items-center justify-center`}
+      style={{ backgroundColor: '#F5E6C0', minHeight: '100dvh' }}
     >
 
       {/* ══ Background layers ══ */}

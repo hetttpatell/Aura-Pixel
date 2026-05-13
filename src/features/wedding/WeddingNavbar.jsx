@@ -53,21 +53,42 @@ const WeddingNavbar = () => {
     const handleScroll = () => {
       const scrolled = window.scrollY > 100;
       setIsScrolled(scrolled);
-
-      // Active section tracking
-      const sections = ['showcase', 'work', 'bts', 'inquiry'];
-      for (const sec of [...sections].reverse()) {
-        const el = document.getElementById(sec);
-        if (el && el.getBoundingClientRect().top <= 150) {
-          setActiveSection(sec);
-          break;
-        }
-      }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    // Active section tracking with IntersectionObserver
+    const sections = ['showcase', 'work', 'bts', 'inquiry'];
+    
+    const sectionObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      {
+        rootMargin: '-20% 0px -60% 0px',
+        threshold: 0,
+      }
+    );
+
+    // Use setTimeout to ensure DOM elements are rendered
+    setTimeout(() => {
+      sections.forEach((sec) => {
+        const el = document.getElementById(sec);
+        if (el) {
+          sectionObserver.observe(el);
+        }
+      });
+    }, 100);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      sectionObserver.disconnect();
+    };
   }, []);
 
   // Close mobile menu on resize

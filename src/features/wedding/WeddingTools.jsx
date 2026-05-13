@@ -113,15 +113,15 @@ const WeddingTools = () => {
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-105"
                   />
                   {/* Subtle default overlay, becomes darker on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500" />
                 </>
               ) : (
-                <div className={`absolute inset-0 ${tool.featured ? 'bg-[#7A1B1B]' : 'bg-[#D4AF37]'} opacity-10 group-hover:opacity-20 transition-opacity duration-500`} />
+                <div className={`absolute inset-0 ${tool.featured ? 'bg-[#7A1B1B]' : 'bg-[#D4AF37]'} opacity-20 md:opacity-10 md:group-hover:opacity-20 transition-opacity duration-500`} />
               )}
 
-              {/* Content Overlay - Hidden by default, slides up on hover */}
+              {/* Content Overlay - Mobile visible, Desktop on hover */}
               <div className="absolute inset-0 p-6 md:p-10 flex flex-col justify-end">
-                <div className="transform translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-out">
+                <div className="transform translate-y-0 md:translate-y-8 opacity-100 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 transition-all duration-500 ease-out">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="h-[1px] w-8 bg-[#D4AF37]/60" />
                     <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-[#D4AF37]">

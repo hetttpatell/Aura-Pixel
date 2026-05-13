@@ -18,7 +18,6 @@ const SmoothScroll = ({ children }) => {
       gestureOrientation: 'vertical',
       smoothWheel: true,
       wheelMultiplier: 1,
-      touchMultiplier: 2,
     });
 
     lenisRef.current = lenis;
@@ -35,7 +34,6 @@ const SmoothScroll = ({ children }) => {
     return () => {
       gsap.ticker.remove(rafCallback);
       lenis.destroy();
-      ScrollTrigger.getAll().forEach(st => st.kill());
     };
   }, []);
 

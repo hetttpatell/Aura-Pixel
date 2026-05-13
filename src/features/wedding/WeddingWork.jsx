@@ -5,25 +5,25 @@ const portfolioItems = [
     title: "The Royal Affair",
     subtitle: "Udaipur, Rajasthan",
     description: "A celebration of love amidst historic palaces and serene lakes.",
-    src: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=2940&auto=format&fit=crop",
+    src: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=800&auto=format&fit=crop",
   },
   {
     title: "Eternal Vows",
     subtitle: "Jaipur, Rajasthan",
     description: "Traditional ceremonies captured with an editorial eye.",
-    src: "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?q=80&w=3174&auto=format&fit=crop",
+    src: "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?q=80&w=800&auto=format&fit=crop",
   },
   {
     title: "Sacred Fire",
     subtitle: "Mumbai, Maharashtra",
     description: "Intimate and cinematic Phere moments. The eternal bond.",
-    src: "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2913&auto=format&fit=crop",
+    src: "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800&auto=format&fit=crop",
   },
   {
     title: "Vibrant Haldi",
     subtitle: "Ahmedabad, Gujarat",
     description: "Pure emotion and vibrant hues of the Haldi ceremony.",
-    src: "https://images.unsplash.com/photo-1549417229-aa67d3263c09?q=80&w=2940&auto=format&fit=crop",
+    src: "https://images.unsplash.com/photo-1549417229-aa67d3263c09?q=80&w=800&auto=format&fit=crop",
   },
 ];
 
@@ -47,34 +47,29 @@ const WeddingWork = () => {
     const container = scrollRef.current;
     if (!container) return;
 
-    const handleScroll = () => {
-      const containerRect = container.getBoundingClientRect();
-      const containerCenter = containerRect.left + containerRect.width / 2;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = cardRefs.current.indexOf(entry.target);
+            if (index !== -1) {
+              setActiveIndex(index);
+            }
+          }
+        });
+      },
+      {
+        root: container,
+        threshold: 0.6,
+      }
+    );
 
-      let closestIndex = 0;
-      let minDistance = Infinity;
-
-      cardRefs.current.forEach((card, idx) => {
-        if (!card) return;
-        const rect = card.getBoundingClientRect();
-        const cardCenter = rect.left + rect.width / 2;
-        const distance = Math.abs(containerCenter - cardCenter);
-        if (distance < minDistance) {
-          minDistance = distance;
-          closestIndex = idx;
-        }
-      });
-
-      setActiveIndex(closestIndex);
-    };
-
-    container.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('resize', handleScroll);
-    handleScroll();
+    cardRefs.current.forEach((card) => {
+      if (card) observer.observe(card);
+    });
 
     return () => {
-      container.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleScroll);
+      observer.disconnect();
     };
   }, []);
 
