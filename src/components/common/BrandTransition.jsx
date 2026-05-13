@@ -5,10 +5,8 @@ import { useNavigate } from 'react-router-dom';
 
 /**
  * BrandTransition Component
- * Handles the cinematic overlay transition when switching between Aura Pixel and Wedding Pixel.
- * Optimized for performance and brand aesthetics.
- * 
- * Fixed: Robustness against multiple clicks and concurrent transitions.
+ * Handles a high-end, editorial transition when switching between Aura Pixel and Wedding Pixel.
+ * Uses spring physics, subtle textures, and staggered typography for a premium feel.
  */
 const BrandTransition = () => {
   const { transition, setBrand, completeTransition } = useBrand();
@@ -17,15 +15,12 @@ const BrandTransition = () => {
   const inProgress = useRef(false);
 
   useEffect(() => {
-    // Only start if a transition is active and we're not already processing one
     if (transition.isActive && !inProgress.current) {
       inProgress.current = true;
       setIsVisible(true);
       
-      // Phase 1: Fade in overlay (starts immediately due to AnimatePresence)
-      const timer = setTimeout(() => {
-        // Phase 2: Switch brand and route
-        // This happens while the screen is fully opaque
+      // Phase 1: Wait for overlay to become fully opaque
+      const switchTimer = setTimeout(() => {
         if (transition.target) {
           setBrand(transition.target);
           if (transition.target === 'wedding') {
@@ -35,155 +30,152 @@ const BrandTransition = () => {
           }
         }
         
-        // Phase 3: Wait a bit to let the new page initialize/mount
-        const exitTimer = setTimeout(() => {
+        // Phase 2: Hold the brand reveal
+        const holdTimer = setTimeout(() => {
           setIsVisible(false);
           
-          // Phase 4: Final cleanup after exit animation completes
+          // Phase 3: Cleanup after fade out
           const cleanupTimer = setTimeout(() => {
             completeTransition();
-            inProgress.current = false; // Reset for next time
-          }, 600); // Buffer for Framer Motion exit animation (0.5s + small buffer)
+            inProgress.current = false;
+          }, 600);
           
           return () => clearTimeout(cleanupTimer);
-        }, 800);
+        }, 1400); // Reveal duration (slightly longer for text animation)
 
-        return () => clearTimeout(exitTimer);
-      }, 600); // Buffer for Framer Motion enter animation (0.5s + small buffer)
+        return () => clearTimeout(holdTimer);
+      }, 600);
 
-      return () => {
-        // Cleanup if component unmounts or effect re-runs
-        clearTimeout(timer);
-      };
+      return () => clearTimeout(switchTimer);
     }
   }, [transition.isActive, transition.target, setBrand, completeTransition, navigate]);
 
-  // Determine theme colors based on the TARGET brand
   const isTargetWedding = transition.target === 'wedding';
-  const bgColor = isTargetWedding ? '#0B0E14' : '#ffffff';
-  const accentColor = isTargetWedding ? '#D4AF37' : '#008080';
-  const textColor = isTargetWedding ? '#FDFBF7' : '#0f172a';
+  
+  const theme = {
+    bg: isTargetWedding ? '#F5E6C0' : '#FFFFFF',
+    accent: isTargetWedding ? '#8B1E1E' : '#008080',
+    logo: isTargetWedding ? '/wedding.png' : '/AURA-PIXEL.PNG',
+    font: isTargetWedding ? "'Cormorant Garamond', serif" : "'Plus Jakarta Sans', sans-serif",
+    tagline: isTargetWedding ? "Editorial Wedding Excellence" : "Digital Innovation Hub",
+    gold: isTargetWedding ? '#D4AF37' : '#008080',
+    gradient: isTargetWedding 
+      ? 'radial-gradient(circle at center, #FDF7E2 0%, #F5E6C0 100%)'
+      : 'radial-gradient(circle at center, #FFFFFF 0%, #F8FAFC 100%)'
+  };
+
+  // Split tagline for staggered animation
+  const characters = theme.tagline.split("");
 
   return (
     <AnimatePresence mode="wait">
       {isVisible && (
         <motion.div
-          key="brand-transition-overlay"
+          key="brand-transition-container"
+          className="fixed inset-0 z-[10000] overflow-hidden flex items-center justify-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.5, ease: "easeInOut" }}
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundColor: bgColor,
-            zIndex: 10000,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            pointerEvents: 'all'
-          }}
+          transition={{ duration: 0.6, ease: "easeInOut" }}
+          style={{ background: theme.gradient }}
         >
+          {/* 1. Subtle Film Grain / Noise Texture */}
+          <div 
+            className="absolute inset-0 opacity-[0.03] pointer-events-none"
+            style={{ 
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3%3Cfilter id='noiseFilter'%3%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3%3C/filter%3%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3%3C/svg%3")`,
+              mixBlendMode: 'overlay'
+            }}
+          />
+
+          {/* 2. Dynamic Radial Glow */}
           <motion.div
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 1.05, opacity: 0 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-            className="flex flex-col items-center gap-8"
-          >
-            {/* Minimalist Logo/Brand Identifier */}
-            <div 
-              style={{ 
-                width: '80px', 
-                height: '80px', 
-                borderRadius: '50%', 
-                border: `1px solid ${accentColor}40`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                position: 'relative'
-              }}
-            >
-              {/* Outer Glow Ring */}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ 
+              opacity: [0.1, 0.2, 0.1], 
+              scale: [1, 1.2, 1],
+            }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute inset-0 pointer-events-none"
+            style={{ 
+              background: `radial-gradient(circle at center, ${theme.accent}22 0%, transparent 70%)` 
+            }}
+          />
+
+          {/* 3. Content Container */}
+          <div className="relative z-20 flex flex-col items-center">
+            {/* Logo Wrapper */}
+            <div className="relative mb-16">
               <motion.div
-                animate={{ 
-                  scale: [1, 1.1, 1],
-                  opacity: [0.3, 0.6, 0.3]
-                }}
+                initial={{ opacity: 0, scale: 0.95, y: 40 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 1.02, y: -20 }}
                 transition={{ 
-                  duration: 3, 
-                  repeat: Infinity,
-                  ease: "easeInOut"
+                  type: "spring",
+                  stiffness: 80,
+                  damping: 25,
+                  delay: 0.2
                 }}
-                style={{
-                  position: 'absolute',
-                  inset: -10,
-                  borderRadius: '50%',
-                  border: `1px solid ${accentColor}20`,
-                }}
-              />
-              
-              {/* Center Letter */}
-              <span style={{ 
-                color: accentColor, 
-                fontWeight: '700', 
-                fontSize: '32px',
-                fontFamily: isTargetWedding ? "'Cormorant Garamond', serif" : "'Plus Jakarta Sans', sans-serif"
-              }}>
-                {isTargetWedding ? 'W' : 'A'}
-              </span>
-            </div>
-            
-            {/* Brand Name */}
-            <motion.div className="text-center">
-              <motion.h2
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
-                style={{ 
-                  color: textColor, 
-                  fontSize: '1.5rem', 
-                  fontWeight: '600',
-                  letterSpacing: '0.15em',
-                  fontFamily: isTargetWedding ? "'Cormorant Garamond', serif" : "'Plus Jakarta Sans', sans-serif",
-                  marginBottom: '8px'
-                }}
+                className="relative"
               >
-                {isTargetWedding ? 'WEDDING PIXEL' : 'AURA PIXEL'}
-              </motion.h2>
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: 100 }}
-                transition={{ delay: 0.4, duration: 0.8, ease: "circOut" }}
-                style={{ 
-                  height: '1px', 
-                  backgroundColor: accentColor,
-                  margin: '0 auto',
-                  opacity: 0.5
-                }}
-              />
-            </motion.div>
-          </motion.div>
-          
-          {/* Subtle progress indicator */}
-          <motion.div
+                <img 
+                  src={theme.logo} 
+                  alt="Brand Logo" 
+                  className="h-32 sm:h-48 md:h-64 w-auto object-contain"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'block';
+                  }}
+                />
+                
+                {/* Fallback Text Logo */}
+                <div style={{ display: 'none' }} className="text-center">
+                  <h1 
+                    className="text-5xl sm:text-7xl font-bold tracking-tighter"
+                    style={{ fontFamily: theme.font, color: theme.accent }}
+                  >
+                    {isTargetWedding ? 'Wedding Pixel' : 'Aura Pixel'}
+                  </h1>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Tagline with Staggered Character Animation */}
+            <div className="flex overflow-hidden px-4 text-center">
+              {characters.map((char, index) => (
+                <motion.span
+                  key={index}
+                  initial={{ y: "100%", opacity: 0 }}
+                  animate={{ y: 0, opacity: 0.6 }}
+                  transition={{ 
+                    duration: 0.8, 
+                    delay: 0.6 + (index * 0.02),
+                    ease: [0.16, 1, 0.3, 1]
+                  }}
+                  className="text-[9px] sm:text-[11px] uppercase tracking-[0.6em] font-light inline-block whitespace-pre"
+                  style={{ color: theme.accent, fontFamily: theme.font }}
+                >
+                  {char}
+                </motion.span>
+              ))}
+            </div>
+          </div>
+
+          {/* Minimal Editorial Frames */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isTargetWedding ? 0.3 : 0.15 }}
+            transition={{ duration: 1.5, delay: 0.8 }}
+            className="absolute inset-12 border border-current pointer-events-none"
+            style={{ color: theme.gold }}
+          />
+
+          <motion.div 
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
-            transition={{ duration: 1.5, ease: "linear" }}
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              width: '100%',
-              height: '3px',
-              backgroundColor: accentColor,
-              transformOrigin: 'left',
-              opacity: 0.3
-            }}
+            transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute bottom-12 left-1/2 -translate-x-1/2 w-32 h-[1px] origin-center opacity-30"
+            style={{ backgroundColor: theme.gold }}
           />
         </motion.div>
       )}
@@ -192,3 +184,7 @@ const BrandTransition = () => {
 };
 
 export default BrandTransition;
+
+
+
+

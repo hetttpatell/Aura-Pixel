@@ -222,8 +222,8 @@ const Navbar = ({ isLogoVisible = true }) => {
             <motion.nav
                 ref={navRef}
                 className={`fixed top-0 left-0 right-0 z-[200] py-2 border-b lg:py-2 ${isScrolled
-                        ? 'bg-white border-primary-teal/10 shadow-[0_4px_24px_rgba(0,128,128,0.12)]'
-                        : 'bg-white lg:bg-transparent border-transparent lg:border-none lg:shadow-none'}`}
+                    ? 'bg-white border-primary-teal/10 shadow-[0_4px_24px_rgba(0,128,128,0.12)]'
+                    : 'bg-white lg:bg-transparent border-transparent lg:border-none lg:shadow-none'}`}
                 initial="hidden"
                 animate="visible"
                 variants={navVariants}
@@ -263,7 +263,7 @@ const Navbar = ({ isLogoVisible = true }) => {
                                 opacity: { duration: 0.2 }
                             }}
                         >
-                            { (
+                            {(
                                 <>
                                     <span className="font-['Plus_Jakarta_Sans'] font-medium tracking-wide text-slate-800">Aura</span>
                                     <span className="font-['Plus_Jakarta_Sans'] font-bold tracking-wide text-[#01686C]">Pixel</span>
@@ -479,9 +479,9 @@ const Navbar = ({ isLogoVisible = true }) => {
                             style={{ background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.12), transparent)' }}
                         />
                         {/* Gold star icon */}
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                        {/* <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
                             <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#D4AF37" />
-                        </svg>
+                        </svg> */}
                         <span className="text-sm font-semibold font-['Plus_Jakarta_Sans'] relative z-10">
                             <span className="text-[#5C3A21]">Wedding</span>
                             <span className="text-[#D4AF37] ml-0.5">Pixel</span>
@@ -504,7 +504,7 @@ const Navbar = ({ isLogoVisible = true }) => {
                             <motion.div className="absolute -inset-1 bg-gradient-to-r from-primary-teal to-primary-dark rounded-xl blur-md opacity-0 group-hover:opacity-60 transition-opacity duration-500" />
                             <div className="relative flex items-center gap-2 bg-gradient-to-r from-primary-teal to-primary-dark text-white font-heading font-semibold text-sm py-3 px-6 rounded-xl overflow-hidden">
                                 <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full" />
-                                <BsLightningChargeFill className="text-yellow-300" />
+                                {/* <BsLightningChargeFill className="text-yellow-300" /> */}
                                 <span>Get Free Strategy Call</span>
                                 <motion.div
                                     animate={{ x: [0, 4, 0] }}
@@ -677,11 +677,10 @@ const Navbar = ({ isLogoVisible = true }) => {
                                             <motion.a
                                                 key={link.name}
                                                 href={link.href}
-                                                className={`text-base font-semibold py-3 px-4 rounded-xl transition-all duration-200 font-heading ${
-                                                            activeSection === (link.href === '/about' ? 'about' : link.href.substring(2))
-                                                                ? 'bg-primary-light text-primary-teal'
-                                                                : 'text-text-heading hover:bg-primary-light/70 hover:text-primary-teal active:scale-95'
-                                                          }`}
+                                                className={`text-base font-semibold py-3 px-4 rounded-xl transition-all duration-200 font-heading ${activeSection === (link.href === '/about' ? 'about' : link.href.substring(2))
+                                                    ? 'bg-primary-light text-primary-teal'
+                                                    : 'text-text-heading hover:bg-primary-light/70 hover:text-primary-teal active:scale-95'
+                                                    }`}
                                                 onClick={(e) => { e.preventDefault(); handleNavClick(link.href); }}
                                                 variants={mobileItemVariants}
                                                 whileTap={{ scale: 0.97 }}

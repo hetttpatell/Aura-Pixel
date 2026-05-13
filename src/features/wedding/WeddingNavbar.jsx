@@ -60,7 +60,7 @@ const WeddingNavbar = () => {
 
     // Active section tracking with IntersectionObserver
     const sections = ['showcase', 'work', 'bts', 'inquiry'];
-    
+
     const sectionObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -197,7 +197,7 @@ const WeddingNavbar = () => {
               }}
               transition={{ fontSize: { duration: 0.4 } }}
             >
-              <span 
+              <span
                 className="font-['Plus_Jakarta_Sans'] font-medium tracking-wide transition-colors duration-400"
                 style={{ color: isScrolled ? '#2B0F0F' : '#FFF3E3' }}
               >
@@ -316,9 +316,9 @@ const WeddingNavbar = () => {
                   transition={{ duration: 0.7 }}
                 />
                 {/* Gold diamond accent */}
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="flex-shrink-0">
+                {/* <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="flex-shrink-0">
                   <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#D4AF37" />
-                </svg>
+                </svg> */}
                 <span>Book Now</span>
                 <motion.div
                   animate={{ x: [0, 4, 0] }}

@@ -25,7 +25,7 @@ const WeddingInquiry = () => {
 
   const [activeField, setActiveField] = useState(null);
 
-  const WHATSAPP_NUMBER = "919409404332"; // Pre-defined WhatsApp number
+  const WHATSAPP_NUMBER = "919898094332"; // Pre-defined WhatsApp number
 
   useEffect(() => {
     const handleScroll = () => setShowBackToTop(window.scrollY > 800);
@@ -305,7 +305,7 @@ const WeddingInquiry = () => {
           </div>
 
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
-            {['Instagram', 'Facebook'].map(social => (
+            {['Instagram', 'Facebook  '].map(social => (
               <a key={social} href="#" className="relative group text-[#2B0F0F] font-bold text-[9px] md:text-[10px] uppercase tracking-[0.2em] transition-all duration-300 hover:text-[#7A1B1B]">
                 {social}
                 <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-1 bg-[#7A1B1B] rounded-full transition-all duration-500 group-hover:w-1 group-hover:opacity-100 opacity-0" />

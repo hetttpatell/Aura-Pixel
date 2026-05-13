@@ -105,8 +105,8 @@ const WeddingShowcase = () => {
   ];
 
   const stats = [
-    { label: 'Weddings Shot', value: 500, suffix: '+' },
-    { label: 'Years Experience', value: 12, suffix: '+' },
+    { label: 'Weddings Shot', value: 5, suffix: '+' },
+    { label: 'Years Experience', value: 1, suffix: '+' },
     { label: 'Cinema Quality', value: 4, suffix: 'K' },
   ];
 
