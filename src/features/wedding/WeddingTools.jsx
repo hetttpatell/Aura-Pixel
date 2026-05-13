@@ -107,9 +107,9 @@ const WeddingTools = () => {
               {/* Image Background */}
               {tool.photo ? (
                 <>
-                  <img 
-                    src={tool.photo} 
-                    alt={tool.name} 
+                  <img
+                    src={tool.photo}
+                    alt={tool.name}
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-105"
                   />
                   {/* Subtle default overlay, becomes darker on hover */}
@@ -128,11 +128,11 @@ const WeddingTools = () => {
                       {tool.tag}
                     </span>
                   </div>
-                  
+
                   <h3 className="font-['Cormorant_Garamond'] text-2xl md:text-4xl text-white font-medium leading-none mb-3">
                     {tool.name}
                   </h3>
-                  
+
                   <p className="text-xs md:text-sm font-['Inter'] text-white/70 leading-relaxed max-w-[280px] line-clamp-2">
                     {tool.desc}
                   </p>
