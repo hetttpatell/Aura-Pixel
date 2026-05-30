@@ -11,28 +11,28 @@ const allTools = [
     name: 'iPhone 15 Pro Max',
     tag: 'CINEMATIC',
     desc: '4K ProRes Log Footage for intimate handheld shots.',
-    photo: '/iphone_wedding_pro_1778598461384.png',
+    photo: '/iphone-15-pro-max.png',
     span: 'col-span-2 row-span-2',
   },
   {
     name: 'Sony A7 IV',
     tag: 'HYBRID',
     desc: 'Versatile 10-bit 4:2:2 color depth with Zeiss optics.',
-    photo: '/cinema_camera_wedding_1778598501924.png',
+    photo: '/sony-a7-iv.png',
     span: 'col-span-2 row-span-1',
   },
   {
     name: 'Mavic 3 Cine',
     tag: 'AERIAL',
     desc: 'Sweeping Hasselblad aerial perspectives for grand venues.',
-    photo: '/media__1778598426461.png',
+    photo: '/mavic-3-cine.png',
     span: 'col-span-1 row-span-1',
   },
   {
     name: 'DJI Mic 2',
     tag: 'AUDIO',
     desc: 'Flawless 32-bit float internal recording for crystal clear vows.',
-    photo: '/dji_mic_wedding_1778598481036.png',
+    photo: '/dji-mic-2.png',
     span: 'col-span-1 row-span-1',
   }
 ];

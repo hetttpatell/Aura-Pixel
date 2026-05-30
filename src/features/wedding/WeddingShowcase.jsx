@@ -105,7 +105,7 @@ const WeddingShowcase = () => {
   ];
 
   const stats = [
-    { label: 'Weddings Shot', value: 5, suffix: '+' },
+    { label: 'Weddings Shot', value: 3, suffix: '+' },
     { label: 'Years Experience', value: 1, suffix: '+' },
     { label: 'Cinema Quality', value: 4, suffix: 'K' },
   ];
@@ -163,7 +163,7 @@ const WeddingShowcase = () => {
               className="relative aspect-[3/4] w-full overflow-hidden"
             >
               <img
-                src="https://images.unsplash.com/photo-1591604466107-ec97de577aff?q=80&w=1200&auto=format&fit=crop"
+                src="/wedding-1.jpeg"
                 alt="Elegant Indian wedding portrait"
                 className="w-full h-full object-cover grayscale-[15%] hover:grayscale-0 transition-all duration-700 ease-out"
                 loading="lazy"

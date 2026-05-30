@@ -447,7 +447,7 @@ const WeddingHero = () => {
       if (t.toran) gsap.set(t.toran, { yPercent: -100, opacity: 0 });
       if (t.canvas) gsap.set(t.canvas, { opacity: 0 });
       if (t.content) gsap.set(t.content, { opacity: 0, y: 30 });
-      if (t.mandala) gsap.set(t.mandala, { opacity: 0, scale: 0.7, rotation: -15, xPercent: -50, yPercent: -50 });
+      if (t.mandala) gsap.set(t.mandala, { opacity: 0, scale: 0.7, rotation: -15 });
       if (t.bells.length) gsap.set(t.bells, { y: -80, opacity: 0 });
       if (t.curtains.length) gsap.set(t.curtains, { opacity: 0 });
       if (leftDiyasRef.current) gsap.set(leftDiyasRef.current, { opacity: 0, x: -20 });
@@ -485,26 +485,30 @@ const WeddingHero = () => {
         });
       }
 
-      // Desktop scroll reveal
+      // Desktop scroll reveal — deferred until entrance animation completes
+      // to prevent GSAP from capturing mid-animation transform values
       if (!isMobile) {
-        const scrollTl = gsap.timeline({
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top top',
-            end: '+=130%',
-            scrub: 1.2,
-            pin: true,
-          },
-        });
+        const createScrollTimeline = () => {
+          const scrollTl = gsap.timeline({
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top top',
+              end: '+=130%',
+              scrub: 1.2,
+              pin: true,
+            },
+          });
 
-        scrollTl
-          .to(curtainLeftRef.current, { xPercent: -120, ease: 'power2.inOut' }, 0)
-          .to(curtainRightRef.current, { xPercent: 120, ease: 'power2.inOut' }, 0)
-          .to(toranRef.current, { y: -250, ease: 'power2.inOut' }, 0)
-          .to([bellLeftRef.current, bellRightRef.current].filter(Boolean), { y: -200, opacity: 0, ease: 'power1.inOut', stagger: 0.05 }, 0)
-          .to(contentRef.current, { y: 0, ease: 'power1.inOut' }, 0)
-          .to(mandalaRef.current, { scale: 1.1, ease: 'power1.inOut' }, 0)
-          .to(canvasRef.current, { opacity: 0.4, ease: 'power1.inOut' }, 0);
+          scrollTl
+            .to(curtainLeftRef.current, { xPercent: -120, ease: 'power2.inOut' }, 0)
+            .to(curtainRightRef.current, { xPercent: 120, ease: 'power2.inOut' }, 0)
+            .to(toranRef.current, { y: -250, ease: 'power2.inOut' }, 0)
+            .to([bellLeftRef.current, bellRightRef.current].filter(Boolean), { y: -200, opacity: 0, ease: 'power1.inOut', stagger: 0.05 }, 0)
+            .to(canvasRef.current, { opacity: 0.4, ease: 'power1.inOut' }, 0);
+        };
+
+        // Wait for entrance timeline to finish before creating scroll triggers
+        tl.eventCallback('onComplete', createScrollTimeline);
 
         // Mouse parallax (subtle)
         let mouseRaf;
@@ -699,21 +703,24 @@ const WeddingHero = () => {
 
       {/* ══ Center Mandala / Rangoli ══ */}
       <div
-        ref={mandalaRef}
         className="absolute z-[3] pointer-events-none"
         style={{
           top: '50%',
           left: '50%',
+          transform: 'translate(-50%, -50%)',
           width: isMobile ? '80vw' : '55vw',
           maxWidth: 620,
-          transform: 'translate(-50%, -50%)', // Ensure CSS centering fallback
         }}
-        aria-hidden="true"
       >
-        <RangoliMotif
-          size={typeof window !== 'undefined' ? Math.min(window.innerWidth * (isMobile ? 0.8 : 0.55), 620) : 480}
-          opacity={0.15}
-        />
+        <div
+          ref={mandalaRef}
+          aria-hidden="true"
+        >
+          <RangoliMotif
+            size={typeof window !== 'undefined' ? Math.min(window.innerWidth * (isMobile ? 0.8 : 0.55), 620) : 480}
+            opacity={0.15}
+          />
+        </div>
       </div>
 
       {/* ══ Floating Diyas (left & right of content, desktop) ══ */}
