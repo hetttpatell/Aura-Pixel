@@ -4,59 +4,59 @@ import { HiStar } from 'react-icons/hi';
 import { useReducedMotion } from '../../hooks';
 
 const testimonials = [
-{
-    id: 1,
-    initials: "RP",
-    name: "Rakesh Patel",
-    title: "Owner, Patel Wedding Studio – Ahmedabad",
-    content: "We hired them for our studio website and branding, and the experience was excellent. The team understood exactly what we needed for our wedding photography business. Within a few weeks our website looked modern and professional, and clients started trusting our brand more.",
-    rating: 5,
-},
+    {
+        id: 1,
+        initials: "RP",
+        name: "Rakesh Patel",
+        title: "Owner, Patel Wedding Studio – Ahmedabad",
+        content: "We hired them for our studio website and branding, and the experience was excellent. The team understood exactly what we needed for our wedding photography business. Within a few weeks our website looked modern and professional, and clients started trusting our brand more.",
+        rating: 5,
+    },
 
-{
-    id: 2,
-    initials: "KM",
-    name: "Kunal Mehta",
-    title: "Founder, Mehta Electronics – Surat",
-    content: "I was struggling to build a proper online presence for my business. Their team designed a clean website and helped us showcase our products professionally. The response from customers has improved a lot since the launch.",
-    rating: 5,
-},
+    {
+        id: 2,
+        initials: "KM",
+        name: "Kunal Mehta",
+        title: "Founder, Mehta Electronics – Surat",
+        content: "I was struggling to build a proper online presence for my business. Their team designed a clean website and helped us showcase our products professionally. The response from customers has improved a lot since the launch.",
+        rating: 5,
+    },
 
-{
-    id: 3,
-    initials: "SP",
-    name: "Sneha Patel",
-    title: "Marketing Manager, Urban Boutique – Vadodara",
-    content: "The design quality and attention to detail really impressed us. They delivered exactly what they promised and were always available whenever we had questions. Highly reliable team to work with.",
-    rating: 5,
-},
+    {
+        id: 3,
+        initials: "SP",
+        name: "Sneha Patel",
+        title: "Marketing Manager, Urban Boutique – Vadodara",
+        content: "The design quality and attention to detail really impressed us. They delivered exactly what they promised and were always available whenever we had questions. Highly reliable team to work with.",
+        rating: 5,
+    },
 
-{
-    id: 4,
-    initials: "JR",
-    name: "Jayesh Rana",
-    title: "Owner, Rana Caterers – Rajkot",
-    content: "We wanted a professional website for our catering service. The team handled everything smoothly and the final result exceeded our expectations. Many of our customers now find us online.",
-    rating: 5,
-},
+    {
+        id: 4,
+        initials: "JR",
+        name: "Jayesh Rana",
+        title: "Owner, Rana Caterers – Rajkot",
+        content: "We wanted a professional website for our catering service. The team handled everything smoothly and the final result exceeded our expectations. Many of our customers now find us online.",
+        rating: 5,
+    },
 
-{
-    id: 5,
-    initials: "DK",
-    name: "Dhruv Khanna",
-    title: "Startup Founder – Mumbai",
-    content: "Their approach is very professional and transparent. The team understands business goals, not just design. They helped us create a strong brand identity and website that represents our startup perfectly.",
-    rating: 5,
-},
+    {
+        id: 5,
+        initials: "DK",
+        name: "Dhruv Khanna",
+        title: "Startup Founder – Mumbai",
+        content: "Their approach is very professional and transparent. The team understands business goals, not just design. They helped us create a strong brand identity and website that represents our startup perfectly.",
+        rating: 5,
+    },
 
-{
-    id: 6,
-    initials: "NP",
-    name: "Nirali Patel",
-    title: "Boutique Owner – Ahmedabad",
-    content: "ખરેખર ખુબ સરસ કામ કર્યું. અમારી બૂટિક માટે બનાવેલી વેબસાઇટ ખૂબ જ સુંદર અને સરળ છે. હવે અમારા ઘણા ગ્રાહકો ઓનલાઇન અમને શોધી શકે છે. આખી ટીમ ખૂબ સહકાર આપતી હતી.",
-    rating: 5,
-}
+    {
+        id: 6,
+        initials: "NP",
+        name: "Nirali Patel",
+        title: "Boutique Owner – Ahmedabad",
+        content: "ખરેખર ખુબ સરસ કામ કર્યું. અમારી બૂટિક માટે બનાવેલી વેબસાઇટ ખૂબ જ સુંદર અને સરળ છે. હવે અમારા ઘણા ગ્રાહકો ઓનલાઇન અમને શોધી શકે છે. આખી ટીમ ખૂબ સહકાર આપતી હતી.",
+        rating: 5,
+    }
 ];
 
 // Staggered reveal animation - optimized
@@ -129,7 +129,7 @@ const Testimonials = () => {
 
     return (
         <section className="py-[100px] bg-white relative overflow-hidden testimonials-section">
-                        <style>{`
+            <style>{`
                             @media (max-width: 768px) {
                                 .testimonials-section {
                                     padding-top: 2.5rem !important;
@@ -369,7 +369,7 @@ const Testimonials = () => {
                             animate={{ scale: [1, 1.4, 1], boxShadow: ["0 0 0 rgba(34, 197, 94, 0)", "0 0 8px rgba(34, 197, 94, 0.7)", "0 0 0 rgba(34, 197, 94, 0)"] }}
                             transition={{ duration: 2, repeat: Infinity }}
                         />
-                        <span className="text-sm font-body text-text-heading font-semibold">500+ Clients Served</span>
+                        <span className="text-sm font-body text-text-heading font-semibold">30+ Clients Served</span>
                     </motion.div>
 
                     {/* 98% Satisfaction */}
@@ -395,7 +395,7 @@ const Testimonials = () => {
                             animate={{ scale: [1, 1.4, 1], boxShadow: ["0 0 0 rgba(34, 197, 94, 0)", "0 0 8px rgba(34, 197, 94, 0.7)", "0 0 0 rgba(34, 197, 94, 0)"] }}
                             transition={{ duration: 2, repeat: Infinity, delay: 1 }}
                         />
-                        <span className="text-sm font-body text-text-heading font-semibold">10+ Years</span>
+                        <span className="text-sm font-body text-text-heading font-semibold">2+ Years</span>
                     </motion.div>
 
                     {/* 150+ Reviews */}
@@ -408,7 +408,7 @@ const Testimonials = () => {
                             animate={{ scale: [1, 1.4, 1], boxShadow: ["0 0 0 rgba(34, 197, 94, 0)", "0 0 8px rgba(34, 197, 94, 0.7)", "0 0 0 rgba(34, 197, 94, 0)"] }}
                             transition={{ duration: 2, repeat: Infinity, delay: 1.5 }}
                         />
-                        <span className="text-sm font-body text-text-heading font-semibold">150+ Reviews</span>
+                        <span className="text-sm font-body text-text-heading font-semibold">25+ Reviews</span>
                     </motion.div>
                 </motion.div>
             </div>
